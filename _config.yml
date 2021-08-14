@@ -24,8 +24,8 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 
-title: Your awesome title
-email: your-email@domain.com
+title: HOME
+email: cynilyn@gmail.com
 author: GitHub User
 
 # Copyright setting
@@ -34,7 +34,7 @@ author: GitHub User
 # * author: {author} (Value is the same as site.author)
 # * copyright: (c) - ©
 # * copyleft: (cleft)
-# * sound recording copyright: (p) - ℗ 
+# * sound recording copyright: (p) - ℗
 #
 # For example:
 #   "Copyright (c) 2017-{currentYear} <a href="https://example.com">{author}</a>"
@@ -143,12 +143,12 @@ yat:
 
 # If you want to link only specific pages in your header, uncomment
 # this and add the path to the pages in order as they should show up
-# header_pages:
-#   - index.html
-#   - archives.html
-#   - categories.html
-#   - tags.html
-#   - about.md
+header_pages:
+  #   - index.html
+  - about.html
+  - archives.html
+  - categories.html
+  - tags.html
 
 # Page default value
 # defaults:
