@@ -1,9 +1,8 @@
 ---
 layout: post
-title: Test
-subtitle: Each post also has a subtitle
-categories: markdown
-tags: [test]
+title: 첫번째 포스트
+categories: 김애용
+tags: [김애용]
 ---
 
 엄청 헤맸는데 이제서야 대충 정리가 된듯.
@@ -26,5 +25,3 @@ tags: [test]
 전반적인 스텝은 위 사이트에 있는 다른 글 [Github Action으로 Jekyll & Github Pages 배포 자동화 하는 방법](https://deeplify.dev/tools/git/github-pages-github-action)을 참고하였고 Jekyll YAT theme을 사용한다면 해당 repo에 이미 올라와있는 .github/workflows/build-jekyll.yml을 사용하면 된다.
 
 gh-pages branch로 빌드 결과물이 생성되므로 repo-settings-pages-Github Pages-Source의 branch를 변경해줘야 되고, 위 workflows 파일의 jekyll_baseurl을 '' 으로 수정해줘야 된다. 이걸 놓쳐서 몇시간 날림.
-
-끝.
