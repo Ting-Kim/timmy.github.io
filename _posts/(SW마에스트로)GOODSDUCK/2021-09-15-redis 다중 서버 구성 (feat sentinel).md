@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "redis 다중 서버 구성 (feat. sentinel)"
-categories: (SW마에스트로)덕스팀_GOODSDUCK
+categories: (SW마에스트로)GOODSDUCK
 tags: [spring-boot, redis, sentinel, nosql]
 comments: true
 ---

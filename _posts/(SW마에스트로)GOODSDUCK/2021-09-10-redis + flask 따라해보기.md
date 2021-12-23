@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "redis + flask 따라해보기"
-categories: (SW마에스트로)덕스팀_GOODSDUCK
+categories: (SW마에스트로)GOODSDUCK
 tags: [redis, redis-server, redis-cli, nosql, flask]
 comments: true
 ---

@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Redis-Server 설치하기 (파일 형태)"
-categories: (SW마에스트로)덕스팀_GOODSDUCK
+categories: (SW마에스트로)GOODSDUCK
 tags: [redis, redis-server, redis-cli, nosql]
 use_math: true
 comments: true

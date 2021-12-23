@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "[Spring boot] FCM Initializer 실행 안됨"
-categories: (SW마에스트로)덕스팀_GOODSDUCK
+categories: (SW마에스트로)GOODSDUCK
 tags: [spring-boot, fcm, firebase]
 comments: true
 ---

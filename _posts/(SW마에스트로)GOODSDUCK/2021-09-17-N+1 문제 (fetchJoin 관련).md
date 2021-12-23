@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Spring-boot JPA/Hibernate N+1 문제 (batch 설정)"
-categories: (SW마에스트로)덕스팀_GOODSDUCK
+categories: (SW마에스트로)GOODSDUCK
 tags: [spring-boot, firebase, rtdb, nosql]
 comments: true
 ---

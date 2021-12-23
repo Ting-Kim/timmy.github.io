@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "알림 데이터 저장소 변경 시 데이터 구조 등 (RDBMS → NoSQL)"
-categories: (SW마에스트로)덕스팀_GOODSDUCK
+categories: (SW마에스트로)GOODSDUCK
 tags: [spring-boot, firebase, rtdb, nosql]
 comments: true
 ---
