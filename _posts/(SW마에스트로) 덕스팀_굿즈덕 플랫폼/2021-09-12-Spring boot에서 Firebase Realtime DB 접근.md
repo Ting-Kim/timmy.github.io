@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Spring boot에서 Firebase Realtime DB 접근하기"
-categories: (SW마에스트로) 덕스팀_굿즈덕 플랫폼
+categories: (SW마에스트로)덕스팀_GOODSDUCK
 tags: [spring-boot, firebase, rtdb, nosql]
 comments: true
 ---

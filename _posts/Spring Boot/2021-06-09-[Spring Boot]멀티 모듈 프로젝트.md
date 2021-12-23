@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "[Spring Boot]멀티 모듈 프로젝트 구성 방법"
-categories: Spring Boot
+categories: Spring-Boot
 tags: [Backend, SpringBoot, MultiModule]
 comments: true
 ---

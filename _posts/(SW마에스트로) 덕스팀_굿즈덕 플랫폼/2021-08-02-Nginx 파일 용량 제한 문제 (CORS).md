@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Nginx 파일 용량 제한 문제 (CORS)
-categories: (SW마에스트로) 덕스팀_굿즈덕 플랫폼
+categories: (SW마에스트로)덕스팀_GOODSDUCK
 tags: [Nginx, CORS]
 ---
 

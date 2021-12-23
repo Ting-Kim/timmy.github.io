@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "[5th_week_proj]Django deploy using uWSGI, Nginx at Ubuntu"
-categories: (프로그래머스) 인공지능 데브 코스 1기
+categories: (프로그래머스)Ai데브코스1기
 tags: [Django, uWSGI, Nginx]
 use_math: true
 comments: true

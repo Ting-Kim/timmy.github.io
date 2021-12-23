@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "[django_pandas_error]html이 텍스트 그대로 출력되는 문제"
-categories: (프로그래머스) 인공지능 데브 코스 1기
+categories: (프로그래머스)Ai데브코스1기
 tags: [Django, web application, pandas]
 use_math: true
 comments: true

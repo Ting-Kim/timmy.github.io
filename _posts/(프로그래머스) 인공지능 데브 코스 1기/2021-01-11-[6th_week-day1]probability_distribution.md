@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "[ML_basics]probability distribution"
-categories: (프로그래머스) 인공지능 데브 코스 1기
+categories: (프로그래머스)Ai데브코스1기
 tags: [Machine learning, mathmatics, probability]
 use_math: true
 comments: true

@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "[python_base64]How to use base64"
-categories: (프로그래머스) 인공지능 데브 코스 1기
+categories: (프로그래머스)Ai데브코스1기
 tags: [python, base64, encoding]
 use_math: true
 comments: true

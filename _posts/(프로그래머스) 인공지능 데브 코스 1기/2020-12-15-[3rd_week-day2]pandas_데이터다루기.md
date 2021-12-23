@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "[3rd_week-day2]Python으로 데이터 다루기 Ⅱ - pandas"
-categories: (프로그래머스) 인공지능 데브 코스 1기
+categories: (프로그래머스)Ai데브코스1기
 tags: [ai, pandas, dataframe]
 use_math: true
 comments: true

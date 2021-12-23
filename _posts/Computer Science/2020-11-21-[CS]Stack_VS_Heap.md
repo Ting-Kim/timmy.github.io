@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "[CS]Stack_VS_Heap"
-categories: Computer Science
+categories: Computer_Science
 tags: [CS]
 comments: true
 ---

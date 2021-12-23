@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "[1st_week-day4]힙_동적계획법_DFS_BFS_문제풀이"
-categories: (프로그래머스) 인공지능 데브 코스 1기
+categories: (프로그래머스)Ai데브코스1기
 tags: [Greedy Algorithm, Heap, Dynamic Programming]
 use_math: true
 comments: true
