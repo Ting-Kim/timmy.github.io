@@ -1,3 +1,12 @@
+---
+layout: post
+title: "[CS]Stack_VS_Heap"
+categories: Computer Science
+tags: [CS]
+comments: true
+---
+
+
 # Stack VS Heap
 
 개념을 까먹었고 오해하고 있어서 정리 파일을 만들었다.<br><br>

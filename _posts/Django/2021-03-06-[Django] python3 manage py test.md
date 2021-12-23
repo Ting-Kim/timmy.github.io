@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "[Django] python3 manage py test"
+categories: Django
 tags: [Web, Django, TDD]
 comments: true
 ---

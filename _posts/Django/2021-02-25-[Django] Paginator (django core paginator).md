@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "[Django] Paginator (django.core.paginator)"
+categories: Django
 tags: [Web, Django]
 use_math: true
 comments: true

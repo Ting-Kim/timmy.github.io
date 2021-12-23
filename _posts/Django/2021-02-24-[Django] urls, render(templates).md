@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "[Django] urls, render(template) 기능"
+categories: Django
 tags: [Web, Django]
 use_math: true
 comments: true

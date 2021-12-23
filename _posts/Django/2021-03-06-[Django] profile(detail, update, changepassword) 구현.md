@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "[Django] profile(detail, update, changepassword) 구현"
+categories: Django
 tags: [Web, Django]
 use_math: true
 comments: true

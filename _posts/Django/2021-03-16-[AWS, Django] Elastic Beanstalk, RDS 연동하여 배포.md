@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "[AWS, Django] Elastic Beanstalk, RDS 연동하여 배포"
+categories: Django
 tags: [Web, Django, AWS, Deploy]
 comments: true
 ---
