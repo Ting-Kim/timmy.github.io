@@ -26,7 +26,7 @@ comments: true
 
 (`@Value`는 `@PostConstruct` 전에 불러올 수 있다고 함)
 
-```sql
+```java
 //PropertyUtil.java
 @Slf4j
 public class PropertyUtil {
@@ -53,7 +53,7 @@ public class PropertyUtil {
 }
 ```
 
-```sql
+```java
 // 수정 전
 @Service
 @Slf4j
@@ -83,7 +83,7 @@ public class FCMInitializer {
 }
 ```
 
-```sql
+```java
 // 수정 후
 @Service
 @Slf4j
