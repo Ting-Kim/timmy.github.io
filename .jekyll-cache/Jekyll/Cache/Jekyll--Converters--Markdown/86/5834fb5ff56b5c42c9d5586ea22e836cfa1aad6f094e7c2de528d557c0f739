@@ -1,0 +1,4 @@
+I"|<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">d</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span> <span class="c1"># 사전에 대해 x가 존재하면 해당 key에 해당하는 값을 반환, 없다면 0 반환
+# dictionary.get()
+</span></code></pre></div></div>
+:ET

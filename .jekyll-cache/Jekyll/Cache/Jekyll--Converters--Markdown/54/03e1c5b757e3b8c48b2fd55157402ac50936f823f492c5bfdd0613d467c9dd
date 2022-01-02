@@ -1,0 +1,12 @@
+I"�<h1 id="aws-오토스케일링-적용">AWS 오토스케일링 적용</h1>
+
+<p><a href="https://hoing.io/archives/3762">https://hoing.io/archives/3762</a></p>
+
+<ul>
+  <li>기존 CodeDeploy 이용해서배포 시 원래 쓰던 인스턴스는 변경 사항이 반영되지만, 오토스케일링 그룹을 통해 생성된 인스턴스는 적용이 안되었다. CodeDeploy 배포 그룹 속성 편집으로 해결 됨. 대상 인스턴스 에서 대상 오토스케일링 그룹 설정으로!
+    <ul>
+      <li>참고링크 : <a href="https://devlog-wjdrbs96.tistory.com/306">https://devlog-wjdrbs96.tistory.com/306</a></li>
+    </ul>
+  </li>
+</ul>
+:ET

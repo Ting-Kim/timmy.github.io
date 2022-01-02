@@ -1,0 +1,42 @@
+I"�<h1 id="아이템-전체-조회-api---좋아요-표시-관련-n1">아이템 전체 조회 API - 좋아요 표시 관련 N+1</h1>
+
+<p>아이템 전체 조회 API : item 검색(item, idol_member, idol_group, user, category_item, image 연관 관계)과 user_item(좋아요)를 개인화(user_item.user_id)하여 아이템에 좋아요를 했는지 표시하는 기능을 구현해야 했다.</p>
+
+<p>복잡해서 MySQL 기준 쿼리로 먼저 짰다.</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">select</span> <span class="n">ui</span><span class="p">.</span><span class="n">item_id</span><span class="p">,</span> <span class="k">count</span><span class="p">(</span> <span class="n">if</span><span class="p">(</span><span class="n">ui</span><span class="p">.</span><span class="n">user_id</span><span class="o">=&lt;</span><span class="err">사용자</span> <span class="n">id</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">ui</span><span class="p">.</span><span class="n">user_id</span><span class="p">,</span> <span class="k">NULL</span><span class="p">))</span> <span class="k">from</span> <span class="n">user_item</span> <span class="n">ui</span>
+<span class="k">group</span> <span class="k">by</span> <span class="n">ui</span><span class="p">.</span><span class="n">item_id</span><span class="p">;</span>
+</code></pre></div></div>
+
+<blockquote>
+  <p>문제 상황 : 아이템 전체 조회 페이지(홈)에서 복잡한 연관 관계로 인해 N+1 쿼리 이슈 발생</p>
+
+</blockquote>
+
+<p>따라서 엔티티 그래프에 미리 추가하기 위해(?) 조인 한방 쿼리를 날림.</p>
+
+<ul>
+  <li>
+    <p>수정 전 - (item 검색), (idol_member 검색), (idol_group 검색), (user 검색), (category_item 검색), (image 검색)</p>
+
+    <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="n">queryFactory</span><span class="o">.</span><span class="na">select</span><span class="o">(</span><span class="n">item</span><span class="o">,</span> <span class="k">new</span> <span class="nc">CaseBuilder</span><span class="o">()</span>
+                  <span class="o">.</span><span class="na">when</span><span class="o">(</span><span class="n">userItem</span><span class="o">.</span><span class="na">user</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">eq</span><span class="o">(</span><span class="n">userId</span><span class="o">)).</span><span class="na">then</span><span class="o">(</span><span class="mi">1L</span><span class="o">).</span><span class="na">otherwise</span><span class="o">(</span><span class="mi">0L</span><span class="o">).</span><span class="na">sum</span><span class="o">())</span>             <span class="o">.</span><span class="na">from</span><span class="o">(</span><span class="n">item</span><span class="o">)</span>
+                  <span class="o">.</span><span class="na">groupBy</span><span class="o">(</span><span class="n">item</span><span class="o">)</span>
+                  <span class="o">.</span><span class="na">leftJoin</span><span class="o">(</span><span class="n">userItem</span><span class="o">).</span><span class="na">on</span><span class="o">(</span><span class="n">userItem</span><span class="o">.</span><span class="na">item</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">eq</span><span class="o">(</span><span class="n">item</span><span class="o">.</span><span class="na">id</span><span class="o">));</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>수정 후 - (item, idol_member, idol_group, user, category_item 검색), (image 검색)</p>
+
+    <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="n">queryFactory</span><span class="o">.</span><span class="na">select</span><span class="o">(</span><span class="n">item</span><span class="o">,</span> <span class="k">new</span> <span class="nc">CaseBuilder</span><span class="o">()</span>
+  								<span class="o">.</span><span class="na">when</span><span class="o">(</span><span class="n">userItem</span><span class="o">.</span><span class="na">user</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">eq</span><span class="o">(</span><span class="n">userId</span><span class="o">)).</span><span class="na">then</span><span class="o">(</span><span class="mi">1L</span><span class="o">).</span><span class="na">otherwise</span><span class="o">(</span><span class="mi">0L</span><span class="o">).</span><span class="na">sum</span><span class="o">(),</span> <span class="n">idolMember</span><span class="o">,</span> <span class="n">idolGroup</span><span class="o">,</span> <span class="n">categoryItem</span><span class="o">,</span> <span class="n">user</span><span class="o">)</span>
+  								<span class="o">.</span><span class="na">groupBy</span><span class="o">(</span><span class="n">item</span><span class="o">,</span> <span class="n">idolMember</span><span class="o">,</span> <span class="n">idolGroup</span><span class="o">,</span> <span class="n">categoryItem</span><span class="o">,</span> <span class="n">user</span><span class="o">)</span>
+                  <span class="o">.</span><span class="na">leftJoin</span><span class="o">(</span><span class="n">userItem</span><span class="o">).</span><span class="na">on</span><span class="o">(</span><span class="n">userItem</span><span class="o">.</span><span class="na">item</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">eq</span><span class="o">(</span><span class="n">item</span><span class="o">.</span><span class="na">id</span><span class="o">))</span>
+                  <span class="o">.</span><span class="na">join</span><span class="o">(</span><span class="n">idolMember</span><span class="o">).</span><span class="na">on</span><span class="o">(</span><span class="n">item</span><span class="o">.</span><span class="na">idolMember</span><span class="o">.</span><span class="na">eq</span><span class="o">(</span><span class="n">idolMember</span><span class="o">))</span>
+                  <span class="o">.</span><span class="na">join</span><span class="o">(</span><span class="n">idolGroup</span><span class="o">).</span><span class="na">on</span><span class="o">(</span><span class="n">idolMember</span><span class="o">.</span><span class="na">idolGroup</span><span class="o">.</span><span class="na">eq</span><span class="o">(</span><span class="n">idolGroup</span><span class="o">))</span>
+                  <span class="o">.</span><span class="na">join</span><span class="o">(</span><span class="n">categoryItem</span><span class="o">).</span><span class="na">on</span><span class="o">(</span><span class="n">item</span><span class="o">.</span><span class="na">categoryItem</span><span class="o">.</span><span class="na">eq</span><span class="o">(</span><span class="n">categoryItem</span><span class="o">))</span>
+                  <span class="o">.</span><span class="na">join</span><span class="o">(</span><span class="n">user</span><span class="o">).</span><span class="na">on</span><span class="o">(</span><span class="n">item</span><span class="o">.</span><span class="na">user</span><span class="o">.</span><span class="na">eq</span><span class="o">(</span><span class="n">user</span><span class="o">));</span>
+</code></pre></div>    </div>
+  </li>
+</ul>
+:ET

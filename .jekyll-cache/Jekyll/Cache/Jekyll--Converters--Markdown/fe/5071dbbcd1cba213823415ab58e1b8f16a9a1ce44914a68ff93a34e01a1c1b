@@ -1,0 +1,25 @@
+I"!<h2 id="재귀-알고리즘">재귀 알고리즘</h2>
+
+<p><strong>Recursive version VS Iterative version</strong></p>
+
+<p>둘 다 O(logn) 이지만, 재귀는 함수를 호출하고 반환하는 데 드는 시간 때문에 효율성 측면은 반복이 좀 더 좋다.</p>
+
+<h2 id="연결-리스트linked-list">연결 리스트(Linked List)</h2>
+
+<p>장점 : 삽입, 삭제가 용이하다</p>
+
+<h2 id="스택stack">스택(Stack)</h2>
+
+<p>스택 언어플로우 : 스택이 비어있는데 데이터를 pop() 하려고 할 때 발생</p>
+
+<p>스택 오버플로우 : 꽉 차있는 스택에 데이터를 삽입하려고 할 때 발생</p>
+
+<ul>
+  <li>
+    <p><strong>배열로 구현한 스택</strong></p>
+  </li>
+  <li>
+    <p><strong>DoublyLinkedList로 구현한 스택</strong></p>
+  </li>
+</ul>
+:ET

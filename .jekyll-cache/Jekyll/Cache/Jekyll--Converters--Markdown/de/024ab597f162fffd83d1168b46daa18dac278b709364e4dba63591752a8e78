@@ -1,0 +1,37 @@
+I"�	<h1 id="django">Django</h1>
+
+<ul>
+  <li>
+    <p><a href="http://urls.py">urls.py</a> 를 통해서 url 매핑</p>
+
+    <p>config/<a href="http://urls.py">urls.py</a> 에서는 include()를 통해 각 앱의 urls.py 들을 읽어들임.</p>
+
+    <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">django.contrib</span> <span class="kn">import</span> <span class="n">admin</span>
+<span class="kn">from</span> <span class="nn">django.urls</span> <span class="kn">import</span> <span class="n">path</span><span class="p">,</span> <span class="n">include</span>
+
+<span class="n">urlpattrerns</span><span class="o">=</span> <span class="p">[</span>
+	<span class="n">path</span><span class="p">(</span><span class="s">""</span><span class="p">,</span> <span class="n">include</span><span class="p">(</span><span class="s">"core.urls"</span><span class="p">,</span> <span class="n">namespace</span><span class="o">=</span><span class="s">"core"</span><span class="p">)),</span>
+	<span class="n">path</span><span class="p">(</span><span class="s">"admin/"</span><span class="p">,</span> <span class="n">admin</span><span class="p">.</span><span class="n">site</span><span class="p">.</span><span class="n">urls</span><span class="p">),</span>
+<span class="p">]</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>templates를 사용하려면 <a href="http://settings.py">settings.py</a> 의 TEMPLATES의 DIR에 경로를 추가해줘야 함. <code class="language-plaintext highlighter-rouge">os.path.join(BASE_DIR, "templates")</code></p>
+  </li>
+  <li>
+    <p>context - templates에 변수를 보내는 방법 중 하나</p>
+
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="nv">"html 파일명"</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="p">{})</span>
+
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Template 확장 기능(상속이나 템플릿처럼 사용)</p>
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">{% extends "base.html" %}</code></li>
+      <li><code class="language-plaintext highlighter-rouge">{% block content %} {% endblock %}</code></li>
+    </ul>
+  </li>
+</ul>
+
+:ET

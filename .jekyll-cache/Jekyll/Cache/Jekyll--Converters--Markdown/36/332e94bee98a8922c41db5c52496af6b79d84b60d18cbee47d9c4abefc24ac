@@ -1,0 +1,209 @@
+I"�0<h2 id="클라우드-기초">클라우드 기초</h2>
+
+<ul>
+  <li>IDC(Internet Data Center)
+    <ul>
+      <li>서버 운영에 필요한 공간, 네트워크, 유지 보수 등의 서비스를 제공</li>
+      <li>효율적인 자원과 적은 비용으로 사용할 수 있엇지만, 대부분의 IDC의 서버 임대는 계약을 통해 일정 기간 임대하는 <strong>유연성이 떨어지는 구조</strong>이다.</li>
+    </ul>
+  </li>
+</ul>
+
+<p><br /></p>
+
+<p><strong>Cloud Computing의 장점?</strong></p>
+
+<p>4차 산업혁명 시대에서 빅데이터의 수집, 저장, 분석을 위한 방대한 컴퓨팅 자원과 인공지능 개발을 위한 고성능 컴퓨터를 사용할 수 있는 IT 환경이 마련하다.</p>
+
+<ul>
+  <li>속도</li>
+  <li>접근성</li>
+  <li>확장성</li>
+  <li>생산성</li>
+  <li>보안, 안정성</li>
+  <li>측정가능성</li>
+</ul>
+
+<p>운용 모델</p>
+
+<ul>
+  <li>퍼블릭(Public)</li>
+  <li>프라이빗(Private)
+    <ul>
+      <li>보안적인 부분은 좋지만, 폐쇄적이라 개발에 사용하는데 어려움이 있음</li>
+      <li>최근에는 글로벌 클라우드 사업자들이 IT기술만ㅁ 패키지 형태로 판매하기도 했다.</li>
+    </ul>
+  </li>
+  <li>하이브리드(Hybrid)
+    <ul>
+      <li>고객의 핵심 시스템은 내부에 두면서도 외부의 클라우드를 활용</li>
+    </ul>
+  </li>
+</ul>
+
+<p><br /></p>
+
+<p>클라우드 서비스 제공 모델</p>
+
+<ul>
+  <li>On-Premises</li>
+  <li>IaaS</li>
+  <li>PaaS</li>
+  <li>SaaS</li>
+</ul>
+
+<p>![https://github.com/Ting-Kim/Ting-kim.github.io/blob/main/images/4th_week-day2<em>1.png?raw=true](2020-12-22-%5B4th_week-day2%5D%E1%84%8F%E1%85%B3%E1%86%AF%E1%84%85%E1%85%A1%E1%84%8B%E1%85%AE%E1%84%83%E1%85%B3</em>%E1%84%92%E1%85%AA%E1%86%AF%E1%84%8B%E1%85%AD%E1%86%BC_%E1%84%86%E1%85%A5%E1%84%89%E1%85%B5%E1%86%AB%E1%84%85%E1%85%A5%2084622e9d7b7d43f3a44287e32e4177a9/Untitled.png)</p>
+
+<p>비유하면 ..</p>
+
+<p><img src="https://github.com/Ting-Kim/Ting-kim.github.io/blob/main/images/4th_week-day2_2.png?raw=true" alt="https://github.com/Ting-Kim/Ting-kim.github.io/blob/main/images/4th_week-day2_2.png?raw=true" /></p>
+
+<p>클라우드 제공 사업자 - AWS, GCP, Naver Cloud Platform, Azure 등</p>
+
+<p><br /></p>
+
+<h2 id="aws-ec2-가상환경-연결-및-접속">AWS EC2 가상환경 연결 및 접속</h2>
+
+<p>macOS SSH 터미널에서는 <code class="language-plaintext highlighter-rouge">chmod 400 &lt;pem file&gt;</code>, <code class="language-plaintext highlighter-rouge">ssh -i "&lt;pem file&gt;" ubuntu@&lt;퍼블릭 IPv4 DNS&gt;</code> 를 명령어로 입력하면 바로 접속이 되는데.. 윈도우 환경에서는 이게 안되서 굉장히 애먹었다.</p>
+
+<p>권한 설정을 잘 해주어야 한다. pem file이 들어있는 디렉토리의 권한을 보이는대로 수정해준다.</p>
+
+<p><img src="https://github.com/Ting-Kim/Ting-kim.github.io/blob/main/images/4th_week-day2_3.png?raw=true" alt="https://github.com/Ting-Kim/Ting-kim.github.io/blob/main/images/4th_week-day2_3.png?raw=true" /></p>
+
+<p><br /></p>
+
+<p>여기서 주의해야 할 것은 아래와 같이 사용자를 선택해줄 때 ‘<strong>이름 확인</strong>‘을 꼭 해주고 등록해야 한다.</p>
+
+<p><img src="https://github.com/Ting-Kim/Ting-kim.github.io/blob/main/images/4th_week-day2_4.png?raw=true" alt="https://github.com/Ting-Kim/Ting-kim.github.io/blob/main/images/4th_week-day2_4.png?raw=true" /></p>
+
+<p><br /></p>
+
+<p>AWS 인스턴스 아웃바운드 설정 - EC2 인스턴스 접속에 성공하면 삭제해준다.</p>
+
+<p><img src="https://github.com/Ting-Kim/Ting-kim.github.io/blob/main/images/4th_week-day2_5.png?raw=true" alt="https://github.com/Ting-Kim/Ting-kim.github.io/blob/main/images/4th_week-day2_5.png?raw=true" /></p>
+
+<p><br /></p>
+
+<p><strong>일반적인 머신러닝 프로세스</strong></p>
+
+<p>문제 정의 → 데이터 준비 단계(원천 데이터 가공, 모델 학습을 위한 Feature Engineering) → 모델 학습 → 모델 검증(배포 가능한 모델인지 확인) → Trained Model File 배포 → 지속적인 모니터링</p>
+
+<p>저장된 모델 파일(Trained Model File)을 불러와서 Run/Predict 하는 것이 이번 프로젝트 내용이다.</p>
+
+<p><br /></p>
+
+<h3 id="model-serving">Model Serving</h3>
+
+<p>모델 학습 → 학습된 모델 저장(Serialization) → Web Framework를 통해 모델을 배포</p>
+
+<ul>
+  <li><strong>모든 과정에서 연속성이 유지 되어야 한다.</strong>
+    <ul>
+      <li>모델 성능 저하 및 실행에 문제가 있을 수 있기 때문</li>
+    </ul>
+  </li>
+  <li><strong>Serving Model 에서는 상황에 맞게 다양한 Serving Framework를 사용해야 한다.</strong></li>
+</ul>
+
+<p><br /></p>
+
+<p><strong>Serialization &amp; De-serialization</strong></p>
+
+<ul>
+  <li>ML/DL model object를 Serialization을 통해 Disk(전송하고 불러올 수 있는 형태)에 write하여 변환 할 수 있다.</li>
+  <li>De-Serialization을 통해 메모리(Python 혹은 다른 환경)에 불러올 수 있다.</li>
+  <li>이 때, 두 과정이 같은 방식으로 진행되어야 가능하다.</li>
+</ul>
+
+<p>API 서비스 제공할 때 Handler를 통해서 일련의 과정들을 수행할 수 할 수 있다. 코드의 관리 및 유지 보수 측면에서 Handler를 이용하여 구현하는게 좋다.</p>
+
+<p><br /></p>
+
+<p><strong>Model Serving을 위한 Framework</strong></p>
+
+<ul>
+  <li>일반적으로 TensorFlow serving, TorchServe, TensorRT 프레임워크를 사용한다.</li>
+  <li>웹 프레임워크와 서빙 프레임워크가 내부 통신을 통해서 커뮤니케이션 하는것이 일반적인 형태이다.</li>
+</ul>
+
+<p><br /></p>
+
+<h2 id="save-and-load-trained-model">Save and Load trained model</h2>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span> <span class="n">aws</span> <span class="n">ec2</span> <span class="n">인스턴스</span> <span class="n">연결</span> <span class="n">후</span> <span class="n">ubuntu</span> <span class="n">환경에서</span><span class="p">..</span>
+<span class="o">//</span> <span class="n">실습</span> <span class="n">파일</span> <span class="n">복제</span>
+<span class="err">$</span> <span class="n">conda</span> <span class="n">activate</span> <span class="n">pytorch_p36</span>
+<span class="p">(</span><span class="n">pytorch_p36</span><span class="p">)</span> <span class="err">$</span> <span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="n">sackoh</span><span class="o">/</span><span class="n">kdt</span><span class="o">-</span><span class="n">ai</span><span class="o">-</span><span class="n">aws</span>
+<span class="o">//</span> <span class="s">"Failed to connect to https://gitlab.com/xxxx/aws_tests_git_1.git port 443: Connection timed out"</span>
+<span class="o">//</span> <span class="n">에러가</span> <span class="n">발생한다</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>아래의 아웃바운드 규칙을 설정해 줄 것!</p>
+
+<p><img src="https://github.com/Ting-Kim/Ting-kim.github.io/blob/main/images/4th_week-day2_6.png?raw=true" alt="https://github.com/Ting-Kim/Ting-kim.github.io/blob/main/images/4th_week-day2_6.png?raw=true" /></p>
+
+<p><br /></p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span> <span class="n">참고할</span> <span class="n">것</span>
+<span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">aws</span><span class="p">.</span><span class="n">amazon</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="n">ko</span><span class="o">/</span><span class="n">premiumsupport</span><span class="o">/</span><span class="n">knowledge</span><span class="o">-</span><span class="n">center</span><span class="o">/</span><span class="n">ec2</span><span class="o">-</span><span class="n">linux</span><span class="o">-</span><span class="n">resolve</span><span class="o">-</span><span class="n">ssh</span><span class="o">-</span><span class="n">connection</span><span class="o">-</span><span class="n">errors</span><span class="o">/</span>
+
+<span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="n">requirements</span><span class="p">.</span><span class="n">txt</span>
+<span class="o">//</span> <span class="n">입력</span> <span class="n">후</span> <span class="n">설치하는</span> <span class="n">과정에서</span> <span class="n">ec2</span> <span class="n">원격</span> <span class="n">연결이</span> <span class="n">끊겼다</span><span class="p">..</span> <span class="n">이후로</span> <span class="n">자꾸</span> <span class="n">타임아웃</span> <span class="n">되어버림</span><span class="p">..</span>
+<span class="o">//</span> <span class="n">cpu</span> <span class="n">부족으로</span> <span class="n">인해서</span> <span class="n">t2</span><span class="p">.</span><span class="n">micro</span> <span class="o">-&gt;</span> <span class="n">t2</span><span class="p">.</span><span class="n">large로</span> <span class="n">변경</span> <span class="n">후</span> <span class="n">설치했음</span><span class="p">.</span>
+<span class="o">//</span> <span class="n">그리고</span> <span class="n">다시</span> <span class="n">t2</span><span class="p">.</span><span class="n">micro로</span> <span class="n">변경했다</span><span class="p">..</span>
+</code></pre></div></div>
+
+<p><br /></p>
+
+<h2 id="serving_model---define-inference">Serving_Model - Define inference</h2>
+
+<p><strong>Skeleton of model handler to serve model</strong></p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">ModelHandler</span><span class="p">(</span><span class="n">BaseHandler</span><span class="p">):</span> <span class="c1"># BaseHandler로부터 상속받을 것을 상속 받고
+</span>	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="c1"># 초기화 진행
+</span>		<span class="k">pass</span>
+
+	<span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+		<span class="k">pass</span>
+
+	<span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span> <span class="c1"># 입력된 값에 대해 전처리
+</span>		<span class="k">pass</span>
+
+	<span class="k">def</span> <span class="nf">inference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span> <span class="c1"># 불러온 모델에 대해 추론
+</span>		<span class="k">pass</span>
+
+	<span class="k">def</span> <span class="nf">postprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span> <span class="c1"># 결과에 대해 후처리 보정해준다.
+</span>		<span class="k">pass</span>
+
+	<span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span> <span class="c1"># 실질적으로 API에서는 이 핸들러를 대부분 호출한다.
+</span>		<span class="k">pass</span>
+</code></pre></div></div>
+
+<p>handle() : 요청 정보를 받아 적절한 응답을 반환</p>
+
+<ul>
+  <li>정의된 양식으로데이터가 입력됐는지 확인</li>
+  <li>입력 값에 대한 전처리 및 모델에 입력하기 위한 형태로 변환</li>
+  <li>모델 추론</li>
+  <li>모델 반환값의 후처리 작업</li>
+  <li>결과 반환</li>
+</ul>
+
+<p><br /></p>
+
+<hr />
+
+<p>참고 링크</p>
+
+<ul>
+  <li>
+    <hr />
+  </li>
+</ul>
+
+<p>찾아봐야 할 개념</p>
+
+<ul>
+  <li>코드에 사용된 메서드들에 대한 내용</li>
+</ul>
+:ET

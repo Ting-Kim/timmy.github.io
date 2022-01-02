@@ -1,0 +1,29 @@
+I"<h1 id="spring-boot에서-firebase-realtime-db-접근">Spring boot에서 Firebase Realtime DB 접근</h1>
+
+<p><a href="https://firebase.google.com/docs/database/admin/start?hl=ko">https://firebase.google.com/docs/database/admin/start?hl=ko</a></p>
+
+<p>(Java)<code class="language-plaintext highlighter-rouge">Spring boot 서버</code>에서 접근할 수 있는 방법은 생각보다 간단했다.</p>
+
+<p>하지만 <code class="language-plaintext highlighter-rouge">Realtime Database</code> 특성 상 <code class="language-plaintext highlighter-rouge">비동기 리스너</code>를 통해서 데이터를 쓰고, 받아오는 것 같았다.</p>
+
+<p>결국에는 <code class="language-plaintext highlighter-rouge">RTDB</code>에 변경사항이 있는 경우 트리거가 요청됨.</p>
+
+<p>따라서, 기존에 채팅방 목록을 <code class="language-plaintext highlighter-rouge">API 서버</code>에서 <code class="language-plaintext highlighter-rouge">RTDB</code>를 통해 직접 가져오는 방식은 현재로서는 어려울 것 같다. (멘토님께 질문을 드려야 하나?)</p>
+
+<p><code class="language-plaintext highlighter-rouge">비동기 리스너</code>를 통해 채팅 메시지가 <code class="language-plaintext highlighter-rouge">RTDB</code>에 추가되었을 때, <code class="language-plaintext highlighter-rouge">FCM</code>과 엮어서 사용하는 형태로 할 수 있을 것 같다.</p>
+
+<ul>
+  <li>Firebase RTDB 데이터 구조를 변경해야 하는가?</li>
+  <li>자바 FirebaseDatabase 리스너를 여러개 작동시켜야 하는가?
+    <ul>
+      <li>채팅방이 열린 시점에서 해당 채팅방에 대한 리스너 동작 시작
+        <ul>
+          <li>이렇게 되면 리스너가 많아지는 경우 문제가 초래되지는 않는가?</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<p>기존에 알림 테이블은 <code class="language-plaintext highlighter-rouge">NoSQL</code> 형태의 <code class="language-plaintext highlighter-rouge">Redis</code>를 사용하는 형태로 변경해야 한다.</p>
+:ET

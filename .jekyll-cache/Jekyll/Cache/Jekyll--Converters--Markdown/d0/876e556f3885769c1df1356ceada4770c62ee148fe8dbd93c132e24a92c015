@@ -1,0 +1,114 @@
+I"� <h2 id="python---base64-모듈-사용법">python - base64 모듈 사용법</h2>
+
+<p><img src="https://github.com/Ting-Kim/Ting-kim.github.io/blob/main/images/20201229_3.PNG?raw=true" alt="https://github.com/Ting-Kim/Ting-kim.github.io/blob/main/images/20201229_3.PNG?raw=true" /></p>
+
+<ul>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">b = s.encode("UTF-8")</code></p>
+
+    <p>문자열 → 바이트 변환</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">e = base64.b64encode(b)</code></p>
+
+    <p>바이트 → base64 바이트 변환</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">s1 = e.decode("UTF-8")</code></p>
+
+    <p>base64 바이트 → base64 문자열 변환</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">b1 = s1.encode("UTF-8")</code></p>
+
+    <p>base64 문자열 → base64 바이트 변환</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">d = base64.b64decode(b1)</code></p>
+
+    <p>base64 바이트 → 바이트 변환</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">m = base64.b64decode(s)</code></p>
+
+    <p>바이트가 아닌 문자열을 base64 인코딩 실행하여 에러 발생</p>
+
+    <p><strong>에러 문구 :</strong> <strong>binascii.Error: Incorrect padding</strong></p>
+  </li>
+</ul>
+
+<p><br /></p>
+
+<h3 id="이미지를-base64를-이용하여-인코딩하기">이미지를 base64를 이용하여 인코딩하기</h3>
+
+<p><strong>syntax of the data URI scheme : <code class="language-plaintext highlighter-rouge">data:[&lt;media type&gt;][;charset=&lt;character set&gt;][;base64],&lt;data&gt;</code></strong></p>
+
+<p>사용 예 )</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;div&gt;</span>
+  <span class="nt">&lt;p&gt;</span>Taken from wikpedia<span class="nt">&lt;/p&gt;</span>
+  <span class="nt">&lt;img</span>
+    <span class="na">src=</span><span class="s">"data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAAAUA
+    AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO
+        9TXL0Y4OHwAAAABJRU5ErkJggg=="</span>
+    <span class="na">alt=</span><span class="s">"Red dot"</span>
+  <span class="nt">/&gt;</span>
+<span class="nt">&lt;/div&gt;</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># views.py #
+</span>
+<span class="c1"># Create your views here.
+</span><span class="k">def</span> <span class="nf">myeda</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="n">head</span> <span class="o">=</span> <span class="n">insurance_df</span><span class="p">.</span><span class="n">head</span><span class="p">(</span><span class="mi">5</span><span class="p">).</span><span class="n">to_html</span><span class="p">()</span>
+    <span class="n">tail</span> <span class="o">=</span> <span class="n">insurance_df</span><span class="p">.</span><span class="n">tail</span><span class="p">(</span><span class="mi">5</span><span class="p">).</span><span class="n">to_html</span>
+
+    <span class="n">sns</span><span class="p">.</span><span class="n">stripplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s">"region"</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s">"children"</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">insurance_df</span><span class="p">)</span>
+    <span class="n">my_stringIOBytes</span> <span class="o">=</span> <span class="n">BytesIO</span><span class="p">()</span>
+    <span class="n">plt</span><span class="p">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">my_stringIOBytes</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s">'png'</span><span class="p">)</span>
+    <span class="n">my_stringIOBytes</span><span class="p">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">my_base64_pngData</span> <span class="o">=</span> <span class="n">base64</span><span class="p">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">my_stringIOBytes</span><span class="p">.</span><span class="n">read</span><span class="p">()).</span><span class="n">decode</span><span class="p">(</span><span class="s">"UTF-8"</span><span class="p">)</span>
+
+    <span class="n">html</span> <span class="o">=</span> <span class="s">'&lt;h3&gt;header check&lt;/h3&gt;'</span>
+						<span class="o">+</span><span class="s">'&lt;img src=</span><span class="se">\"</span><span class="s">data:image/png;base64,{}</span><span class="se">\"</span><span class="s">&gt;'</span><span class="p">.</span><span class="nb">format</span><span class="p">(</span><span class="n">my_base64_pngData</span><span class="p">)</span>
+						<span class="o">+</span> <span class="s">'&lt;h3&gt;tail check&lt;/h3&gt;'</span>
+
+    <span class="n">context</span> <span class="o">=</span> <span class="p">{</span><span class="s">'head'</span><span class="p">:</span><span class="n">head</span><span class="p">,</span> <span class="s">'tail'</span><span class="p">:</span><span class="n">tail</span><span class="p">,</span> <span class="s">'graph1'</span><span class="p">:</span><span class="n">html</span><span class="p">,</span> <span class="s">'test'</span><span class="p">:</span><span class="s">'test'</span><span class="p">}</span>
+    <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s">'myeda.html'</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">&lt;!-- myeda.html --&gt;</span>
+
+<span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html</span> <span class="na">lang=</span><span class="s">"ko"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;meta</span> <span class="na">charset=</span><span class="s">"UTF-8"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;title&gt;</span>EDA project<span class="nt">&lt;/title&gt;</span>
+  <span class="nt">&lt;/head&gt;</span>
+  <span class="nt">&lt;body&gt;</span>
+    <span class="nt">&lt;p&gt;</span>Hello World<span class="nt">&lt;/p&gt;</span>
+     {% autoescape off %}
+    <span class="nt">&lt;p&gt;</span>head(5)<span class="nt">&lt;/p&gt;</span>
+    {{ head }}
+
+    <span class="nt">&lt;p&gt;</span>tail(5)<span class="nt">&lt;/p&gt;</span>
+    {{ tail }} {{ graph1 }} {% endautoescape %} 
+  <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div></div>
+
+<p><strong>결과 화면 <code class="language-plaintext highlighter-rouge">Complete!</code></strong></p>
+
+<p><img src="https://github.com/Ting-Kim/Ting-kim.github.io/blob/main/images/20201229_4.PNG?raw=true" alt="https://github.com/Ting-Kim/Ting-kim.github.io/blob/main/images/20201229_4.PNG?raw=true" /></p>
+
+<hr />
+
+<p>reference)</p>
+
+<ul>
+  <li>Base64 인코딩 및 디코딩 - <a href="https://riptutorial.com/ko/python/example/27070/base64-%EC%9D%B8%EC%BD%94%EB%94%A9-%EB%B0%8F-%EB%94%94%EC%BD%94%EB%94%A9">https://riptutorial.com/ko/python/example/27070/base64-인코딩-및-디코딩</a></li>
+  <li>matplotlib embed figures in auto generated html [duplicate] (StackOverFlow) - <a href="https://stackoverflow.com/questions/48717794/matplotlib-embed-figures-in-auto-generated-html+">https://stackoverflow.com/questions/48717794/matplotlib-embed-figures-in-auto-generated-html</a></li>
+  <li>How to display Base64 images in HTML? (StackOverFlow) - <a href="https://stackoverflow.com/questions/8499633/how-to-display-base64-images-in-html+">https://stackoverflow.com/questions/8499633/how-to-display-base64-images-in-html</a></li>
+  <li><strong>Matplotlib graphic image to base64 (StackOverFlow)</strong> - <a href="https://stackoverflow.com/questions/38061267/matplotlib-graphic-image-to-base64">https://stackoverflow.com/questions/38061267/matplotlib-graphic-image-to-base64</a></li>
+</ul>
+:ET

@@ -1,0 +1,142 @@
+I"�Q<h1 id="코테프로그래머스---기둥과-보-설치">[코테]프로그래머스 - 기둥과 보 설치</h1>
+
+<h3 id="프로그래머스-lv3_기둥과-보-설치-2020-kakao-blind-recuitement-기출">프로그래머스 lv3_기둥과 보 설치 [2020 KAKAO BLIND RECUITEMENT 기출]</h3>
+
+<p>생각보다 하드 코딩하는 부분이 많았다.</p>
+
+<p>완전 하드하게 짰을 때 고치는 과정에서 애먹어서 함수형태로 조금 리팩토링하였고,</p>
+
+<p>그래도 테스트 케이스 반 정도가 오답이어서 질문하기를 참고했다.</p>
+
+<p>가장 많이 도움 된 답변( <a href="https://programmers.co.kr/questions/15598">https://programmers.co.kr/questions/15598</a> )을 보고 알 수 있었다.</p>
+
+<p>내가 <code class="language-plaintext highlighter-rouge">is_available_remove_row(y, x)</code> 에서 row에 의존하는 기둥과 보의 존재를 조건을 주지않고 무조건 설치가 가능한지 체크를 했기 때문에 에러가 난 것.</p>
+
+<p>해당 row를 지웠을 때 연관된 좌표들을 모두 설치가 가능하냐는 조건을 돌렸기에, 실제 <code class="language-plaintext highlighter-rouge">map_</code> 에는 연관이 없는 지점이어도 설치가 가능한지 체크해버리기 때문에 <code class="language-plaintext highlighter-rouge">False</code>로 빠져나가는 경우가 꽤 있었던 것으로 보인다.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># 해답 확인..
+</span>
+<span class="c1"># build_frame = [[x,y,a(기둥 보 여부),b(설치는 1, 삭제는 0)]... ]
+</span><span class="k">def</span> <span class="nf">solution</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">build_frame</span><span class="p">):</span>
+    <span class="n">answer</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1"># 기둥은 1, 보는 2, 둘 다 설치 시 3으로 표현
+</span>    <span class="n">map_</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span> <span class="k">for</span> <span class="n">__</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">4</span><span class="p">)]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">4</span><span class="p">)]</span>
+
+    <span class="c1"># 기둥 설치 가능한지
+</span>    <span class="k">def</span> <span class="nf">is_available_install_column</span><span class="p">(</span><span class="n">ny</span><span class="p">,</span><span class="n">nx</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ny</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">or</span> <span class="n">map_</span><span class="p">[</span><span class="n">ny</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">nx</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span> <span class="ow">or</span> <span class="n">map_</span><span class="p">[</span><span class="n">ny</span><span class="p">][</span><span class="n">nx</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span> <span class="ow">or</span> <span class="n">map_</span><span class="p">[</span><span class="n">ny</span><span class="p">][</span><span class="n">nx</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">is_available_install_row</span><span class="p">(</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">):</span>
+        <span class="c1"># 설치하고자 하는 좌표 밑에 기둥이 있을 때
+</span>        <span class="k">if</span> <span class="n">map_</span><span class="p">[</span><span class="n">ny</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">nx</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">True</span>
+        <span class="c1"># 설치하고자 하는 좌표 오른쪽 밑에 기둥이 있을 때
+</span>        <span class="k">elif</span> <span class="n">map_</span><span class="p">[</span><span class="n">ny</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">nx</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">True</span>
+        <span class="c1"># 양 옆에 보가 있을 때
+</span>        <span class="k">elif</span> <span class="n">map_</span><span class="p">[</span><span class="n">ny</span><span class="p">][</span><span class="n">nx</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span> <span class="ow">and</span> <span class="n">map_</span><span class="p">[</span><span class="n">ny</span><span class="p">][</span><span class="n">nx</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">False</span>
+
+    <span class="k">def</span> <span class="nf">is_available_remove_column</span><span class="p">(</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">):</span>
+        <span class="c1"># 기둥 윗부분(y+1, x)에 기둥이 있다면 그 부분에 대한 설치 조건을 체크한다.
+</span>        <span class="k">if</span> <span class="n">map_</span><span class="p">[</span><span class="n">ny</span><span class="o">+</span><span class="mi">1</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">is_available_install_column</span><span class="p">(</span><span class="n">ny</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">nx</span><span class="p">):</span>
+                <span class="k">return</span> <span class="bp">False</span>
+
+        <span class="c1"># 기둥 윗부분(y+1, x)에 보가 설치 되어 있다면 ..
+</span>        <span class="k">if</span> <span class="n">map_</span><span class="p">[</span><span class="n">ny</span><span class="o">+</span><span class="mi">1</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">is_available_install_row</span><span class="p">(</span><span class="n">ny</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+                <span class="k">return</span> <span class="bp">False</span>
+
+        <span class="c1"># 기둥 윗부분(y+1, x)에 보가 걸쳐 있다면((y+1, x-1)에 설치)
+</span>        <span class="k">if</span> <span class="n">map_</span><span class="p">[</span><span class="n">ny</span><span class="o">+</span><span class="mi">1</span><span class="p">][</span><span class="n">x</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">is_available_install_row</span><span class="p">(</span><span class="n">ny</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">x</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+                <span class="k">return</span> <span class="bp">False</span>
+
+        <span class="k">return</span> <span class="bp">True</span>
+
+    <span class="k">def</span> <span class="nf">is_available_remove_row</span><span class="p">(</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">):</span>
+        <span class="c1"># 보의 시작점(y, x)과 오른쪽에 (y, x+1) 대한 설치 조건 체크
+</span>        <span class="c1"># 시작점에 대해서는 기둥은 체크 안해도 될 듯
+</span>
+        <span class="c1"># 보를 지운 위치의 기둥 확인
+</span>        <span class="k">if</span> <span class="n">map_</span><span class="p">[</span><span class="n">ny</span><span class="p">][</span><span class="n">nx</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">is_available_install_column</span><span class="p">(</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">):</span>
+                <span class="k">return</span> <span class="bp">False</span>
+        <span class="c1"># 보를 지운 위치의 오른쪽 기둥 확인
+</span>        <span class="k">if</span> <span class="n">map_</span><span class="p">[</span><span class="n">ny</span><span class="p">][</span><span class="n">nx</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">is_available_install_column</span><span class="p">(</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+                <span class="k">return</span> <span class="bp">False</span>
+        <span class="c1"># 보를 지운 위치의 왼쪽 보 확인
+</span>        <span class="k">if</span> <span class="n">map_</span><span class="p">[</span><span class="n">ny</span><span class="p">][</span><span class="n">nx</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">is_available_install_row</span><span class="p">(</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+                <span class="k">return</span> <span class="bp">False</span>
+        <span class="c1"># 보를 지운 위치의 오른쪽 보 확인
+</span>        <span class="k">if</span> <span class="n">map_</span><span class="p">[</span><span class="n">ny</span><span class="p">][</span><span class="n">nx</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">is_available_install_row</span><span class="p">(</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+                <span class="k">return</span> <span class="bp">False</span>
+
+        <span class="k">return</span> <span class="bp">True</span>
+
+    <span class="c1"># 기둥은 0, 보는 1로 나타냄
+</span>    <span class="k">for</span> <span class="n">condition</span> <span class="ow">in</span> <span class="n">build_frame</span><span class="p">:</span>
+        <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span> <span class="o">=</span> <span class="n">condition</span>
+        <span class="n">y</span> <span class="o">+=</span> <span class="mi">2</span>
+        <span class="n">x</span> <span class="o">+=</span> <span class="mi">2</span>
+
+        <span class="s">''' 아웃 오브 인덱스 에러 처리는 이후에 생각하자 '''</span>
+
+        <span class="c1"># 설치의 경우
+</span>        <span class="k">if</span> <span class="n">b</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="c1"># 기둥 설치 시 설치하고자 하는 좌표 (y, x) 기준으로,
+</span>            <span class="k">if</span> <span class="n">a</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="c1"># (y-1, x)에 기둥이 설치되어 있거나, (y, x-1) or (y, x)에 보가 설치되어 있어야 한다.
+</span>                <span class="c1"># (아니면 땅이거나 (y == 0))
+</span>                <span class="k">if</span> <span class="n">is_available_install_column</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">x</span><span class="p">):</span>
+                    <span class="n">map_</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="n">answer</span><span class="p">.</span><span class="n">append</span><span class="p">([</span><span class="n">x</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="n">y</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="n">a</span><span class="p">])</span>
+
+            <span class="c1"># 보 설치 시 설치하고자 하는 좌표 (y, x) 기준으로,
+</span>            <span class="k">elif</span> <span class="n">a</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="c1"># (y-1, x) or (y-1, x+1)에 기둥이 설치되어 있거나, (y, x-1) and (y, x+1)에 보가 설치되어 있어야 한다.
+</span>                <span class="k">if</span> <span class="n">is_available_install_row</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">x</span><span class="p">):</span>
+                    <span class="n">map_</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">2</span>
+                    <span class="n">answer</span><span class="p">.</span><span class="n">append</span><span class="p">([</span><span class="n">x</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="n">y</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="n">a</span><span class="p">])</span>
+
+        <span class="c1"># 삭제의 경우
+</span>        <span class="k">if</span> <span class="n">b</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">[</span><span class="n">x</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="n">y</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="n">a</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">answer</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># 기둥 삭제 시 (y, x)
+</span>            <span class="k">if</span> <span class="n">a</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="c1"># 우선 삭제해본다.
+</span>                <span class="n">map_</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">1</span>
+
+                <span class="c1"># 기둥 윗부분(y+1, x)에 기둥이 있다면 그 부분에 대한 설치 조건을 체크한다.
+</span>                <span class="k">if</span> <span class="n">is_available_remove_column</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">x</span><span class="p">):</span>
+                    <span class="n">answer</span><span class="p">.</span><span class="n">remove</span><span class="p">([</span><span class="n">x</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="n">y</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="n">a</span><span class="p">])</span>
+
+                <span class="c1"># 만약 설치 조건에 어긋난다면, 삭제를 시행하지 않음 #
+</span>                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">map_</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="c1"># 보 삭제 시 (y, x)
+</span>            <span class="k">if</span> <span class="n">a</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">map_</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">2</span>
+
+                <span class="c1"># 보의 시작점(y, x)과 오른쪽에 (y, x+1) 대한 설치 조건 체크
+</span>                <span class="c1"># 시작점에 대해서는 기둥은 체크 안해도 될 듯
+</span>                <span class="k">if</span> <span class="n">is_available_remove_row</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">x</span><span class="p">):</span>
+                    <span class="n">answer</span><span class="p">.</span><span class="n">remove</span><span class="p">([</span><span class="n">x</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="n">y</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="n">a</span><span class="p">])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># 설치 조건에 어긋나면, 삭제 시행하지 않음
+</span>                    <span class="n">map_</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">2</span>
+
+    <span class="n">answer</span><span class="p">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">k</span><span class="p">:(</span><span class="n">k</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">k</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">k</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+
+    <span class="k">return</span> <span class="n">answer</span>
+</code></pre></div></div>
+:ET

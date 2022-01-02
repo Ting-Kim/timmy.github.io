@@ -59,6 +59,15 @@ sidebar:
     {%- assign result = hidden | where_exp: "item", "item == 'comments'" -%}
     {%- if result.size == 0 -%}
     <div class="post-comments">
+      <hr />
+
+      <script src="https://utteranc.es/client.js"
+        repo="ting-kim/ting-kim.github.io"
+        issue-term="url"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+      </script>
       {%- if page.comments != false -%}
 
       {%- if site.disqus.shortname -%}

@@ -1,0 +1,119 @@
+I";<h1 id="spring-boot-fcm-initializer-실행-안됨">[Spring boot] FCM Initializer 실행 안됨</h1>
+
+<p>팀원들이랑 이제 구글 플레이스토어와 애플 앱스토어에 앱을 배포하는 일만 남았는데, 갑자기 FCM 메시지가 작동하지 않았다.</p>
+
+<p>에러 문구: <code class="language-plaintext highlighter-rouge">FirebaseApp with name [DEFAULT] doesn't exist</code></p>
+
+<p>원인을 찾다가 삽질을 굉장히 오래했는데, 서버 로그를 뒤져보니 <code class="language-plaintext highlighter-rouge">FCMInitializer</code>가 아예 실행되지 않는 것 같았다.</p>
+
+<p>기존에 <code class="language-plaintext highlighter-rouge">FCMInitializer</code>에서 필요한 환경변수를 <code class="language-plaintext highlighter-rouge">PropertyUtil</code> 클래스를 통해서 받아왔는데, 확인해보니 환경변수를 읽어오지를 못했다.</p>
+
+<p>스프링 빈 라이프 사이클에 대해서 생각해보니 많이 모르고 있었고, 이와 관련된다고 생각하여 여기저기 찾아봤다.</p>
+
+<p>결국 스프링 내부에서는 스프링 컨테이너가 생성되고 스프링 빈들이 생성되는데, 여기서 <strong>빈 생성 → 빈 초기화(@PostConstruct 등) → 사용 → 빈 소멸 전 콜백(@PreDestroy 등)</strong> 으로 이루어진다.</p>
+
+<p><code class="language-plaintext highlighter-rouge">application context</code>는 모든 빈들이(<code class="language-plaintext highlighter-rouge">BeanFactory</code>는 Lazy, <code class="language-plaintext highlighter-rouge">ApplicartionContext</code>는 Eager) 초기화 되어야(?) 로딩된다. <code class="language-plaintext highlighter-rouge">PropertyUtil</code>은 <code class="language-plaintext highlighter-rouge">applicaiton context</code> 에서 환경변수를 가져오는데, <code class="language-plaintext highlighter-rouge">FCMInitializer</code>(Bean)가 생성될 때 <code class="language-plaintext highlighter-rouge">application context</code>는 로딩이 완료되지 않았기 때문에 환경변수를 못 읽어오는 것 같았다.</p>
+
+<p>그래서 클래스 변수의 <code class="language-plaintext highlighter-rouge">final</code>을 제거하고, <code class="language-plaintext highlighter-rouge">@Value</code> 어노테이션을 통해서 가져오는 형태로 변경해서 해결했다.</p>
+
+<p>(<code class="language-plaintext highlighter-rouge">@Value</code>는 <code class="language-plaintext highlighter-rouge">@PostConstruct</code> 전에 불러올 수 있다고 함)</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//PropertyUtil.java</span>
+<span class="nd">@Slf4j</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">PropertyUtil</span> <span class="o">{</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="nc">String</span> <span class="no">SUBJECT_OF_JWT</span> <span class="o">=</span> <span class="s">"For Member-Checking"</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="nc">String</span> <span class="no">KEY_OF_USERID_IN_JWT_PAYLOADS</span> <span class="o">=</span> <span class="s">"userId"</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="nc">Integer</span> <span class="no">PAGEABLE_SIZE</span> <span class="o">=</span> <span class="mi">20</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="nc">Integer</span> <span class="no">POST_PAGEABLE_SIZE</span> <span class="o">=</span> <span class="mi">3</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="nc">String</span> <span class="no">BASIC_IMAGE_URL</span> <span class="o">=</span> <span class="s">"https://goodsduck-s3.s3.ap-northeast-2.amazonaws.com/sample_goodsduck.png"</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="nc">String</span> <span class="nf">getProperty</span><span class="o">(</span><span class="nc">String</span> <span class="n">propertyName</span><span class="o">)</span> <span class="o">{</span>
+
+        <span class="kt">var</span> <span class="n">applicationContext</span> <span class="o">=</span> <span class="nc">ApplicationContextServe</span><span class="o">.</span><span class="na">getApplicationContext</span><span class="o">();</span>
+
+        <span class="k">if</span> <span class="o">(</span><span class="n">applicationContext</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">applicationContext</span><span class="o">.</span><span class="na">getEnvironment</span><span class="o">().</span><span class="na">getProperty</span><span class="o">(</span><span class="n">propertyName</span><span class="o">)</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">applicationContext</span><span class="o">.</span><span class="na">getEnvironment</span><span class="o">().</span><span class="na">getProperty</span><span class="o">(</span><span class="n">propertyName</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">applicationContext</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">log</span><span class="o">.</span><span class="na">debug</span><span class="o">(</span><span class="s">"applicationContext was not loaded!"</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">applicationContext</span><span class="o">.</span><span class="na">getEnvironment</span><span class="o">().</span><span class="na">getProperty</span><span class="o">(</span><span class="n">propertyName</span><span class="o">)</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">log</span><span class="o">.</span><span class="na">debug</span><span class="o">(</span><span class="n">propertyName</span> <span class="o">+</span> <span class="s">" properties was not loaded!"</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="s">"No Value"</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 수정 전</span>
+<span class="nd">@Service</span>
+<span class="nd">@Slf4j</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">FCMInitializer</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="kd">final</span> <span class="nc">String</span> <span class="no">FIREBASE_CONFIG_PATH</span> <span class="o">=</span> <span class="nc">PropertyUtil</span><span class="o">.</span><span class="na">getProperty</span><span class="o">(</span><span class="s">"firebase.config-path"</span><span class="o">);</span>
+    <span class="kd">private</span> <span class="kd">final</span> <span class="nc">String</span> <span class="no">FIREBASE_DATABASE_URL</span> <span class="o">=</span> <span class="nc">PropertyUtil</span><span class="o">.</span><span class="na">getProperty</span><span class="o">(</span><span class="s">"firebase.database-url"</span><span class="o">);</span>
+    <span class="nd">@PostConstruct</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">initialize</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">log</span><span class="o">.</span><span class="na">debug</span><span class="o">(</span><span class="s">"FCMInitializer processed!"</span><span class="o">);</span>
+            <span class="nc">FirebaseOptions</span> <span class="n">options</span> <span class="o">=</span> <span class="nc">FirebaseOptions</span><span class="o">.</span><span class="na">builder</span><span class="o">()</span>
+                    <span class="o">.</span><span class="na">setCredentials</span><span class="o">(</span><span class="nc">GoogleCredentials</span><span class="o">.</span><span class="na">fromStream</span><span class="o">(</span>
+                            <span class="k">new</span> <span class="nf">ClassPathResource</span><span class="o">(</span><span class="no">FIREBASE_CONFIG_PATH</span><span class="o">).</span><span class="na">getInputStream</span><span class="o">()</span>
+                    <span class="o">))</span>
+                    <span class="o">.</span><span class="na">setDatabaseUrl</span><span class="o">(</span><span class="no">FIREBASE_DATABASE_URL</span><span class="o">)</span>
+                    <span class="o">.</span><span class="na">build</span><span class="o">();</span>
+
+            <span class="k">if</span> <span class="o">(</span><span class="nc">FirebaseApp</span><span class="o">.</span><span class="na">getApps</span><span class="o">().</span><span class="na">isEmpty</span><span class="o">())</span> <span class="o">{</span>
+                <span class="n">log</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"Firebase application is empty.."</span><span class="o">);</span>
+                <span class="nc">FirebaseApp</span><span class="o">.</span><span class="na">initializeApp</span><span class="o">(</span><span class="n">options</span><span class="o">);</span>
+                <span class="n">log</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"Firebase application has been initialized"</span><span class="o">);</span>
+            <span class="o">}</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">log</span><span class="o">.</span><span class="na">error</span><span class="o">(</span><span class="n">e</span><span class="o">.</span><span class="na">getMessage</span><span class="o">());</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 수정 후</span>
+<span class="nd">@Service</span>
+<span class="nd">@Slf4j</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">FCMInitializer</span> <span class="o">{</span>
+
+    <span class="nd">@Value</span><span class="o">(</span><span class="s">"${firebase.config-path}"</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="no">FIREBASE_CONFIG_PATH</span><span class="o">;</span>
+
+    <span class="nd">@Value</span><span class="o">(</span><span class="s">"${firebase.database-url}"</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="no">FIREBASE_DATABASE_URL</span><span class="o">;</span>
+
+    <span class="nd">@PostConstruct</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">initialize</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">log</span><span class="o">.</span><span class="na">debug</span><span class="o">(</span><span class="s">"FCMInitializer processed!"</span><span class="o">);</span>
+            <span class="n">log</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"FCM path: "</span> <span class="o">+</span> <span class="no">FIREBASE_CONFIG_PATH</span><span class="o">);</span>
+            <span class="nc">FirebaseOptions</span> <span class="n">options</span> <span class="o">=</span> <span class="nc">FirebaseOptions</span><span class="o">.</span><span class="na">builder</span><span class="o">()</span>
+                    <span class="o">.</span><span class="na">setCredentials</span><span class="o">(</span><span class="nc">GoogleCredentials</span><span class="o">.</span><span class="na">fromStream</span><span class="o">(</span>
+                            <span class="k">new</span> <span class="nf">ClassPathResource</span><span class="o">(</span><span class="no">FIREBASE_CONFIG_PATH</span><span class="o">).</span><span class="na">getInputStream</span><span class="o">()</span>
+                    <span class="o">))</span>
+                    <span class="o">.</span><span class="na">setDatabaseUrl</span><span class="o">(</span><span class="no">FIREBASE_DATABASE_URL</span><span class="o">)</span>
+                    <span class="o">.</span><span class="na">build</span><span class="o">();</span>
+
+            <span class="k">if</span> <span class="o">(</span><span class="nc">FirebaseApp</span><span class="o">.</span><span class="na">getApps</span><span class="o">().</span><span class="na">isEmpty</span><span class="o">())</span> <span class="o">{</span>
+                <span class="n">log</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"Firebase application is empty.."</span><span class="o">);</span>
+                <span class="nc">FirebaseApp</span><span class="o">.</span><span class="na">initializeApp</span><span class="o">(</span><span class="n">options</span><span class="o">);</span>
+                <span class="n">log</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"Firebase application has been initialized"</span><span class="o">);</span>
+            <span class="o">}</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">log</span><span class="o">.</span><span class="na">error</span><span class="o">(</span><span class="n">e</span><span class="o">.</span><span class="na">getMessage</span><span class="o">());</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<hr />
+
+<p>참고 링크</p>
+
+<ul>
+  <li><a href="https://yonguri.tistory.com/100">https://yonguri.tistory.com/100</a></li>
+  <li><a href="https://kth990303.tistory.com/26">https://kth990303.tistory.com/26</a></li>
+</ul>
+:ET

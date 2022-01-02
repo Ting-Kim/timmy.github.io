@@ -1,0 +1,68 @@
+I"�$<h1 id="코테프로그래머스---자물쇠와-열쇠">[코테]프로그래머스 - 자물쇠와 열쇠</h1>
+
+<p>프로그래머스 Lv.3 - 자물쇠와 열쇠</p>
+
+<p>( 2020 KAKAO BLIND RECRUITMENT )</p>
+
+<p><a href="https://programmers.co.kr/learn/courses/30/lessons/60059">https://programmers.co.kr/learn/courses/30/lessons/60059</a></p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">copy</span>
+
+<span class="k">def</span> <span class="nf">solution</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">lock</span><span class="p">):</span>
+    <span class="n">answer</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">lock</span><span class="p">)</span>
+    <span class="n">map_</span> <span class="o">=</span> <span class="n">fill_by_zero</span><span class="p">(</span><span class="n">lock</span><span class="p">,</span> <span class="n">m</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">m</span><span class="o">-</span><span class="mi">1</span> <span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">m</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+    <span class="n">solution_lock</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">1</span> <span class="k">for</span> <span class="n">__</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span>
+
+    <span class="c1"># 회전 메서드
+</span>    <span class="k">def</span> <span class="nf">rotate</span><span class="p">(</span><span class="n">arr</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">arr</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+
+    <span class="k">def</span> <span class="nf">is_correct</span><span class="p">(</span><span class="n">lock_</span><span class="p">):</span>
+        <span class="n">column_lock</span> <span class="o">=</span> <span class="n">lock_</span><span class="p">[</span><span class="n">m</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="n">m</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">col_row_lock</span> <span class="o">=</span> <span class="p">[</span><span class="n">z</span><span class="p">[</span><span class="n">m</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="n">m</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="n">column_lock</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">col_row_lock</span> <span class="o">==</span> <span class="n">solution_lock</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">True</span>
+
+        <span class="k">return</span> <span class="bp">False</span>
+
+    <span class="c1"># key가 map_위에서 움직일 수 있는 시작점에 대한 반복 (i,j)
+</span>    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="n">rotate</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">m</span><span class="o">+</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">m</span><span class="o">+</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+                <span class="n">copy_map</span> <span class="o">=</span> <span class="n">copy</span><span class="p">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">map_</span><span class="p">)</span>
+                <span class="c1"># (i,j) 에서 부터 key를 map_에 더하기
+</span>                <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+                    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+                        <span class="n">copy_map</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="n">y</span><span class="p">][</span><span class="n">j</span><span class="o">+</span><span class="n">x</span><span class="p">]</span> <span class="o">+=</span> <span class="n">key</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span>
+
+                <span class="c1"># 가운데 lock 부분 1로 체워졌는지 체크
+</span>                <span class="k">if</span> <span class="n">is_correct</span><span class="p">(</span><span class="n">copy_map</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="bp">True</span>
+
+    <span class="k">return</span> <span class="n">answer</span>
+
+<span class="c1"># 0으로 남는 영역 채우기 (size만큼 늘려야함)
+</span><span class="k">def</span> <span class="nf">fill_by_zero</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+    <span class="n">length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+
+    <span class="n">zero_row_array</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">length</span> <span class="o">+</span> <span class="n">size</span><span class="p">)]]</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">length</span><span class="p">):</span>
+        <span class="c1"># 왼쪽에 붙여야 하는 길이 : x
+</span>        <span class="c1"># 오른쪽에 붙여야 하는 길이 : size-x
+</span>        <span class="n">arr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span> <span class="o">+</span> <span class="n">arr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="mi">0</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">size</span><span class="o">-</span><span class="n">x</span><span class="p">)]</span>
+
+    <span class="c1"># 위에 붙여야 하는 길이 : y
+</span>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">y</span><span class="p">):</span>
+        <span class="n">arr</span> <span class="o">=</span> <span class="n">zero_row_array</span> <span class="o">+</span> <span class="n">arr</span>
+
+    <span class="c1"># 아래에 붙여야 하는 길이 : size-y
+</span>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">size</span><span class="o">-</span><span class="n">y</span><span class="p">):</span>
+        <span class="n">arr</span> <span class="o">+=</span> <span class="n">zero_row_array</span>
+
+    <span class="k">return</span> <span class="n">arr</span>
+</code></pre></div></div>
+:ET

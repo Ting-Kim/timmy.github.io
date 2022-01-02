@@ -1,0 +1,29 @@
+I"T<h1 id="redis-다중-서버-구성-feat-sentinel">redis 다중 서버 구성 (feat. sentinel)</h1>
+
+<p>참고</p>
+
+<ul>
+  <li><a href="https://coding-start.tistory.com/126">https://coding-start.tistory.com/126</a></li>
+  <li><a href="https://coding-start.tistory.com/127?category=791662">https://coding-start.tistory.com/127?category=791662</a></li>
+</ul>
+
+<p>얘네도 다 해봐야함.</p>
+
+<ul>
+  <li>Redis - Cluster &amp; Sentinel 차이점 및 Redis에 대해
+    <ul>
+      <li><a href="https://coding-start.tistory.com/128?category=791662">https://coding-start.tistory.com/128?category=791662</a></li>
+    </ul>
+  </li>
+  <li>Spring boot, Redis - Spring boot Redis Nodes Cluster ! (레디스 클러스터)
+    <ul>
+      <li><a href="https://coding-start.tistory.com/129?category=791662">https://coding-start.tistory.com/129?category=791662</a></li>
+    </ul>
+  </li>
+  <li>Spring boot, Redis - Redis Repository 간단한 사용법!
+    <ul>
+      <li><a href="https://coding-start.tistory.com/130?category=791662">https://coding-start.tistory.com/130?category=791662</a></li>
+    </ul>
+  </li>
+</ul>
+:ET

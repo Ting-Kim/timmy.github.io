@@ -1,0 +1,142 @@
+I"B,
+<h1 id="redis-server-설치">redis-server 설치</h1>
+
+<p>Ubuntu 18.0.4 (AWS EC2) 기준</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">### wget 대신 다운로드 페이지에서 최신 버젼을 직접 받아도 된다 </span>
+<span class="nv">$ </span>wget http://download.redis.io/redis-stable.tar.gz 
+<span class="nv">$ </span><span class="nb">tar </span>xvzf redis-stable.tar.gz 
+<span class="nv">$ </span><span class="nb">cd </span>redis-stable
+<span class="nv">$ </span>make
+
+<span class="c">#출처:</span>
+<span class="c">#[https://dgkim5360.tistory.com/entry/install-redis-for-linux-or-windows](https://dgkim5360.tistory.com/entry/install-redis-for-linux-or-windows)</span>
+<span class="c">#[개발새발로그]</span>
+</code></pre></div></div>
+
+<p>에러 발생, pkg-config가 없다고 함.</p>
+
+<p>그래서,</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>apt-get update
+<span class="nv">$ </span><span class="nb">sudo </span>apt <span class="nb">install </span>pkg-config
+</code></pre></div></div>
+
+<p>하니까</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd </span>src <span class="o">&amp;&amp;</span> make all
+make[1]: Entering directory <span class="sb">`</span>/opt/redis-5.0.7/src<span class="s1">'
+    CC Makefile.dep
+make[1]: Leaving directory `/opt/redis-5.0.7/src'</span>
+make[1]: Entering directory <span class="sb">`</span>/opt/redis-5.0.7/src<span class="s1">'
+    CC adlist.o
+In file included from adlist.c:34:0:
+zmalloc.h:50:10: fatal error: jemalloc/jemalloc.h: No such file or directory
+ #include &lt;jemalloc/jemalloc.h&gt;
+          ^~~~~~~~~~~~~~~~~~~~~^
+</span></code></pre></div></div>
+
+<p>이런 에러를 뱉었다.. 찾아보니까 이 방법이 잘 맞았다!</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>root@redis-5.0.7]# make clean
+<span class="o">[</span>root@redis-5.0.7]# <span class="nb">cd </span>deps
+<span class="o">[</span>root@deps]# make hiredis jemalloc linenoise lua
+<span class="o">[</span>root@deps]# <span class="nb">cd</span> ..
+<span class="o">[</span>root@redis-5.0.7]# make
+
+<span class="c"># 출처: https://mozi.tistory.com/536</span>
+</code></pre></div></div>
+
+<p>하지만 다시 이런 에러가..</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cc: error: ../deps/hdr_histogram/hdr_histogram.o: No such file or directory
+Makefile:359: recipe <span class="k">for </span>target <span class="s1">'redis-benchmark'</span> failed
+make[1]: <span class="k">***</span> <span class="o">[</span>redis-benchmark] Error 1
+make[1]: Leaving directory <span class="s1">'/home/ubuntu/redis-stable/src'</span>
+Makefile:6: recipe <span class="k">for </span>target <span class="s1">'all'</span> failed
+make: <span class="k">***</span> <span class="o">[</span>all] Error 2
+</code></pre></div></div>
+
+<p>근데 그냥 <code class="language-plaintext highlighter-rouge">make distclean</code> 하면 된다고 해서 해봤더니 잘 됐다.. (출처: <a href="https://the7sign.github.io/server/2019/06/20/redis_install_errorfix.html">여기</a>)</p>
+
+<p>make는 잘 넘어갔는데.. make test 했더니 이런 에러가 또..</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd </span>src <span class="o">&amp;&amp;</span> make <span class="nb">test
+</span>make[1]: Entering directory <span class="s1">'/home/ubuntu/redis-stable/src'</span>
+    CC Makefile.dep
+You need tcl 8.5 or newer <span class="k">in </span>order to run the Redis <span class="nb">test
+</span>Makefile:385: recipe <span class="k">for </span>target <span class="s1">'test'</span> failed
+make[1]: <span class="k">***</span> <span class="o">[</span><span class="nb">test</span><span class="o">]</span> Error 1
+make[1]: Leaving directory <span class="s1">'/home/ubuntu/redis-stable/src'</span>
+Makefile:6: recipe <span class="k">for </span>target <span class="s1">'test'</span> failed
+make: <span class="k">***</span> <span class="o">[</span><span class="nb">test</span><span class="o">]</span> Error 2
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">sudo apt-get install tcl</code> 한 후에 잘 작동하는 것 같더니.. 끝에</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>I/O error reading reply
+    <span class="k">while </span>executing
+<span class="s2">"{*}</span><span class="nv">$r</span><span class="s2"> rpop </span><span class="nv">$k</span><span class="s2">"</span>
+    <span class="o">(</span><span class="s2">"uplevel"</span> body line 1<span class="o">)</span>
+    invoked from within
+<span class="s2">"uplevel 1 [lindex </span><span class="nv">$args</span><span class="s2"> </span><span class="nv">$path</span><span class="s2">]"</span>
+    <span class="o">(</span>procedure <span class="s2">"randpath"</span> line 3<span class="o">)</span>
+    invoked from within
+<span class="s2">"randpath {{*}</span><span class="nv">$r</span><span class="s2"> lpush </span><span class="nv">$k</span><span class="s2"> </span><span class="nv">$v</span><span class="s2">}  {{*}</span><span class="nv">$r</span><span class="s2"> rpush </span><span class="nv">$k</span><span class="s2"> </span><span class="nv">$v</span><span class="s2">}  {{*}</span><span class="nv">$r</span><span class="s2"> lrem </span><span class="nv">$k</span><span class="s2"> 0 </span><span class="nv">$v</span><span class="s2">}  {{*}</span><span class="nv">$r</span><span class="s2"> rpop </span><span class="nv">$k</span><span class="s2">}  {{*}</span><span class="nv">$r</span><span class="s2"> lpop </span><span class="nv">$k</span><span class="s2">}"</span>
+    <span class="o">(</span>procedure <span class="s2">"createComplexDataset"</span> line 51<span class="o">)</span>
+    invoked from within
+<span class="s2">"createComplexDataset </span><span class="nv">$r</span><span class="s2"> </span><span class="nv">$ops</span><span class="s2">"</span>
+    <span class="o">(</span>procedure <span class="s2">"bg_complex_data"</span> line 5<span class="o">)</span>
+    invoked from within
+<span class="s2">"bg_complex_data [lindex </span><span class="nv">$argv</span><span class="s2"> 0] [lindex </span><span class="nv">$argv</span><span class="s2"> 1] [lindex </span><span class="nv">$argv</span><span class="s2"> 2] [lindex </span><span class="nv">$argv</span><span class="s2"> 3] [lindex </span><span class="nv">$argv</span><span class="s2"> 4]"</span>
+    <span class="o">(</span>file <span class="s2">"tests/helpers/bg_complex_data.tcl"</span> line 13<span class="o">)</span>
+I/O error reading reply
+    <span class="k">while </span>executing
+<span class="s2">"{*}</span><span class="nv">$r</span><span class="s2"> lpush </span><span class="nv">$k</span><span class="s2"> </span><span class="nv">$v</span><span class="s2">"</span>
+    <span class="o">(</span><span class="s2">"uplevel"</span> body line 2<span class="o">)</span>
+    invoked from within
+<span class="s2">"uplevel 1 [lindex </span><span class="nv">$args</span><span class="s2"> </span><span class="nv">$path</span><span class="s2">]"</span>
+    <span class="o">(</span>procedure <span class="s2">"randpath"</span> line 3<span class="o">)</span>
+    invoked from within
+<span class="s2">"randpath {
+                {*}</span><span class="nv">$r</span><span class="s2"> set </span><span class="nv">$k</span><span class="s2"> </span><span class="nv">$v</span><span class="s2">
+            } {
+                {*}</span><span class="nv">$r</span><span class="s2"> lpush </span><span class="nv">$k</span><span class="s2"> </span><span class="nv">$v</span><span class="s2">
+            } {
+                {*}</span><span class="nv">$r</span><span class="s2"> sadd </span><span class="nv">$k</span><span class="s2"> </span><span class="nv">$v</span><span class="s2">
+        ..."</span>
+    <span class="o">(</span>procedure <span class="s2">"createComplexDataset"</span> line 30<span class="o">)</span>
+    invoked from within
+<span class="s2">"createComplexDataset </span><span class="nv">$r</span><span class="s2"> </span><span class="nv">$ops</span><span class="s2">"</span>
+    <span class="o">(</span>procedure <span class="s2">"bg_complex_data"</span> line 5<span class="o">)</span>
+    invoked from within
+<span class="s2">"bg_complex_data [lindex </span><span class="nv">$argv</span><span class="s2"> 0] [lindex </span><span class="nv">$argv</span><span class="s2"> 1] [lindex </span><span class="nv">$argv</span><span class="s2"> 2] [lindex </span><span class="nv">$argv</span><span class="s2"> 3] [lindex </span><span class="nv">$argv</span><span class="s2"> 4]"</span>
+    <span class="o">(</span>file <span class="s2">"tests/helpers/bg_complex_data.tcl"</span> line 13<span class="o">)</span>I/O error reading reply
+    <span class="k">while </span>executing
+<span class="s2">"{*}</span><span class="nv">$r</span><span class="s2"> type </span><span class="nv">$k</span><span class="s2">"</span>
+    <span class="o">(</span>procedure <span class="s2">"createComplexDataset"</span> line 27<span class="o">)</span>
+    invoked from within
+<span class="s2">"createComplexDataset </span><span class="nv">$r</span><span class="s2"> </span><span class="nv">$ops</span><span class="s2">"</span>
+    <span class="o">(</span>procedure <span class="s2">"bg_complex_data"</span> line 5<span class="o">)</span>
+    invoked from within
+<span class="s2">"bg_complex_data [lindex </span><span class="nv">$argv</span><span class="s2"> 0] [lindex </span><span class="nv">$argv</span><span class="s2"> 1] [lindex </span><span class="nv">$argv</span><span class="s2"> 2] [lindex </span><span class="nv">$argv</span><span class="s2"> 3] [lindex </span><span class="nv">$argv</span><span class="s2"> 4]"</span>
+    <span class="o">(</span>file <span class="s2">"tests/helpers/bg_complex_data.tcl"</span> line 13<span class="o">)</span>
+
+Killing still running Redis server 21467
+Killing still running Redis server 21485
+Killing still running Redis server 21498
+Makefile:385: recipe <span class="k">for </span>target <span class="s1">'test'</span> failed
+make[1]: <span class="k">***</span> <span class="o">[</span><span class="nb">test</span><span class="o">]</span> Error 1
+make[1]: Leaving directory <span class="s1">'/home/ubuntu/redis-stable/src'</span>
+Makefile:6: recipe <span class="k">for </span>target <span class="s1">'test'</span> failed
+make: <span class="k">***</span> <span class="o">[</span><span class="nb">test</span><span class="o">]</span> Error 2
+</code></pre></div></div>
+
+<p>이건 무슨 에러냐..ㅠㅠ</p>
+
+<p><code class="language-plaintext highlighter-rouge">sudo apt-get install tcl8.5</code> 했더니 된다..? 참고는 <a href="https://bryan7.tistory.com/801">여기</a></p>
+
+<p>근데 redis를 파일 형태로 다운 받아서 쓰는건 좋은 방법은 아니라고 한다. 
+그래서 배포 서버에서 sudo apt-get install redis-server 등의 명령어로 설치하여 변경했다.</p>
+
+:ET

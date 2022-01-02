@@ -1,0 +1,26 @@
+I",<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">django.core.paginator</span> <span class="kn">import</span> <span class="n">Paginator</span>
+
+<span class="n">paginator</span> <span class="o">=</span> <span class="n">Pagenator</span><span class="p">(</span><span class="sb">`query_set`</span><span class="p">,</span> <span class="sb">`per_page`</span><span class="p">,</span> <span class="sb">`orphans`</span><span class="p">)</span>
+</code></pre></div></div>
+
+<ul>
+  <li>마지막 페이지에 오는 리스트들을 <code class="language-plaintext highlighter-rouge">orphans</code> 라고 하는데(<code class="language-plaintext highlighter-rouge">orphans_num</code> &lt; <code class="language-plaintext highlighter-rouge">per_page</code>), <code class="language-plaintext highlighter-rouge">orphans</code> 를 설정해주면 마지막 페이지 이전 페이지에 <code class="language-plaintext highlighter-rouge">orphans</code>들을 포함시켜서 <code class="language-plaintext highlighter-rouge">per_page</code> 를 초과하여 출력해줌.</li>
+</ul>
+
+<p><strong>Paginator.page(<code class="language-plaintext highlighter-rouge">page_num</code>=..)</strong></p>
+
+<p>에러를 좀 더 컨트롤 할 수 있다.</p>
+
+<p><strong>Paginator.get_page(<code class="language-plaintext highlighter-rouge">page_num</code>=..)</strong></p>
+
+<p>에러 컨트롤이 적음. (쿼리스트링으로 <code class="language-plaintext highlighter-rouge">num_pages</code> 이상의 값을 넣어도 마지막 페이지 반환)</p>
+
+<ul>
+  <li>Page.previous_page_number()</li>
+  <li>Page.next_page_number()
+    <ul>
+      <li>두 함수는 이전/다음 페이지가 없을 경우, InvalidPage 에러를 반환함.</li>
+    </ul>
+  </li>
+</ul>
+:ET

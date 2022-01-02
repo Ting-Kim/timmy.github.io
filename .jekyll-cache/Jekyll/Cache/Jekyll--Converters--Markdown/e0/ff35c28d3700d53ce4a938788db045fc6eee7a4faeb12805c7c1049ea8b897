@@ -1,0 +1,49 @@
+I"�
+<h3 id="user-profile-page-구현">user profile page 구현</h3>
+
+<p>django.views.generic.DetailView</p>
+
+<p>제네릭 뷰(DetailView)를 통해 구현.</p>
+
+<p>사용한 속성 - <code class="language-plaintext highlighter-rouge">model</code>, <code class="language-plaintext highlighter-rouge">template_name</code>, <code class="language-plaintext highlighter-rouge">context_object_name</code></p>
+
+<p>context_object_name의 default는 ‘object’인데, template 에서 해당 객체를 호출할 때 쓸 변수명이다. {{context_object_name(<code class="language-plaintext highlighter-rouge">default='object'</code>)}}</p>
+
+<ul>
+  <li>로그인해서 접속해 있는 유저와 보고있는 프로필 페이지 주인인 유저를 비교할 때 사용함 ({% if user ==  user_obj %})</li>
+</ul>
+
+<p><br /></p>
+
+<h3 id="update-user-profile-page-구현">update user profile page 구현</h3>
+
+<p>제네릭 뷰(UpdateView)를 통해 구현.</p>
+
+<p>사용한 속성 - <code class="language-plaintext highlighter-rouge">model</code>, <code class="language-plaintext highlighter-rouge">template_name</code>, <code class="language-plaintext highlighter-rouge">fields</code></p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">fields</code> 중 “fav_book_cat”, “fav_movie_cat” 는 <code class="language-plaintext highlighter-rouge">categories.Category</code>와 외래키로 관계된 컬럼인데, profile을 update할 때 꼭 설정하지 않으면 수정이 불가했다. 그래서 models.py에서 <code class="language-plaintext highlighter-rouge">blank=True</code>를 줘서 일단 해결함.</li>
+  <li><code class="language-plaintext highlighter-rouge">urls.py</code> 에서 profile 페이지에서는 url에 &lt;int:pk&gt;를 포함하였는데, update 시킬 땐 url에서 제외하니까, UpdateView가 default로 url에서 pk를 찾기 때문에 에러가 발생했다. 그래서 get_object() 메서드를 선언하여 self.request.user 를 반환하게 함.</li>
+</ul>
+
+<p><br /></p>
+
+<h3 id="change-user-password-page-구현">change user password page 구현</h3>
+
+<p>제네릭 뷰(PasswordChangeView)를 통해 구현.</p>
+
+<p>사용한 속성 - <code class="language-plaintext highlighter-rouge">template_name</code>, <code class="language-plaintext highlighter-rouge">success_url</code></p>
+
+<p>알아서 password Form을 만들어주고, POST 로 요청 보내면 수정까지 해준다.</p>
+
+<p>success_url에 reverse(“core:home”)을 주었더니, 아래 에러가 발생함.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="s">""" success_url에 reverse() 사용 시 에러 """</span>
+<span class="n">django</span><span class="p">.</span><span class="n">core</span><span class="p">.</span><span class="n">exceptions</span><span class="p">.</span><span class="n">ImproperlyConfigured</span><span class="p">:</span> <span class="n">The</span> <span class="n">included</span> <span class="n">URLconf</span> <span class="s">'config.urls'</span> <span class="n">does</span> <span class="ow">not</span> <span class="n">appear</span> <span class="n">to</span> <span class="n">have</span> <span class="nb">any</span> <span class="n">patterns</span> <span class="ow">in</span> <span class="n">it</span><span class="p">.</span> <span class="n">If</span> <span class="n">you</span> <span class="n">see</span> <span class="n">valid</span> <span class="n">patterns</span> <span class="ow">in</span> <span class="n">the</span> <span class="nb">file</span> <span class="n">then</span> <span class="n">the</span> <span class="n">issue</span> <span class="ow">is</span> <span class="n">probably</span> <span class="n">caused</span> <span class="n">by</span> <span class="n">a</span> <span class="n">circular</span> <span class="k">import</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>알아보니 reverse 메서드를 import 하는 시점에 reverse() 가 호출되어 버리기 때문이라고 한다.(urls.py가 로드되기 전에)</p>
+
+<p>reverse_lazy() 의 경우에는 직접 실행 될 때 불러오기 때문에 정상적으로 실행이 됨. (Django 공식 문서에서도 CBV(제네릭 뷰) 사용 시 reverse_lazy() 를 사용해야 한다고 명시되어 있다고 한다.)</p>
+
+:ET

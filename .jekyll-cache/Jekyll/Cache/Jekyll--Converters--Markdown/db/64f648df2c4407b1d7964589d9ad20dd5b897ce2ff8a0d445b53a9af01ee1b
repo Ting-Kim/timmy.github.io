@@ -1,0 +1,40 @@
+I"�	<ul>
+  <li><code class="language-plaintext highlighter-rouge">INSTALL_APPS</code> 에 등록을 하지 않은 APP에서의 test 파일들도 실행시킨다.</li>
+  <li>‘test’ 로 시작하는 파일들을 test파일이라 간주하고 실행시킨다.</li>
+</ul>
+
+<p><code class="language-plaintext highlighter-rouge">atests_all.py</code> 파일은 실행시키지 않지만, <code class="language-plaintext highlighter-rouge">tests_all.py</code> 파일은 실행시킨다.</p>
+
+<p><br /></p>
+
+<p>모듈 설치</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">pip3 install pytest</code></li>
+  <li><code class="language-plaintext highlighter-rouge">pip3 install pytest-django</code></li>
+  <li><code class="language-plaintext highlighter-rouge">pip3 install pytest-cov</code></li>
+  <li><code class="language-plaintext highlighter-rouge">pip3 instasll ipdb</code> (테스트 코드에 브레이킹 시켜서 디버깅 기능 제공)</li>
+</ul>
+
+<p><br /></p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">PostsBaseTest</span><span class="p">(</span><span class="n">TestCase</span><span class="p">):</span>
+	<span class="c1"># model test
+</span>	<span class="k">def</span> <span class="nf">test_create_user_model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+	      <span class="n">User</span><span class="p">.</span><span class="n">objects</span><span class="p">.</span><span class="n">create</span><span class="p">(</span>
+	          <span class="n">username</span><span class="o">=</span><span class="s">'Hello_World'</span>
+	      <span class="p">)</span>
+				<span class="kn">import</span> <span class="nn">ipdb</span><span class="p">;</span><span class="n">ipdb</span><span class="p">.</span><span class="n">set_trace</span><span class="p">()</span> <span class="c1"># ipdb 사용 예
+</span>	      <span class="k">assert</span> <span class="n">User</span><span class="p">.</span><span class="n">objects</span><span class="p">.</span><span class="n">count</span><span class="p">()</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="s">"Should be equal"</span>  <span class="c1"># user 테이블에서 긁어온 user 객체 수
+</span></code></pre></div></div>
+
+<p><br /></p>
+
+<hr />
+
+<p><strong>+@</strong></p>
+
+<ul>
+  <li>how to calculate coverage 한번 검색해서 보기</li>
+</ul>
+:ET

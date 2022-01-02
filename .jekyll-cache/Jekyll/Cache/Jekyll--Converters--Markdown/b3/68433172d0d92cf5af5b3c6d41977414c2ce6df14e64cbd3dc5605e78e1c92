@@ -1,0 +1,25 @@
+I"m<h1 id="nginx-파일-용량-제한-문제-cors">Nginx 파일 용량 제한 문제 (CORS)</h1>
+
+<p>1 MB 이상으로는 파일 전송이 안되는 문제가 있었다.</p>
+
+<p>개발자 도구에는 CORS 에러가 발견되기도 했는데, 찾아보니 Nginx에서 따로 파일 용량제한에 대한 설정을 하지 않았을 때 나오는 에러라고 한다.</p>
+
+<p>Ubuntu 18.0 기준 <code class="language-plaintext highlighter-rouge">/etc/nginx/nginx.conf</code> 에서 server 탭에</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">server</span> <span class="o">{</span>
+
+		<span class="o">..</span>
+
+		<span class="o">**</span><span class="n">client_max_body_size</span><span class="err"> </span><span class="o">[</span><span class="n">원하는</span> <span class="n">용량</span><span class="o">];</span> 
+
+		<span class="o">..</span>
+
+<span class="o">}**</span>
+</code></pre></div></div>
+
+<p>추가로 해결되었다.</p>
+
+<p>해결에 참고한 글</p>
+
+<p><a href="https://storyinglass.tistory.com/11">https://storyinglass.tistory.com/11</a></p>
+:ET

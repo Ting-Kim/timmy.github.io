@@ -1,0 +1,26 @@
+I"
+<h1 id="db에-데이터-인서트-시-이모지-포함하는-경우-sqlexecption">DB에 데이터 인서트 시 이모지 포함하는 경우 SQLEXECPTION</h1>
+
+<p>AWS RDS에서 파라미터 그룹의 ‘char’, ‘coll’ 포함한 파라미터들을 각각 <code class="language-plaintext highlighter-rouge">utf8mb4</code>, <code class="language-plaintext highlighter-rouge">utf8mb4_general_ci</code>로 수정하고 재부팅하면 된다는 해결책이 대부분이었다.</p>
+
+<p>하지만 우리는 이미 배포된 서버에서 테이블, 컬럼을 생성했고 데이터를 넣어서 사용하고 있는 상황이어서 아무리 스키마에 적용이 되었다고 한들 에러가 해결되지도 않았고, 워크벤치에서 직접 입력했을 때도 이모지가 <code class="language-plaintext highlighter-rouge">?</code> 로 표시되었다.</p>
+
+<p>그러다가 아래 참고 링크를 확인했는데, 이미 추가된 테이블과 컬럼들이 있는 경우는 어쩔 수 없이 하나하나 입력해주어야 한다는 내용을 발견했다.</p>
+
+<p>그래서 하나하나 반영시켰는데, 이상하게 <code class="language-plaintext highlighter-rouge">chat</code>, <code class="language-plaintext highlighter-rouge">user_chat</code> 테이블만 <code class="language-plaintext highlighter-rouge">Foreign Key</code>로 인해 작동하지 않았다. (<code class="language-plaintext highlighter-rouge">user</code> 테이블은 Foreign Key가 겁나 많이 걸려있는데도 잘 되더만..)</p>
+
+<p>어쩔 수 없이 워크벤치에서 chat, user_chat 연관 관계에 대한 Foreign Key를 삭제한 후,</p>
+
+<p><code class="language-plaintext highlighter-rouge">ALTER TABLE chat CONVERT TO CHARACTER SET utf8mb4;</code></p>
+
+<p><code class="language-plaintext highlighter-rouge">ALTER TABLE user_chat CONVERT TO CHARACTER SET utf8mb4;</code></p>
+
+<p>실행하고, CodeDeploy 배포 재시도를 통해 Spring boot 어플리케이션을 재시작하였다. 그러니 ORM 매핑(<code class="language-plaintext highlighter-rouge">ddl-auto: update</code>)을 통해 <code class="language-plaintext highlighter-rouge">Foreign Key</code>를 정상적으로 다시 걸고 작동도 잘 되었다.</p>
+
+<p><strong>해결에 참고했던 링크</strong></p>
+
+<ul>
+  <li><a href="https://kimyoon21.github.io/mysql/Aws-RDS-mysql-utf8-utf8mb4/#">https://kimyoon21.github.io/mysql/Aws-RDS-mysql-utf8-utf8mb4/#</a></li>
+  <li><a href="https://m.blog.naver.com/blackfrost/40168167133">https://m.blog.naver.com/blackfrost/40168167133</a></li>
+</ul>
+:ET

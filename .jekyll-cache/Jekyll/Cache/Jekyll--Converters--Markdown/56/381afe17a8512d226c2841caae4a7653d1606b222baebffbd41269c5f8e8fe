@@ -1,0 +1,49 @@
+I"�<p>참고) 선형대수는 Python의 Numpy 패키지를 사용한다.</p>
+
+<p><br /></p>
+
+<h2 id="선형시스템">선형시스템</h2>
+
+<p>선형 시스템 $Ax = b$ 는 세가지 경우로 나눌 수 있다.</p>
+
+<ul>
+  <li>해가 하나인 경우(unique solution) ······ 1</li>
+  <li>해가 없는 경우(no solution) ······ 2</li>
+  <li>해가 여러개인 경우 (infinitely many solutions) ······ 3</li>
+</ul>
+
+<p>2번과 3번(역행렬이 없는 경우)의 경우는 <strong>Singular(특이)</strong> 하다고 함.</p>
+
+<p>1번이나 3번의 경우는 <strong>Consistent</strong> 하다고 표현하고, 2번의 해가 없는 경우는 <strong>Inconsistent</strong> 하다고 한다.</p>
+
+<p><br /></p>
+
+<p>임의의 $m×n$ 선형시스템의 해를 구하는 가장 대표적인 방법, <strong><em>Gauss elimination</em>(가우스 소거법)</strong></p>
+
+<ol>
+  <li>Foward elimination(전방 소거법) - 주어진 선형시스템을 아래로 갈수록 더 단순한 형태(계수를 최대한 0으로 만든다)의 선형방정식을 가지도록 변형함)<br />(Upper triangular form으로 만듬)</li>
+  <li>Back-substitution(후방 대치법) - 아래에서부터 위로 미지수를 실제값으로 대체하여 선형시스템의 해를 구함</li>
+</ol>
+
+<p><br /></p>
+
+<p><strong>소거법에 활용되는 세가지 기본행연산(EROs, elementary row operations)</strong></p>
+
+<ul>
+  <li>Replacement - j번째 행을 기준행인 i번째 행을 m배하여 빼서 업데이트함</li>
+  <li>Interchange - 행간 교환(위치 바꿈)</li>
+  <li>Scaling - 특정 행을 s배함</li>
+</ul>
+
+<p><br /></p>
+
+<p><strong>Forward elimination은. .</strong></p>
+
+<ul>
+  <li>선형시스템을 쉬운 꼴로 변형</li>
+  <li>시스템의 rank를 알려줌(의미 있는 식이 몇개인가)</li>
+  <li>시스템이 consistent 한지 inconsistent 한지 알려줌</li>
+</ul>
+
+<p><br /></p>
+:ET

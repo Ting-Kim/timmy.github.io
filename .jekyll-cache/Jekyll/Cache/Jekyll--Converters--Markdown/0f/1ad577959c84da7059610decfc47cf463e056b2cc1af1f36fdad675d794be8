@@ -1,0 +1,65 @@
+I"A
+<h2 id="4th-week---라이브-세션">4th week - 라이브 세션</h2>
+
+<p><code class="language-plaintext highlighter-rouge">**get_json()</code> 메서드의 정체 → 딕셔너리 형태로 access**</p>
+
+<ul>
+  <li>HTTP 프로토콜 상에서 바디에 담겨있는 JSON은 “문자열” 취급된다.</li>
+  <li>JSON 형태의 문자열 → 파이썬의 딕셔너리 변환</li>
+</ul>
+
+<p><strong>flask의 app 이름은 반드시 <code class="language-plaintext highlighter-rouge">app.py</code> 여야 하는가?</strong></p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">flask run</code> 명령을 실행하면 FLASK_APP 변수에 담긴 파일명을 실행</li>
+  <li>만약 해당 파일이 없다면 <code class="language-plaintext highlighter-rouge">app.py</code> 를 default로 찾고, 그것도 없으면 에러 발생</li>
+</ul>
+
+<hr />
+
+<h2 id="django-의-mvt-패턴">Django 의 MVT 패턴</h2>
+
+<ul>
+  <li>Model, View, Template 으로 구성</li>
+  <li>일반적인 MVC 패턴에서의 Controller 역할을 urls.py가 수행하고,</li>
+</ul>
+
+<p><br /></p>
+
+<p><strong>MTV 구성</strong></p>
+
+<p><img src="https://github.com/Ting-Kim/Ting-kim.github.io/blob/main/images/MTVpattern.png?raw=true" alt="https://github.com/Ting-Kim/Ting-kim.github.io/blob/main/images/MTVpattern.png?raw=true" />
+(ref:https://www.google.com/url?sa=i&amp;url=https%3A%2F%2Fcupjoo.tistory.com%2F91&amp;psig=AOvVaw37EW2X3I9_9Ms4ZLpRSi05&amp;ust=1608899634903000&amp;source=images&amp;cd=vfe&amp;ved=0CAIQjRxqFwoTCLC-sq3Q5u0CFQAAAAAdAAAAABAJ)</p>
+
+<p><br /></p>
+
+<h3 id="view">View</h3>
+
+<ul>
+  <li>
+    <project>/urls.py 에서 url 매핑
+</project>
+  </li>
+  <li>
+    <project>/settings.py - INSTALLED_APPS 에 App을 추가해주어야 project에서 App으로 인식
+</project>
+  </li>
+  <li>
+    <App name="">/views.py 에서 요청에 대한 로직을 수행
+</App>
+  </li>
+  <li>return render(request, <template 파일명="">, {<Template에 전달할="" key="">:<value> })</value></Template에></template></li>
+  <li>Template 태그는
+<img src="https://github.com/Ting-Kim/Ting-kim.github.io/blob/main/images/template_tag.PNG?raw=true" alt="https://github.com/Ting-Kim/Ting-kim.github.io/blob/main/images/template_tag.PNG?raw=true" /></li>
+</ul>
+
+<p><br /></p>
+
+<h3 id="template">Template</h3>
+
+<ul>
+  <li>Template는 <project>/settings.py 의 TEMPLATES 에서 관리</project></li>
+</ul>
+
+<p><img src="https://github.com/Ting-Kim/Ting-kim.github.io/blob/main/images/template_parameter.PNG?raw=true" alt="https://github.com/Ting-Kim/Ting-kim.github.io/blob/main/images/template_parameter.PNG?raw=true" /></p>
+:ET

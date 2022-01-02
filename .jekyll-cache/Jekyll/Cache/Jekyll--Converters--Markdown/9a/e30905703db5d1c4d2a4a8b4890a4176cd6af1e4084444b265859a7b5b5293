@@ -1,0 +1,25 @@
+I"�<h1 id="n1-문제-fetchjoin-관련">N+1 문제 (fetchJoin 관련)</h1>
+
+<p>참고 링크</p>
+
+<ul>
+  <li><a href="https://pasudo123.tistory.com/426">https://pasudo123.tistory.com/426</a></li>
+</ul>
+
+<hr />
+
+<p>Item에는 List<Image> 를 가지고 있어서 아이템을 여러개 조회할 때 마다 이미지 쿼리가 아이템 갯수만큼 날아감.</Image></p>
+
+<p>근데 배포 서버에도 비슷하게 구현한 경우인데, 이 경우에는 쿼리가 한번 나간다. (아래 이미지)</p>
+
+<p><img src="https://github.com/Ting-Kim/Ting-kim.github.io/blob/main/images/20210917_1.png?raw=true" alt="20210917_1" /></p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">spring</span><span class="pi">:</span>
+  <span class="na">jpa</span><span class="pi">:</span>
+    <span class="na">properties</span><span class="pi">:</span>
+      <span class="na">hibernate</span><span class="pi">:</span>
+        <span class="na">default_batch_fetch_size</span><span class="pi">:</span> <span class="m">100</span>
+</code></pre></div></div>
+
+<p>위와 같은 설정으로 인해서 <code class="language-plaintext highlighter-rouge">Hibernate</code>가 배치 처리를 지원해주는 것 같다.</p>
+:ET

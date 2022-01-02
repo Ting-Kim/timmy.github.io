@@ -1,0 +1,146 @@
+I"�<h3 id="spring-boot-멀티-모듈-프로젝트-설정root-각-모듈-buildgradle-설정">Spring Boot 멀티 모듈 프로젝트 설정(root, 각 모듈 build.gradle 설정)</h3>
+
+<p>root 프로젝트의 <code class="language-plaintext highlighter-rouge">build.gradle</code> (소스 출처 : <a href="https://daddyprogrammer.org/post/13156/spring-boot-change-multi-module/">https://daddyprogrammer.org/post/13156/spring-boot-change-multi-module/</a>)</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>buildscript {
+    ext {
+        springBootVersion = '2.1.4.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath "io.spring.gradle:dependency-management-plugin:0.6.0.RELEASE"
+    }
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+
+    sourceCompatibility = 1.8
+
+    repositories {
+        mavenCentral()
+    }
+
+    configurations {
+        compileOnly {
+            extendsFrom annotationProcessor
+        }
+    }
+
+    // 모든 모듈에서 사용하는 라이브러리
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+        implementation 'org.springframework.boot:spring-boot-starter-freemarker'
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+        implementation 'org.springframework.boot:spring-boot-starter-actuator'
+        implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+        //embedded-redis
+        implementation 'it.ozimov:embedded-redis:0.7.2'
+        implementation 'io.springfox:springfox-swagger2:2.6.1'
+        implementation 'io.springfox:springfox-swagger-ui:2.6.1'
+        implementation 'net.rakugakibox.util:yaml-resource-bundle:1.1'
+        implementation 'com.google.code.gson:gson'
+        compileOnly 'org.projectlombok:lombok'
+        runtimeOnly 'com.h2database:h2'
+        runtimeOnly 'mysql:mysql-connector-java'
+        annotationProcessor 'org.projectlombok:lombok'
+        testImplementation 'org.springframework.security:spring-security-test'
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    }
+}
+
+project(':module-common') {
+    // common 모듈에만 필요한 라이브러리가 발생하면 이곳에 추가한다.
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-security'
+        implementation 'io.jsonwebtoken:jjwt:0.9.1'
+    }
+}
+
+project(':module-user') {
+    // user 모듈에만 필요한 라이브러리가 발생하면 이곳에 추가한다.
+    dependencies {
+        compile project(':module-common')
+    }
+}
+
+project(':module-board') {
+    // board 모듈에만 필요한 라이브러리가 발생하면 이곳에 추가한다.
+    dependencies {
+        compile project(':module-common')
+    }
+}
+</code></pre></div></div>
+
+<p>멀티모듈로 만들어진 프로젝트들은 각각 독립적인 프로세스를 가진다.</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">dependencies{}</code> 에 <code class="language-plaintext highlighter-rouge">compile project()</code> 포함한 경우는, 포함한 프로젝트에 대한 코드(<code class="language-plaintext highlighter-rouge">application.yml</code> 포함)를 <strong>함께 컴파일</strong>하는 것 같다.
+    <ul>
+      <li>위의 <code class="language-plaintext highlighter-rouge">build.gradle</code>를 예시로 들면, <code class="language-plaintext highlighter-rouge">module-user</code> 모듈을 구동할 때
+        <ul>
+          <li><code class="language-plaintext highlighter-rouge">module-common</code> 모듈의 코드는 함께 실행되고, <code class="language-plaintext highlighter-rouge">module-board</code>는 실행 되지 않는다.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><code class="language-plaintext highlighter-rouge">root-build.gradle</code>의 <code class="language-plaintext highlighter-rouge">dependencies{}</code>에 포함되는 <strong>라이브러리</strong>는 모든 모듈 내부 코드에서 사용가능하고, <code class="language-plaintext highlighter-rouge">module-common</code>의 <code class="language-plaintext highlighter-rouge">dependencies{}</code>에 포함되는 라이브러리는 <code class="language-plaintext highlighter-rouge">module-common</code>모듈 내 코드에서만 사용 가능하다!</li>
+</ul>
+
+<p><strong>추가로 알게 된 것..</strong></p>
+
+<ul>
+  <li><a href="https://bluayer.com/13"><strong>Gradle 에서 compile과 implementation의 차이점</strong></a>
+    <ul>
+      <li><strong>compile</strong>은 모듈과 <strong>직접, 간접적으로 의존하고 있는 모든 라이브러리나 모듈을 재빌드</strong>하며, 연결된 <strong>모든 모듈의 API가 <code class="language-plaintext highlighter-rouge">exposed(노출)</code></strong> 된다.</li>
+      <li><strong>implementation</strong>은 모듈을 <strong>직접 의존하고있는 모듈만을 재빌드</strong>하며, <strong>연결된 API는 노출되지 않는다. (<code class="language-plaintext highlighter-rouge">not exposed</code>)</strong></li>
+    </ul>
+  </li>
+</ul>
+
+<hr />
+
+<p><strong>Reference</strong></p>
+
+<ul>
+  <li>스프링 부트 어드민 사용해보기
+    <ul>
+      <li>https://andole98.github.io/spring/spring-boot-admin/#</li>
+    </ul>
+  </li>
+  <li>
+    <table>
+      <tbody>
+        <tr>
+          <td>Spring Boot</td>
+          <td>멀티 모듈 프로젝트 (Multi Module)</td>
+        </tr>
+      </tbody>
+    </table>
+    <ul>
+      <li>https://gaemi606.tistory.com/entry/Spring-Boot-%EB%A9%80%ED%8B%B0-%EB%AA%A8%EB%93%88-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-Multi-Module</li>
+    </ul>
+  </li>
+  <li>스프링 부트로 멀티모듈 셋팅하기
+    <ul>
+      <li>https://taetaetae.github.io/2020/01/19/spring-boot-maven-multi-module/</li>
+    </ul>
+  </li>
+  <li>Spring Boot - Intellij Gradle Multi module
+    <ul>
+      <li>https://daddyprogrammer.org/post/13156/spring-boot-change-multi-module/</li>
+    </ul>
+  </li>
+  <li>멀티모듈 설계 이야기 with Spring, Gradle
+    <ul>
+      <li>https://woowabros.github.io/study/2019/07/01/multi-module.html</li>
+    </ul>
+  </li>
+</ul>
+:ET

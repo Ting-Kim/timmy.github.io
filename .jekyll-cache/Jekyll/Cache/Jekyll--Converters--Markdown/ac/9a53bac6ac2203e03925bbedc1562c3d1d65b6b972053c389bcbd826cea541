@@ -1,0 +1,54 @@
+I"�<h1 id="redis--flask-따라해보기">redis + flask 따라해보기</h1>
+
+<p>참고: <a href="https://niceman.tistory.com/200">https://niceman.tistory.com/200</a></p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">$ sudo apt install python3-pip</code>
+    <ul>
+      <li>pip 버전이 너무 낮음</li>
+      <li>따라서 다시 설치해야 하는데, 파이썬 버전 여러개를 관리하는게 필요할 듯.</li>
+    </ul>
+  </li>
+  <li><a href="https://lhy.kr/configuring-the-python-development-environment-with-pyenv-and-virtualenv">여기</a>서 <code class="language-plaintext highlighter-rouge">pyenv</code>, <code class="language-plaintext highlighter-rouge">virtualenv</code> 이용방법 참고
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">$ sudo apt install git curl</code></li>
+      <li><code class="language-plaintext highlighter-rouge">$ curl -L [https://raw.githubusercontent.com/yyuu/pyenv-installer/master/bin/pyenv-installer](https://raw.githubusercontent.com/yyuu/pyenv-installer/master/bin/pyenv-installer) | bash</code></li>
+      <li><code class="language-plaintext highlighter-rouge">~/.profile</code>, <code class="language-plaintext highlighter-rouge">~/.bashrc</code>(여긴 꼭 해야되는지 모르겠음)</li>
+    </ul>
+
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="nv">$ </span><span class="nb">echo</span> <span class="s1">'export PYENV_ROOT="$HOME/.pyenv"'</span> <span class="o">&gt;&gt;</span> ~/.profile
+  <span class="nv">$ </span><span class="nb">echo</span> <span class="s1">'export PATH="$PYENV_ROOT/bin:$PATH"'</span> <span class="o">&gt;&gt;</span> ~/.profile
+  <span class="nv">$ </span><span class="nb">echo</span> <span class="s1">'eval "$(pyenv init --path)"'</span> <span class="o">&gt;&gt;</span> ~/.profile
+  <span class="nv">$ </span><span class="nb">echo</span> <span class="s1">'eval "$(pyenv virtualenv-init -)"'</span> <span class="o">&gt;&gt;</span> ~/.profile
+</code></pre></div>    </div>
+
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">$ pyenv</code>
+        <ul>
+          <li>설치되었는지 확인</li>
+        </ul>
+      </li>
+      <li><code class="language-plaintext highlighter-rouge">$ sudo apt-get install -y make build-essential libssl-dev zlib1g-dev libbz2-dev \
+  libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev \
+  xz-utils tk-dev libffi-dev liblzma-dev python-openssl git</code>
+        <ul>
+          <li><code class="language-plaintext highlighter-rouge">pyenv</code>를 <code class="language-plaintext highlighter-rouge">Ubuntu</code>에서 사용하기 위한 패키지들 설치</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><code class="language-plaintext highlighter-rouge">$ pyenv install —list</code> 로 설치가능한 버전들을 조회</li>
+  <li><code class="language-plaintext highlighter-rouge">$ pyenv install 3.8.3</code> → <code class="language-plaintext highlighter-rouge">파이썬 3.8.3</code> 버전을 설치한다.</li>
+  <li><code class="language-plaintext highlighter-rouge">$ pyenv versions</code> → <code class="language-plaintext highlighter-rouge">pyenv</code>로 설치한 파이썬 버전들을 나열</li>
+  <li><code class="language-plaintext highlighter-rouge">$ pyenv virtualenv &lt;version&gt; &lt;virtual_name&gt;</code> → <code class="language-plaintext highlighter-rouge">pyenv</code>로 특정 파이썬 버전에 대한 가상환경 설치</li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">$ pyenv local &lt;virtual_name&gt;</code> 특정 디렉토리에 가상환경을 적용</p>
+  </li>
+  <li><code class="language-plaintext highlighter-rouge">vsc</code>로 <code class="language-plaintext highlighter-rouge">EC2 인스턴스</code> 내에 접근해서 작업하기 (<a href="https://tttap.tistory.com/141">참고</a>)</li>
+  <li>예제를 따라하다가 <code class="language-plaintext highlighter-rouge">$ rq-dashboard</code> 하는 단계에서 <code class="language-plaintext highlighter-rouge">ValueError: 'default' must be a list when 'multiple' is true.</code> 에러가 발생한다.
+    <ul>
+      <li>패키지 <code class="language-plaintext highlighter-rouge">click==8.0.0</code> 부터 발생하는 문제라고 하는데, <code class="language-plaintext highlighter-rouge">$ pip install click==7.1.2</code> 로 디그레이드 해줬더니 됨.</li>
+    </ul>
+  </li>
+</ul>
+:ET

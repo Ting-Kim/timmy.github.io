@@ -1,0 +1,151 @@
+I"�)<h1 id="jpa-프록시와-연관관계-관리">[JPA] 프록시와 연관관계 관리</h1>
+
+<p>김영한 님의 ‘자바 ORM 표준 JPA 프로그래밍 - 기본편’ 강의 中</p>
+
+<h2 id="프록시">프록시</h2>
+
+<p>=&gt; 프록시란 가짜 객체 (실제 객체를 감싸고 있는 껍데기라고 이해하자)<br /></p>
+
+<ul>
+  <li>em.find(Member.class, memberId) // 실제 객체 조회</li>
+  <li>em.getReference(Member.class, memberId) // 가짜(프록시) 엔티티 객체 조회</li>
+</ul>
+
+<p><img src="https://github.com/Ting-Kim/Ting-kim.github.io/blob/main/images/proxy_work.PNG?raw=true" style="width:600px" /><br />
+프록시 동작 원리
+<br /><br /></p>
+
+<p><span style="font-weight:bold">프록시 특징</span></p>
+
+<ul>
+  <li>프록시 객체는 첫 사용 시 한 번만 초기화</li>
+  <li>초기화 시 프록시 객체가 실제 엔티티가 되는 것은 아니다. 프록시 객체 통해서 실제 엔티티에 접근이 가능한 것</li>
+  <li>프록시 객체는 원본 엔티티를 상속 받으므로 타입 체크 시 주의해야 한다(“==” 사용이 아닌 instance of 사용할 것)</li>
+  <li>영속성 컨텍스트에 엔티티가 이미 있다면 em.getReference() 호출 시 실제 엔티티 반환 ( JPA 고유 특징 )</li>
+  <li>준영속 상태일 때는 프록시를 초기화하면 문제 발생(하이버네이트 : org.hibernate.LazyInitializationException 예외 터뜨린다)</li>
+</ul>
+
+<p><br />
+*JPA는 같은 트랜잭션, 영속성 컨텍스트에 속해있는 동일한 PK를 가진 객체들은 타입이 같아야 한다. (하나의 트랜잭션 안에서 동일함을 보장해준다.)<br />
+아래 코드를 보자.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">Member</span> <span class="n">refMember</span> <span class="o">=</span> <span class="n">em</span><span class="o">.</span><span class="na">getReference</span><span class="o">(</span><span class="nc">Member</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">member1</span><span class="o">.</span><span class="na">getId</span><span class="o">());</span>
+<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"refMember = "</span> <span class="o">+</span> <span class="n">refMember</span><span class="o">.</span><span class="na">getClass</span><span class="o">());</span> <span class="c1">// Proxy</span>
+
+<span class="nc">Member</span> <span class="n">findMember</span> <span class="o">=</span> <span class="n">em</span><span class="o">.</span><span class="na">find</span><span class="o">(</span><span class="nc">Member</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">member1</span><span class="o">.</span><span class="na">getId</span><span class="o">());</span>
+<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"findMember = "</span> <span class="o">+</span> <span class="n">findMember</span><span class="o">.</span><span class="na">getClass</span><span class="o">());</span> <span class="c1">// Proxy</span>
+
+<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"refMember == findMember: "</span> <span class="o">+</span> <span class="o">(</span><span class="n">refMember</span> <span class="o">==</span> <span class="n">findMember</span><span class="o">))</span> <span class="c1">// JPA 특성상 true를 보장</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">Member</span> <span class="n">findMember</span> <span class="o">=</span> <span class="n">em</span><span class="o">.</span><span class="na">find</span><span class="o">(</span><span class="nc">Member</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">member1</span><span class="o">.</span><span class="na">getId</span><span class="o">());</span>
+<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"findMember = "</span> <span class="o">+</span> <span class="n">findMember</span><span class="o">.</span><span class="na">getClass</span><span class="o">());</span> <span class="c1">// Member</span>
+
+<span class="nc">Member</span> <span class="n">refMember</span> <span class="o">=</span> <span class="n">em</span><span class="o">.</span><span class="na">getReference</span><span class="o">(</span><span class="nc">Member</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">member1</span><span class="o">.</span><span class="na">getId</span><span class="o">());</span>
+<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"refMember = "</span> <span class="o">+</span> <span class="n">refMember</span><span class="o">.</span><span class="na">getClass</span><span class="o">());</span> <span class="c1">// Member</span>
+
+<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"refMember == findMember: "</span> <span class="o">+</span> <span class="o">(</span><span class="n">refMember</span> <span class="o">==</span> <span class="n">findMember</span><span class="o">))</span> <span class="c1">// JPA 특성상 true를 보장</span>
+
+</code></pre></div></div>
+
+<p><br />
+<span style="font-weight:bold">프록시 확인 기능</span></p>
+
+<ul>
+  <li>
+    <p>프록시 인스턴스 초기화 여부 확인<br />
+emf.PersistenceUnitUtil.isLoaded(Object entity)
+(EntityManagerFactory)</p>
+  </li>
+  <li>
+    <p>프록시 강제 초기화<br />
+Hibernate.initialize(entity)</p>
+  </li>
+  <li>
+    <p>* JPA 표준은 강제 초기화가 없다(Hibernate 제공) : entity.getName() 등과 같이 사용할 것</p>
+  </li>
+</ul>
+
+<h2 id="즉시-로딩과-지연-로딩">즉시 로딩과 지연 로딩</h2>
+
+<h4 style="font-weight:bold; color:skyblue">*가급적 지연 로딩만 사용하자!</h4>
+<p><br /></p>
+
+<p><span style="font-weight:bold">이유</span></p>
+
+<ul>
+  <li>즉시 로딩 시 예상치 못한 SQL 발생</li>
+  <li>즉시 로딩은 JPQL에서 N+1 문제를 일으킴.<br />
+(최초 쿼리 1에 결과값 N개 만큼 추가 쿼리가 나간다는 의미)
+em.find()는 PK를 명시하므로 내부적으로 최적화하지만, JPQL의 경우는 아님</li>
+  <li>@ManyToOne, @OneToOne은 기본이 즉시 로딩</li>
+</ul>
+
+<p><br /></p>
+<h3 style="font-weight:bold">어플리케이션에서 보통 Member와 Team을 따로 조회한다면?</h3>
+<p>=&gt; 지연 로딩 : 연관관계 객체를 프록시로서 조회함<br /></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@ManyToOne</span><span class="o">(</span><span class="n">fetch</span><span class="o">=</span><span class="nc">FetchType</span><span class="o">.</span><span class="na">LAZY</span><span class="o">)</span>
+</code></pre></div></div>
+
+<p>Member 조회 SQL은 먼저 나가고, <br />
+프록시를 초기화할 때 Team 조회 SQL이 또 나가서 성능 저하 단점이 있을 수 있음.<br />
+LAZY로 설정 시 실행 쿼리에 따라서 Member, Team을 한번에 가져오고 싶을 땐 fetch join을 사용!(그 외 방법으로는 @EntityGraph, @BatchSize를 이용한 방법 등이 있음)<br /><br /></p>
+
+<h3 style="font-weight:bold">어플리케이션에서 보통 Member와 Team을 같이 조회한다면?</h3>
+<p>=&gt; 즉시 로딩</p>
+
+<p>즉시 로딩의 경우, 한번에 Member와 Team을 조인한 SQL을 날리는 방법과 em.find() 호출 시 Member, Team 조회 SQL을 각각 한 번씩 날리는 방법이 있다.<br />
+대부분의 구현체들은 전자를 채택함.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@ManyToOne</span><span class="o">(</span><span class="n">fetch</span><span class="o">=</span><span class="nc">FetchType</span><span class="o">.</span><span class="na">EAGER</span><span class="o">)</span>
+</code></pre></div></div>
+
+<p>Member 조회 시 Team 조인해서 한 번에 SQL 조회문을 날림<br /></p>
+
+<h2 id="영속성-전이-cascade">영속성 전이: CASCADE</h2>
+
+<p>: 특정 엔티티를 영속 사앹로 만들 때 연관된 엔티티도 함께 영속 상태로 만들고 싶을 때 사용하는 기능</p>
+
+<p><b>주의사항</b></p>
+
+<ul>
+  <li>영속성 전이는 연관관계를 매핑하는 것과 아무 관련이 없음</li>
+</ul>
+
+<p><b>종류</b></p>
+
+<ul>
+  <li><b>ALL : 모두 적용</b></li>
+  <li><b>PERSIST : 영속 (저장할 때만 LifeCycle을 맞추겠다)</b></li>
+  <li><b>REMOVE : 삭제</b></li>
+  <li>MERGE : 병합</li>
+  <li>REFRESH : REFRESH</li>
+  <li>DETACH : DETACH</li>
+</ul>
+
+<p>*운영적인 측면에서 단일 엔티티에 종속적일 때나 라이프 사이클이 거의 유사할 때는 사용해도 좋지만, 아닌 경우에는 사용하지 않는게 좋다.<br /></p>
+
+<h2 id="고아-객체">고아 객체</h2>
+
+<p>: 참조가 제거된 엔티티는 다른 곳에서 참조하지 않는 고아 객체로 보고 삭제하는 기능<br /></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@OneToMany</span><span class="o">(</span><span class="n">orphanRemoval</span> <span class="o">=</span> <span class="kc">true</span><span class="o">)</span>
+</code></pre></div></div>
+
+<p><b>주의 사항</b></p>
+
+<ul>
+  <li>참조하는 곳이 하나일 때만</li>
+  <li>특정 엔티티가 개인 소유일 때 사용</li>
+  <li>CascadeType.REMOVE처럼 동작한다.</li>
+</ul>
+
+<p><b>CascadeType.ALL + orphanRemoval=true</b></p>
+
+<ul>
+  <li>두 옵션 모두 활성화 하면 부모 엔티티를 통해서 자식의 생명 주기를 관리할 수 있음.</li>
+  <li>도메인 주도 설계(DDD)의 Aggregate Root 개념을 구현할 때 유용함<br />
+(Repository는 Aggregate Root만 컨텍하고 나머지는 만들지 않는 것이 낫다, Aggregate Root를 통해 생명주기를 관리한다는 개념(?))</li>
+</ul>
+:ET
