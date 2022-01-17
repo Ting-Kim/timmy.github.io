@@ -6,6 +6,8 @@ tags: [algorithm, Merge Sort]
 comments: true
 ---
 
+{% raw %}
+
 매번 기본 라이브러리의 sort 함수를 사용했었는데, 기본이 부족한 것 같아서 오랜만에 `Merge Sort`를 찾아보며 구현했다.
 
 파이썬에서는 전역변수를 통해 편하게 사용하곤 했었는데, 코드의 퀄리티를 고민하다 보니 전역변수는 옳지 않았다.
@@ -76,3 +78,5 @@ public class MergeSort {
 }
 
 ```
+
+{% endraw %}
