@@ -11,7 +11,7 @@ comments: true
 
 <div align="center">
 
-![클라이언트와 서버가 주고 받는 DTO](https://user-images.githubusercontent.com/59888684/175822524-d754f28c-7748-47e3-a4d7-ceccf12c6f54.png)
+![클라이언트와 서버가 주고 받는 DTO](https://github.com/Ting-Kim/ting-kim.github.io/blob/master/images/20210103_1.png?raw=true)
 
 <span style="color:gray">클라이언트와 서버가 주고 받는 DTO</span>
 
@@ -23,7 +23,7 @@ comments: true
 
 <div align="center">
 
-![RequestDto에 기본 생성자가 없는 경우 요청 시 벌어지는 상황](https://user-images.githubusercontent.com/59888684/175822557-6e5c369f-6daf-4e82-ba2b-b1eb0015b984.png)
+![RequestDto에 기본 생성자가 없는 경우 요청 시 벌어지는 상황](https://github.com/Ting-Kim/ting-kim.github.io/blob/master/images/20210103_2.png?raw=true)
 
 <span style="color:gray">RequestDto에 기본 생성자가 없는 경우 요청 시 벌어지는 상황</span>
 
