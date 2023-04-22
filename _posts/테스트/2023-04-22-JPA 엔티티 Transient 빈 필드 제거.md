@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "JPA 엔티티 내 @Transient Bean 필드 제거"
+title: "JPA 엔티티 내 @Transient Bean 필드를 제거한 이유"
 categories: 테스트
 tags: [junit, java, spring boot, aspectj]
 comments: true
