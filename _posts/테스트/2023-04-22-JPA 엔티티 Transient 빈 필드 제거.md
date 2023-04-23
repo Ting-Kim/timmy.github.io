@@ -27,12 +27,12 @@ public class Order {
 	
 	@Transient
 	@Inject
-  @Getter(AccessLevel.NONE)
+  	@Getter(AccessLevel.NONE)
 	private DomainEventListener domainEventListener; // is null
 	
 	@Transient
 	@Inject
-  @Getter(AccessLevel.NONE)
+  	@Getter(AccessLevel.NONE)
 	private ImageUploadService imageUploadService; // is null
 
 	public void order(OrderCommand orderCommand) {
@@ -47,7 +47,7 @@ public class Order {
 
 이처럼 스프링 컨테이너가 관리하는 빈이 아닌 JPA 엔티티에는 의존성을 Spring이 직접 주입해줄 수 없고, 필요하다면 Load time weaving 이라는 것을 사용해야 합니다. 제가 알기로는 해당 기능을 사용하려면 AspectJ 라이브러리 관련해서 설정이 필요한데, 설정이 적용되어 있지 않았습니다.
 
-[엔티티에 의존성 주입이 필요한 경우? - 인프런 | 질문 & 답변](https://www.inflearn.com/questions/24903/%EC%97%94%ED%8B%B0%ED%8B%B0%EC%97%90-%EC%9D%98%EC%A1%B4%EC%84%B1-%EC%A3%BC%EC%9E%85%EC%9D%B4-%ED%95%84%EC%9A%94%ED%95%9C-%EA%B2%BD%EC%9A%B0)
+[엔티티에 의존성 주입이 필요한 경우? - 인프런 질문 & 답변](https://www.inflearn.com/questions/24903/%EC%97%94%ED%8B%B0%ED%8B%B0%EC%97%90-%EC%9D%98%EC%A1%B4%EC%84%B1-%EC%A3%BC%EC%9E%85%EC%9D%B4-%ED%95%84%EC%9A%94%ED%95%9C-%EA%B2%BD%EC%9A%B0)
 
 (물론 저도 영한님의 의견처럼 도메인 모델 내부에 외부 의존성을 가지는 것에 반대하는 입장이긴 했습니다  😂)
 
