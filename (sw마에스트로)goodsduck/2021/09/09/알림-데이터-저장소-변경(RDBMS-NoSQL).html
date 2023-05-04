@@ -1,0 +1,1354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="google-translate-customization" content="108d9124921d80c3-80e20d618ff053c8-g4f02ec6f3dba68b7-c">
+<!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>알림 데이터 저장소 변경 시 데이터 구조 등 (RDBMS → NoSQL) | Ting-Kim 블로그</title>
+<meta name="generator" content="Jekyll v4.3.2">
+<meta property="og:title" content="알림 데이터 저장소 변경 시 데이터 구조 등 (RDBMS → NoSQL)">
+<meta name="author" content="Taeho Kim">
+<meta property="og:locale" content="en_US">
+<meta name="description" content="알림 데이터 저장소 변경(RDBMS → NoSQL)">
+<meta property="og:description" content="알림 데이터 저장소 변경(RDBMS → NoSQL)">
+<link rel="canonical" href="https://ting-kim.github.io/(sw%EB%A7%88%EC%97%90%EC%8A%A4%ED%8A%B8%EB%A1%9C)goodsduck/2021/09/09/%EC%95%8C%EB%A6%BC-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%80%EC%9E%A5%EC%86%8C-%EB%B3%80%EA%B2%BD(RDBMS-NoSQL).html">
+<meta property="og:url" content="https://ting-kim.github.io/(sw%EB%A7%88%EC%97%90%EC%8A%A4%ED%8A%B8%EB%A1%9C)goodsduck/2021/09/09/%EC%95%8C%EB%A6%BC-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%80%EC%9E%A5%EC%86%8C-%EB%B3%80%EA%B2%BD(RDBMS-NoSQL).html">
+<meta property="og:site_name" content="Ting-Kim 블로그">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2021-09-09T00:00:00+00:00">
+<meta name="twitter:card" content="summary">
+<meta property="twitter:title" content="알림 데이터 저장소 변경 시 데이터 구조 등 (RDBMS → NoSQL)">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Taeho Kim"},"dateModified":"2021-09-09T00:00:00+00:00","datePublished":"2021-09-09T00:00:00+00:00","description":"알림 데이터 저장소 변경(RDBMS → NoSQL)","headline":"알림 데이터 저장소 변경 시 데이터 구조 등 (RDBMS → NoSQL)","mainEntityOfPage":{"@type":"WebPage","@id":"https://ting-kim.github.io/(sw%EB%A7%88%EC%97%90%EC%8A%A4%ED%8A%B8%EB%A1%9C)goodsduck/2021/09/09/%EC%95%8C%EB%A6%BC-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%80%EC%9E%A5%EC%86%8C-%EB%B3%80%EA%B2%BD(RDBMS-NoSQL).html"},"url":"https://ting-kim.github.io/(sw%EB%A7%88%EC%97%90%EC%8A%A4%ED%8A%B8%EB%A1%9C)goodsduck/2021/09/09/%EC%95%8C%EB%A6%BC-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%80%EC%9E%A5%EC%86%8C-%EB%B3%80%EA%B2%BD(RDBMS-NoSQL).html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="shortcut icon" href="https://github.com/Ting-Kim/ting-kim.github.io/blob/master/images/favicon.png?raw=true">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-noto-sans@0.0.72/index.min.css">
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <script src="/assets/js/main.js"></script><link type="application/atom+xml" rel="alternate" href="https://ting-kim.github.io/feed.xml" title="Ting-Kim 블로그">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+<!-- and it's easy to individually load additional languages -->
+<script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/languages/go.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+// Init highlight js
+document.addEventListener('DOMContentLoaded', function(event) {
+  var els = document.querySelectorAll('pre code')
+
+  function addLangData(block) {
+    var outer = block.parentElement.parentElement.parentElement;
+    var lang = block.getAttribute('data-lang');
+    for (var i = 0; i < outer.classList.length; i++) {
+      var cls = outer.classList[i];
+      if (cls.startsWith('language-')) {
+        lang = cls;
+        break;
+      }
+    }
+    if (!lang) {
+      cls = block.getAttribute('class');
+      lang = cls ? cls.replace('hljs ', '') : '';
+    }
+    if (lang.startsWith('language-')) {
+      lang = lang.substr(9);
+    }
+    block.setAttribute('class', 'hljs ' + lang);
+    block.parentNode.setAttribute('data-lang', lang);
+  }
+
+  function addBadge(block) {
+    var enabled = ('true' || 'true').toLowerCase();
+    if (enabled == 'true') {
+      var pre = block.parentElement;
+      pre.classList.add('badge');
+    }
+  }
+
+  function handle(block) {
+    addLangData(block);
+    addBadge(block)
+    hljs.highlightBlock(block);
+  }
+
+  for (var i = 0; i < els.length; i++) {
+    var el = els[i];
+    handle(el);
+  }
+});
+</script>
+
+<style>
+  /* code language badge */
+  pre.badge::before {
+    content: attr(data-lang);
+    color: #fff;
+    background-color: #ff4e00;
+    padding: 0 .5em;
+    border-radius: 0 2px;
+    text-transform: uppercase;
+    text-align: center;
+    min-width: 32px;
+    display: inline-block;
+    position: absolute;
+    right: 0;
+  }
+
+  /* fix wrong badge display for firefox browser */
+  code > table pre::before {
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<header class="site-header " role="banner">
+  <div class="wrapper">
+    <div class="site-header-inner">
+<span class="site-brand"><a class="site-brand-inner" rel="author" href="/">
+  <img class="site-favicon" title="Ting-Kim 블로그" src="https://github.com/Ting-Kim/ting-kim.github.io/blob/master/images/favicon.png?raw=true" onerror="this.style.display='none'">
+  Ting-Kim 블로그
+</a>
+</span><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger">
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewbox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"></path>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger">
+<a class="page-link" href="/about.html">ABOUT ME</a><a class="page-link" href="/archives.html">ARCHIVES</a><a class="page-link" href="/categories.html">CATEGORIES</a><a class="page-link" href="/tags.html">TAGS</a>
+</div>
+      </nav>
+</div>
+  </div>
+</header>
+
+<script>
+  function initHeader() {
+    var lastScrollY = getScrollPos().y;
+    var documentElement = document.documentElement;
+
+    function storeScrollData() {
+      var y = getScrollPos().y;var scrollStatus = "";
+
+      if (y <= 0) {
+        scrollStatus = "top";
+      } else if ((window.innerHeight + y) >= document.body.offsetHeight) {
+        scrollStatus = "bottom";
+      } else {
+        var isScrollDown = (y - lastScrollY > 0) ? true : false;
+        scrollStatus = isScrollDown ? "down" : "up";
+      }
+
+      lastScrollY = y;
+      documentElement.setAttribute("data-scroll-status", scrollStatus);
+    }
+
+    window.addEventListener('scroll', function(e) {
+      storeScrollData();
+    });
+
+    storeScrollData();
+  }
+  document.addEventListener('DOMContentLoaded', initHeader);
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+  function hashLocate(hashValue) {
+    hashValue = hashValue.replace(/^.*#h-/, '');
+    hashValue = decodeURIComponent(hashValue);
+    var element = document.getElementById(hashValue);
+
+    if (!element) {
+      return;
+    }
+
+    var header = document.querySelector('header.site-header');
+    var headerRect = header.getBoundingClientRect();
+    var headerTop = Math.floor(headerRect.top);
+    var headerHeight = Math.floor(headerRect.height);
+    var scrollPos = getScrollPos();
+    var offsetY = element.offsetTop - (headerTop + headerHeight + 20);
+
+    if (offsetY == scrollPos.y) {
+      return;
+    }
+
+    if (headerTop == 0  && offsetY > scrollPos.y) {
+      offsetY += headerHeight + 2;
+    } else if (headerTop < 0  && offsetY < scrollPos.y) {
+      offsetY -= headerHeight - 2;
+    }
+
+    smoothScrollTo(offsetY);
+  }
+
+  // The first event occurred
+  window.addEventListener('load', function(event) {
+    if (window.location.hash) {
+      hashLocate(window.location.hash);
+    }
+  });
+
+  // The first event occurred
+  window.addEventListener('click', function(event) {
+    if (event.target.tagName.toLowerCase() == 'a') {
+      hashLocate(event.target.getAttribute('href'));
+    }
+  });
+</script>
+<div class="theme-toggle">
+  <input type="checkbox" id="theme-switch">
+  <label for="theme-switch">
+    <div class="toggle"></div>
+    <div class="names">
+      <p class="light">Light</p>
+      <p class="dark">Dark</p>
+    </div>
+  </label>
+</div>
+
+
+
+
+<script>
+  (function() {
+    var sw = document.getElementById('theme-switch');
+    var html = document.getElementsByTagName('html')[0];
+    var nightModeOption = ('auto' || 'auto').toLowerCase();
+    var storage = nightModeOption === 'manual'
+        ? localStorage
+        : sessionStorage;
+    var themeData = loadThemeData();
+
+    function saveThemeData(data) {
+      storage.setItem('theme', JSON.stringify(data));
+    }
+
+    function loadThemeData() {
+      var data = storage.getItem('theme');
+      try {
+        data = JSON.parse(data ? data : '');
+      } catch(e) {
+        data = { nightShift: undefined, autoToggleAt: 0 };
+        saveThemeData(data);
+      }
+      return data;
+    }
+
+    function handleThemeToggle(nightShift) {
+      themeData.nightShift = nightShift;
+      saveThemeData(themeData);
+      html.dataset.theme = nightShift ? 'dark' : 'light';
+      setTimeout(function() {
+        sw.checked = nightShift ? true : false;
+      }, 50);
+    }
+
+    function autoThemeToggle() {
+      // Next time point of theme toggle
+      var now = new Date();
+      var toggleAt = new Date();
+      var hours = now.getHours();
+      var nightShift = hours >= 19 || hours <=7;
+
+      if (nightShift) {
+        if (hours > 7) {
+          toggleAt.setDate(toggleAt.getDate() + 1);
+        }
+        toggleAt.setHours(7);
+      } else {
+        toggleAt.setHours(19);
+      }
+
+      toggleAt.setMinutes(0);
+      toggleAt.setSeconds(0);
+      toggleAt.setMilliseconds(0)
+
+      var delay = toggleAt.getTime() - now.getTime();
+
+      // auto toggle theme mode
+      setTimeout(function() {
+        handleThemeToggle(!nightShift);
+      }, delay);
+
+      return {
+        nightShift: nightShift,
+        toggleAt: toggleAt.getTime()
+      };
+    }
+
+    // Listen the theme toggle event
+    sw.addEventListener('change', function(event) {
+      handleThemeToggle(event.target.checked);
+    });
+
+    if (nightModeOption == 'auto') {
+      var data = autoThemeToggle();
+
+      // Toggle theme by local setting
+      if (data.toggleAt > themeData.autoToggleAt) {
+        themeData.autoToggleAt = data.toggleAt;
+        handleThemeToggle(data.nightShift);
+      } else {
+        handleThemeToggle(themeData.nightShift);
+      }
+    } else if (nightModeOption == 'manual') {
+      handleThemeToggle(themeData.nightShift);
+    } else {
+      var nightShift = themeData.nightShift;
+      if (nightShift === undefined) {
+        nightShift = nightModeOption === 'on';
+      }
+      handleThemeToggle(nightShift);
+    }
+  })();
+</script>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <div class="framework">
+  <section class="main">
+
+     <div class="post">
+  <section>
+
+
+
+
+
+
+
+
+
+<header class="post-header">
+  <h1 class="post-title p-name" itemprop="name headline">알림 데이터 저장소 변경 시 데이터 구조 등 (RDBMS → NoSQL)</h1>
+  <h2 class="post-subtitle"></h2>
+
+  <p class="post-meta">
+    <time class="dt-published" datetime="2021-09-09T00:00:00+00:00" itemprop="datePublished"><i class="fa fa-calendar"></i> Sep 09, 2021
+    </time>
+
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 19 mins</span>
+  </p>
+<div class="post-tags">
+<a class="post-tag" href="/tags.html#spring-boot">#spring-boot</a><a class="post-tag" href="/tags.html#firebase">#firebase</a><a class="post-tag" href="/tags.html#rtdb">#rtdb</a><a class="post-tag" href="/tags.html#nosql">#nosql</a>
+</div></header>
+<article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+    <div class="post-content e-content" itemprop="articleBody">
+
+      <h1 id="알림-데이터-저장소-변경rdbms--nosql">알림 데이터 저장소 변경(RDBMS → NoSQL)</h1>
+
+<hr>
+
+<h3 id="기존-rdbms">기존 RDBMS</h3>
+
+<p><img src="https://github.com/Ting-Kim/Ting-kim.github.io/blob/main/images/20210909_1.png" alt="20210909_1"></p>
+
+<h3 id="nosql">NoSQL</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>표시되는 알림 내용
+hellodowonkwon님이 <span class="s2">"엑소 핸드선풍기"</span> 굿즈에 가격 제안을 했어요. <span class="o">[</span>8000원]
+1시간전
+userId<span class="o">(</span>receiver<span class="o">)</span>:notificationId <span class="o">(</span>senderNickName<span class="o">)</span>, <span class="o">(</span>notificationTitle<span class="o">)</span>, <span class="o">(</span>notificationType<span class="o">)</span>, <span class="o">(</span>&lt;<span class="o">&gt;</span>itemPrice<span class="o">)</span>, <span class="o">(</span>notificationCreatedAt<span class="o">)</span>
+</code></pre></div></div>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">//</span><span class="w"> </span><span class="err">snapshot</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="err">DataSnapshot</span><span class="w"> 
+</span><span class="p">{</span><span class="w"> </span><span class="err">key</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="err">chatRooms</span><span class="p">,</span><span class="w"> </span><span class="err">value</span><span class="w"> </span><span class="err">=</span><span class="w"> 
+	</span><span class="p">{</span><span class="w">
+	 </span><span class="err">-Mirjowqjprwqrqwrqw=</span><span class="p">{</span><span class="err">item=</span><span class="p">{</span><span class="err">price=</span><span class="mi">10000</span><span class="p">,</span><span class="w"> </span><span class="err">imageUrl=https://s</span><span class="mi">3</span><span class="err">.ap-northeast</span><span class="mi">-2</span><span class="err">.amazonaws.com/</span><span class="mi">3</span><span class="err">.GIF</span><span class="p">,</span><span class="w"> </span><span class="err">name=gif</span><span class="w"> </span><span class="err">테스트</span><span class="p">,</span><span class="w"> </span><span class="err">id=</span><span class="mi">3</span><span class="p">},</span><span class="w"> </span><span class="err">createdWith=</span><span class="p">{</span><span class="err">bcryptId=$RJ#O@JROPH#QOPFHOPQFH</span><span class="p">,</span><span class="w"> </span><span class="err">nickName=makkk</span><span class="p">,</span><span class="w"> </span><span class="err">isPresented=</span><span class="kc">true</span><span class="p">,</span><span class="w"> </span><span class="err">id=</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="err">profileImg=https://s</span><span class="mi">3</span><span class="err">.ap-northeast</span><span class="mi">-2</span><span class="err">.amazonaws.com/</span><span class="mi">4</span><span class="err">.jpg</span><span class="p">},</span><span class="w"> </span><span class="err">createdBy=</span><span class="p">{</span><span class="err">nickName=팅카오</span><span class="p">,</span><span class="w"> </span><span class="err">isPresented=</span><span class="kc">true</span><span class="p">,</span><span class="w"> </span><span class="err">id=</span><span class="mi">757</span><span class="p">},</span><span class="w"> </span><span class="err">id=-Mirjowqjprwqrqwrqw</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="err">timestamp=</span><span class="mi">1630376711720</span><span class="p">},</span><span class="w"> 
+
+	</span><span class="err">-Mirjowqjprwqrqwrqw</span><span class="mi">2</span><span class="err">=</span><span class="p">{</span><span class="err">item=</span><span class="p">{</span><span class="err">price=</span><span class="mi">10000</span><span class="p">,</span><span class="w"> </span><span class="err">imageUrl=https://s</span><span class="mi">3</span><span class="err">.ap-northeast</span><span class="mi">-2</span><span class="err">.amazonaws.com/</span><span class="mi">5</span><span class="err">.GIF</span><span class="p">,</span><span class="w"> </span><span class="err">name=gif</span><span class="w"> </span><span class="err">테스트</span><span class="p">,</span><span class="w"> </span><span class="err">id=</span><span class="mi">3</span><span class="p">},</span><span class="w"> </span><span class="err">createdWith=</span><span class="p">{</span><span class="err">bcryptId=$RJ#O@JROPH#QOPFHOPQFH</span><span class="p">,</span><span class="w"> </span><span class="err">nickName=makkk</span><span class="p">,</span><span class="w"> </span><span class="err">isPresented=</span><span class="kc">true</span><span class="p">,</span><span class="w"> </span><span class="err">id=</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="err">profileImg=https://s</span><span class="mi">3</span><span class="err">.ap-northeast</span><span class="mi">-2</span><span class="err">.amazonaws.com/</span><span class="mi">6</span><span class="err">.jpg</span><span class="p">},</span><span class="w"> </span><span class="err">createdBy=</span><span class="p">{</span><span class="err">nickName=팅카오</span><span class="p">,</span><span class="w"> </span><span class="err">isPresented=</span><span class="kc">true</span><span class="p">,</span><span class="w"> </span><span class="err">id=</span><span class="mi">757</span><span class="p">},</span><span class="w"> </span><span class="err">id=-Mirjowqjprwqrqwrqw</span><span class="mi">11</span><span class="p">,</span><span class="w"> </span><span class="err">timestamp=</span><span class="mi">1630376711720</span><span class="p">},</span><span class="w"> 
+
+</span><span class="err">.</span><span class="w"> 
+</span><span class="err">.</span><span class="w">
+</span><span class="err">.</span><span class="w">
+
+	
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+	</span><span class="nl">"notification"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+		</span><span class="nl">"user:3"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+			</span><span class="s2">"nonChat:1"</span><span class="err">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+				</span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+				</span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"REVIEW_FIRST"</span><span class="p">,</span><span class="w">
+				</span><span class="nl">"reviewId"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+				</span><span class="nl">"priceProposeId"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+				</span><span class="nl">"priceProposePrice"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+				</span><span class="nl">"senderNickName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"도원결의"</span><span class="p">,</span><span class="w">
+				</span><span class="nl">"itemId"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w">
+				</span><span class="nl">"itemName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"블랙핑크 굿즈 한번에 마니 사요"</span><span class="p">,</span><span class="w">
+				</span><span class="nl">"createdAt"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2010-04-15 15:42:15"</span><span class="p">,</span><span class="w">
+				</span><span class="nl">"isRead"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">				
+			</span><span class="p">},</span><span class="w">
+			</span><span class="s2">"nonChat:2"</span><span class="err">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+				</span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
+				</span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PRICE_PROPOSE"</span><span class="p">,</span><span class="w">
+				</span><span class="nl">"reviewId"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+				</span><span class="nl">"priceProposeId"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w">
+				</span><span class="nl">"priceProposePrice"</span><span class="p">:</span><span class="w"> </span><span class="mi">15000</span><span class="p">,</span><span class="w">
+				</span><span class="nl">"senderNickName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"도원결의"</span><span class="p">,</span><span class="w">
+				</span><span class="nl">"itemId"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w">
+				</span><span class="nl">"itemName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"블랙핑크 굿즈 한번에 마니 사요"</span><span class="p">,</span><span class="w">
+				</span><span class="nl">"createdAt"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2010-04-15 15:42:15"</span><span class="p">,</span><span class="w">
+				</span><span class="nl">"isRead"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">				
+			</span><span class="p">},</span><span class="w">
+			</span><span class="err">.</span><span class="w">
+			</span><span class="err">.</span><span class="w">
+		</span><span class="p">]</span><span class="w">
+
+</span><span class="err">#</span><span class="w"> </span><span class="err">chat</span><span class="w"> </span><span class="err">noty와</span><span class="w"> </span><span class="err">일반</span><span class="w"> </span><span class="err">noty를</span><span class="w"> </span><span class="err">분리하면?</span><span class="w">
+</span><span class="p">{</span><span class="w">
+	</span><span class="nl">"chat"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+		</span><span class="nl">"user:3"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+			</span><span class="nl">"chatRoom:-Modewfwreww-wqr21r213"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+				</span><span class="s2">"chat:-Modewfwreww-wqr21r212"</span><span class="err">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+					</span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CHAT"</span><span class="p">,</span><span class="w">
+					</span><span class="nl">"senderNickName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Makkkk"</span><span class="p">,</span><span class="w">
+					</span><span class="nl">"createdAt"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2010-04-05 12:00:11"</span><span class="p">,</span><span class="w">
+					</span><span class="nl">"isRead"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+				</span><span class="p">},</span><span class="w">
+				</span><span class="p">{</span><span class="w">
+				</span><span class="p">},</span><span class="w">
+				</span><span class="p">{</span><span class="w">
+				</span><span class="p">},</span><span class="w">
+				</span><span class="p">{</span><span class="w">
+				</span><span class="p">},</span><span class="w">
+				</span><span class="p">{</span><span class="w">
+				</span><span class="p">},</span><span class="w">
+				</span><span class="p">{</span><span class="w">
+				</span><span class="p">},</span><span class="w">
+				</span><span class="err">.</span><span class="w">
+				</span><span class="err">.</span><span class="w">
+			</span><span class="p">]</span><span class="w">
+		</span><span class="p">},</span><span class="w">
+		</span><span class="nl">"chatRoom:-M2rw24rrwq-wkkgmetm"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+		</span><span class="p">},</span><span class="w">
+		</span><span class="err">.</span><span class="w">
+		</span><span class="err">.</span><span class="w">
+	</span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="알림-데이터-정리">알림 데이터 정리</h3>
+
+<ul>
+  <li>가격 제시
+    <ul>
+      <li>type</li>
+      <li>priceProposeId</li>
+      <li>userId (receiver)</li>
+      <li>senderNickName</li>
+      <li><strong>itemName</strong></li>
+      <li><strong>itemPrice</strong></li>
+      <li>createdAt</li>
+      <li>isRead</li>
+    </ul>
+  </li>
+  <li>채팅
+    <ul>
+      <li>type</li>
+      <li>chatRoomId</li>
+      <li>userId (receiver)</li>
+      <li>senderNickName</li>
+      <li>createdAt</li>
+      <li>isRead</li>
+    </ul>
+  </li>
+  <li>선 리뷰
+    <ul>
+      <li>type</li>
+      <li>reviewId</li>
+      <li>userId (receiver)</li>
+      <li>senderNickName</li>
+      <li>createdAt</li>
+      <li>isRead</li>
+    </ul>
+  </li>
+  <li>후 리뷰
+    <ul>
+      <li>type</li>
+      <li>reviewId</li>
+      <li>userId (receiver)</li>
+      <li>senderNickName</li>
+      <li>createdAt</li>
+      <li>isRead</li>
+    </ul>
+  </li>
+  <li>커뮤니티 댓글
+    <ul>
+      <li>type</li>
+      <li>PostId</li>
+      <li>userId (receiver)</li>
+      <li>senderNickName</li>
+      <li>createdAt</li>
+      <li>isRead</li>
+    </ul>
+  </li>
+</ul>
+
+<hr>
+
+<h3 id="nosql-데이터-구조-설계-시-고려사항">NoSQL 데이터 구조 설계 시 고려사항</h3>
+
+<blockquote>
+  <p>알림 데이터는 어떠한 <code class="language-plaintext highlighter-rouge">Key</code>로 검색이 되는가?</p>
+
+</blockquote>
+
+<blockquote>
+  <p>읽기/쓰기 비율은 어떻게 되는가?</p>
+
+</blockquote>
+
+<blockquote>
+  <p>집계가 필요한가?</p>
+
+</blockquote>
+
+<blockquote>
+  <p>데이터 양은 얼마나 되는가?</p>
+
+</blockquote>
+
+<blockquote>
+  <p><strong>보통 NoSQL은 뎁스가 없는 형태로 구현된다.</strong></p>
+
+</blockquote>
+
+<p>user:userId:notification:notificationId : {}</p>
+
+<p>user:userId:chatRoom:chatRoomId : { “id”: 1, “content”: “안녕하세요” .. }</p>
+
+<p>이런식?</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+    </span><span class="nl">"success"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"response"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"error"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Could not read JSON: Cannot construct instance of `java.time.LocalDateTime` (no Creators, like default constructor, exist): cannot deserialize from Object value (no delegate- or property-based Creator)</span><span class="se">\n</span><span class="s2"> at [Source: (byte[])</span><span class="se">\"</span><span class="s2">{</span><span class="se">\"</span><span class="s2">id</span><span class="se">\"</span><span class="s2">:</span><span class="se">\"</span><span class="s2">opjpqorjpo-rwqqwjrpoqw-jopr</span><span class="se">\"</span><span class="s2">,</span><span class="se">\"</span><span class="s2">type</span><span class="se">\"</span><span class="s2">:</span><span class="se">\"</span><span class="s2">PRICE_PROPOSE</span><span class="se">\"</span><span class="s2">,</span><span class="se">\"</span><span class="s2">reviewId</span><span class="se">\"</span><span class="s2">:null,</span><span class="se">\"</span><span class="s2">priceProposeId</span><span class="se">\"</span><span class="s2">:29,</span><span class="se">\"</span><span class="s2">priceProposePrice</span><span class="se">\"</span><span class="s2">:50000,</span><span class="se">\"</span><span class="s2">senderNickName</span><span class="se">\"</span><span class="s2">:</span><span class="se">\"</span><span class="s2">hello</span><span class="se">\"</span><span class="s2">,</span><span class="se">\"</span><span class="s2">itemId</span><span class="se">\"</span><span class="s2">:104,</span><span class="se">\"</span><span class="s2">itemName</span><span class="se">\"</span><span class="s2">:</span><span class="se">\"</span><span class="s2">누군진 버터앨범 모르지만 파라용</span><span class="se">\"</span><span class="s2">,</span><span class="se">\"</span><span class="s2">createdAt</span><span class="se">\"</span><span class="s2">:{</span><span class="se">\"</span><span class="s2">year</span><span class="se">\"</span><span class="s2">:2021,</span><span class="se">\"</span><span class="s2">monthValue</span><span class="se">\"</span><span class="s2">:9,</span><span class="se">\"</span><span class="s2">dayOfMonth</span><span class="se">\"</span><span class="s2">:2,</span><span class="se">\"</span><span class="s2">hour</span><span class="se">\"</span><span class="s2">:21,</span><span class="se">\"</span><span class="s2">minute</span><span class="se">\"</span><span class="s2">:37,</span><span class="se">\"</span><span class="s2">second</span><span class="se">\"</span><span class="s2">:36,</span><span class="se">\"</span><span class="s2">month</span><span class="se">\"</span><span class="s2">:</span><span class="se">\"</span><span class="s2">SEPTEMBER</span><span class="se">\"</span><span class="s2">,</span><span class="se">\"</span><span class="s2">dayOfWeek</span><span class="se">\"</span><span class="s2">:</span><span class="se">\"</span><span class="s2">THURSDAY</span><span class="se">\"</span><span class="s2">,</span><span class="se">\"</span><span class="s2">dayOfYear</span><span class="se">\"</span><span class="s2">:245,</span><span class="se">\"</span><span class="s2">nano</span><span class="se">\"</span><span class="s2">:357880000,</span><span class="se">\"</span><span class="s2">chronology</span><span class="se">\"</span><span class="s2">:{</span><span class="se">\"</span><span class="s2">id</span><span class="se">\"</span><span class="s2">:</span><span class="se">\"</span><span class="s2">ISO</span><span class="se">\"</span><span class="s2">,</span><span class="se">\"</span><span class="s2">calendarType</span><span class="se">\"</span><span class="s2">:</span><span class="se">\"</span><span class="s2">iso8601</span><span class="se">\"</span><span class="s2">}},</span><span class="se">\"</span><span class="s2">expiredAt</span><span class="se">\"</span><span class="s2">:{</span><span class="se">\"</span><span class="s2">year</span><span class="se">\"</span><span class="s2">:2021,</span><span class="se">\"</span><span class="s2">monthValue</span><span class="se">\"</span><span class="s2">:9,</span><span class="se">\"</span><span class="s2">dayOfMonth</span><span class="se">\"</span><span class="s2">:2,</span><span class="se">\"\"</span><span class="s2">[truncated 176 bytes]; line: 1, column: 241] (through reference chain: com.ducks.goodsduck.commons.model.redis.NotificationRedisDto[</span><span class="se">\"</span><span class="s2">createdAt</span><span class="se">\"</span><span class="s2">]); nested exception is com.fasterxml.jackson.databind.exc.InvalidDefinitionException: Cannot construct instance of `java.time.LocalDateTime` (no Creators, like default constructor, exist): cannot deserialize from Object value (no delegate- or property-based Creator)</span><span class="se">\n</span><span class="s2"> at [Source: (byte[])</span><span class="se">\"</span><span class="s2">{</span><span class="se">\"</span><span class="s2">id</span><span class="se">\"</span><span class="s2">:</span><span class="se">\"</span><span class="s2">opjpqorjpo-rwqqwjrpoqw-jopr</span><span class="se">\"</span><span class="s2">,</span><span class="se">\"</span><span class="s2">type</span><span class="se">\"</span><span class="s2">:</span><span class="se">\"</span><span class="s2">PRICE_PROPOSE</span><span class="se">\"</span><span class="s2">,</span><span class="se">\"</span><span class="s2">reviewId</span><span class="se">\"</span><span class="s2">:null,</span><span class="se">\"</span><span class="s2">priceProposeId</span><span class="se">\"</span><span class="s2">:29,</span><span class="se">\"</span><span class="s2">priceProposePrice</span><span class="se">\"</span><span class="s2">:50000,</span><span class="se">\"</span><span class="s2">senderNickName</span><span class="se">\"</span><span class="s2">:</span><span class="se">\"</span><span class="s2">hello</span><span class="se">\"</span><span class="s2">,</span><span class="se">\"</span><span class="s2">itemId</span><span class="se">\"</span><span class="s2">:104,</span><span class="se">\"</span><span class="s2">itemName</span><span class="se">\"</span><span class="s2">:</span><span class="se">\"</span><span class="s2">누군진 버터앨범 모르지만 파라용</span><span class="se">\"</span><span class="s2">,</span><span class="se">\"</span><span class="s2">createdAt</span><span class="se">\"</span><span class="s2">:{</span><span class="se">\"</span><span class="s2">year</span><span class="se">\"</span><span class="s2">:2021,</span><span class="se">\"</span><span class="s2">monthValue</span><span class="se">\"</span><span class="s2">:9,</span><span class="se">\"</span><span class="s2">dayOfMonth</span><span class="se">\"</span><span class="s2">:2,</span><span class="se">\"</span><span class="s2">hour</span><span class="se">\"</span><span class="s2">:21,</span><span class="se">\"</span><span class="s2">minute</span><span class="se">\"</span><span class="s2">:37,</span><span class="se">\"</span><span class="s2">second</span><span class="se">\"</span><span class="s2">:36,</span><span class="se">\"</span><span class="s2">month</span><span class="se">\"</span><span class="s2">:</span><span class="se">\"</span><span class="s2">SEPTEMBER</span><span class="se">\"</span><span class="s2">,</span><span class="se">\"</span><span class="s2">dayOfWeek</span><span class="se">\"</span><span class="s2">:</span><span class="se">\"</span><span class="s2">THURSDAY</span><span class="se">\"</span><span class="s2">,</span><span class="se">\"</span><span class="s2">dayOfYear</span><span class="se">\"</span><span class="s2">:245,</span><span class="se">\"</span><span class="s2">nano</span><span class="se">\"</span><span class="s2">:357880000,</span><span class="se">\"</span><span class="s2">chronology</span><span class="se">\"</span><span class="s2">:{</span><span class="se">\"</span><span class="s2">id</span><span class="se">\"</span><span class="s2">:</span><span class="se">\"</span><span class="s2">ISO</span><span class="se">\"</span><span class="s2">,</span><span class="se">\"</span><span class="s2">calendarType</span><span class="se">\"</span><span class="s2">:</span><span class="se">\"</span><span class="s2">iso8601</span><span class="se">\"</span><span class="s2">}},</span><span class="se">\"</span><span class="s2">expiredAt</span><span class="se">\"</span><span class="s2">:{</span><span class="se">\"</span><span class="s2">year</span><span class="se">\"</span><span class="s2">:2021,</span><span class="se">\"</span><span class="s2">monthValue</span><span class="se">\"</span><span class="s2">:9,</span><span class="se">\"</span><span class="s2">dayOfMonth</span><span class="se">\"</span><span class="s2">:2,</span><span class="se">\"\"</span><span class="s2">[truncated 176 bytes]; line: 1, column: 241] (through reference chain: com.ducks.goodsduck.commons.model.redis.NotificationRedisDto[</span><span class="se">\"</span><span class="s2">createdAt</span><span class="se">\"</span><span class="s2">])"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"status"</span><span class="p">:</span><span class="w"> </span><span class="mi">500</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>위와 같은 에러는 <a href="https://eeyatho.tistory.com/4">여기</a>를 참고했다. Serialize 해주는 Jackson 라이브러리가 Java8의 LocalDateTime 자료형을 모르기 때문이라고 한다. 일단 외부 라이브러리를 사용하라는 해결책을 봤는데, 우선 참고한 링크에서 사용한 어노테이션이 현재도 사용가능하길래 추가해봤다.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">com.ducks.goodsduck.commons.model.redis</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">com.ducks.goodsduck.commons.model.enums.NotificationType</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.fasterxml.jackson.databind.annotation.JsonDeserialize</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">lombok.AllArgsConstructor</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">lombok.Data</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">lombok.NoArgsConstructor</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">javax.persistence.Id</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.Serializable</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.time.LocalDateTime</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.UUID</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">static</span> <span class="n">com</span><span class="o">.</span><span class="na">ducks</span><span class="o">.</span><span class="na">goodsduck</span><span class="o">.</span><span class="na">commons</span><span class="o">.</span><span class="na">model</span><span class="o">.</span><span class="na">enums</span><span class="o">.</span><span class="na">NotificationType</span><span class="o">.</span><span class="na">PRICE_PROPOSE</span><span class="o">;</span>
+
+<span class="nd">@Data</span>
+<span class="nd">@NoArgsConstructor</span> <span class="c1">// 링크에서 생성자를 못찾아서 에러가 발생한다는 내용이 있어서 추가</span>
+<span class="nd">@AllArgsConstructor</span> <span class="c1">// 링크에서 생성자를 못찾아서 에러가 발생한다는 내용이 있어서 추가</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">NotificationRedisDto</span> <span class="kd">implements</span> <span class="nc">Serializable</span> <span class="o">{</span>
+
+    <span class="nd">@Id</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">id</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">NotificationType</span> <span class="n">type</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">Long</span> <span class="n">reviewId</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">Long</span> <span class="n">priceProposeId</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">Integer</span> <span class="n">priceProposePrice</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">senderNickName</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">Long</span> <span class="n">itemId</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">itemName</span><span class="o">;</span>
+    
+		<span class="nd">@JsonDeserialize</span><span class="o">(</span><span class="n">using</span> <span class="o">=</span> <span class="nc">LocalDateTimeDeserializer</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+    <span class="nd">@JsonSerialize</span><span class="o">(</span><span class="n">using</span> <span class="o">=</span> <span class="nc">LocalDateTimeSerializer</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="nc">LocalDateTime</span> <span class="n">createdAt</span><span class="o">;</span>
+
+    <span class="nd">@JsonDeserialize</span><span class="o">(</span><span class="n">using</span> <span class="o">=</span> <span class="nc">LocalDateTimeDeserializer</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+    <span class="nd">@JsonSerialize</span><span class="o">(</span><span class="n">using</span> <span class="o">=</span> <span class="nc">LocalDateTimeSerializer</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="nc">LocalDateTime</span> <span class="n">expiredAt</span><span class="o">;</span>
+
+    <span class="kd">private</span> <span class="nc">Boolean</span> <span class="n">isRead</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">read</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">isRead</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="c1">// HINT: REVIEW</span>
+    <span class="kd">public</span> <span class="nf">NotificationRedisDto</span><span class="o">(</span><span class="nc">NotificationType</span> <span class="n">type</span><span class="o">,</span> <span class="nc">Long</span> <span class="n">reviewId</span><span class="o">,</span> <span class="nc">String</span> <span class="n">senderNickName</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">id</span> <span class="o">=</span> <span class="no">UUID</span><span class="o">.</span><span class="na">randomUUID</span><span class="o">().</span><span class="na">toString</span><span class="o">();</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">type</span> <span class="o">=</span> <span class="n">type</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">reviewId</span> <span class="o">=</span> <span class="n">reviewId</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">senderNickName</span> <span class="o">=</span> <span class="n">senderNickName</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">createdAt</span> <span class="o">=</span> <span class="nc">LocalDateTime</span><span class="o">.</span><span class="na">now</span><span class="o">();</span>
+<span class="c1">//        this.expiredAt = createdAt.plusWeeks(2L);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">expiredAt</span> <span class="o">=</span> <span class="n">createdAt</span><span class="o">.</span><span class="na">plusMinutes</span><span class="o">(</span><span class="mi">1L</span><span class="o">);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">isRead</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="c1">// HINT: PricePropose</span>
+    <span class="kd">public</span> <span class="nf">NotificationRedisDto</span><span class="o">(</span><span class="nc">Long</span> <span class="n">priceProposeId</span><span class="o">,</span> <span class="nc">Integer</span> <span class="n">priceProposePrice</span><span class="o">,</span> <span class="nc">Long</span> <span class="n">itemId</span><span class="o">,</span> <span class="nc">String</span> <span class="n">itemName</span><span class="o">,</span> <span class="nc">String</span> <span class="n">senderNickName</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">id</span> <span class="o">=</span> <span class="no">UUID</span><span class="o">.</span><span class="na">randomUUID</span><span class="o">().</span><span class="na">toString</span><span class="o">();</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">type</span> <span class="o">=</span> <span class="no">PRICE_PROPOSE</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">senderNickName</span> <span class="o">=</span> <span class="n">senderNickName</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">priceProposeId</span> <span class="o">=</span> <span class="n">priceProposeId</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">priceProposePrice</span> <span class="o">=</span> <span class="n">priceProposePrice</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">itemId</span> <span class="o">=</span> <span class="n">itemId</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">itemName</span> <span class="o">=</span> <span class="n">itemName</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">createdAt</span> <span class="o">=</span> <span class="nc">LocalDateTime</span><span class="o">.</span><span class="na">now</span><span class="o">();</span>
+<span class="c1">//        this.expiredAt = createdAt.plusWeeks(2L);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">expiredAt</span> <span class="o">=</span> <span class="n">createdAt</span><span class="o">.</span><span class="na">plusMinutes</span><span class="o">(</span><span class="mi">1L</span><span class="o">);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">isRead</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+</code></pre></div></div>
+
+<p>결국 <code class="language-plaintext highlighter-rouge">@Deserializer</code>, <code class="language-plaintext highlighter-rouge">@Serializer</code> 어노테이션 모두 붙여서 해결되었다!</p>
+
+<p>Notification  데이터 구조</p>
+
+<p>Chat 데이터 구조</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// ChatRedis</span>
+
+<span class="cm">/** REDIS */</span>
+<span class="o">{</span>
+	<span class="s">"user:3:chatRoom:-Mwroqjorq-ojwrowjqrq"</span><span class="o">:</span> <span class="o">{</span>
+		<span class="o">[</span>
+			<span class="o">{</span>
+				<span class="s">"id"</span><span class="o">:</span> <span class="s">"-Mnwqorlxf-owjrw2kt"</span><span class="o">,</span>
+				<span class="s">"chatRoomId"</span><span class="o">:</span> <span class="s">"-Mwroqjorq-ojwrowjqrq"</span><span class="o">,</span>
+				<span class="s">"senderNickName"</span><span class="o">:</span> <span class="s">"도원결의"</span><span class="o">,</span>
+				<span class="s">"content"</span><span class="o">:</span> <span class="s">"안녕하세요"</span><span class="o">,</span>
+				<span class="s">"createdAt"</span><span class="o">:</span> <span class="s">""</span><span class="o">,</span>
+			<span class="o">},</span>
+			<span class="o">{</span>
+				<span class="s">"id"</span><span class="o">:</span> <span class="s">"-Mnwqorlxf-nwjrw2kt"</span><span class="o">,</span>
+				<span class="s">"chatRoomId"</span><span class="o">:</span> <span class="s">"-Mwroqjorq-ojwrowjqrq"</span><span class="o">,</span>
+				<span class="s">"senderNickName"</span><span class="o">:</span> <span class="s">"makkk"</span><span class="o">,</span>
+				<span class="s">"content"</span><span class="o">:</span> <span class="s">"네 하이요"</span><span class="o">,</span>
+				<span class="s">"createdAt"</span><span class="o">:</span> <span class="s">""</span><span class="o">,</span>
+			<span class="o">}</span>
+		<span class="o">]</span>
+	<span class="o">}</span>
+	
+	
+<span class="o">}</span>
+
+<span class="o">{</span>
+	<span class="s">"user:3:notification"</span><span class="o">:</span> <span class="o">{</span>
+		<span class="o">[</span>
+			<span class="o">{</span>
+				<span class="s">"id"</span><span class="o">:</span> <span class="s">"-Mnwqorlxf-owjrw2kt"</span><span class="o">,</span>
+				<span class="s">"chatRoomId"</span><span class="o">:</span> <span class="s">"-Mwroqjorq-ojwrowjqrq"</span><span class="o">,</span>
+				<span class="s">"senderNickName"</span><span class="o">:</span> <span class="s">"도원결의"</span><span class="o">,</span>
+				<span class="s">"content"</span><span class="o">:</span> <span class="s">"안녕하세요"</span><span class="o">,</span>
+				<span class="s">"createdAt"</span><span class="o">:</span> <span class="s">""</span><span class="o">,</span>
+			<span class="o">},</span>
+			<span class="o">{</span>
+				<span class="s">"id"</span><span class="o">:</span> <span class="s">"-Mnwqorlxf-nwjrw2kt"</span><span class="o">,</span>
+				<span class="s">"chatRoomId"</span><span class="o">:</span> <span class="s">"-Mwroqjorq-ojwrowjqrq"</span><span class="o">,</span>
+				<span class="s">"senderNickName"</span><span class="o">:</span> <span class="s">"makkk"</span><span class="o">,</span>
+				<span class="s">"content"</span><span class="o">:</span> <span class="s">"네 하이요"</span><span class="o">,</span>
+				<span class="s">"createdAt"</span><span class="o">:</span> <span class="s">""</span><span class="o">,</span>
+			<span class="o">}</span>
+		<span class="o">]</span>
+	<span class="o">}</span>
+	
+	
+<span class="o">}</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 유저 ID에 해당하는 채팅방 목록 조회 API</span>
+
+<span class="cm">/** json */</span>
+<span class="o">{</span>
+	<span class="o">[</span>
+		<span class="s">"chatRoomId"</span><span class="o">:</span> <span class="s">"-Mwroqjorq-ojwrowjqrq"</span><span class="o">,</span>
+		<span class="s">"chat"</span><span class="o">:</span> <span class="o">[</span>
+			<span class="o">{</span>
+				<span class="s">"id"</span><span class="o">:</span> <span class="s">"-Mnwqorlxf-nwjrw2kt"</span><span class="o">,</span>
+				<span class="s">"chatRoomId"</span><span class="o">:</span> <span class="s">"-Mwroqjorq-ojwrowjqrq"</span><span class="o">,</span>
+				<span class="s">"senderNickName"</span><span class="o">:</span> <span class="s">"makkk"</span><span class="o">,</span>
+				<span class="s">"content"</span><span class="o">:</span> <span class="s">"네 하이요"</span><span class="o">,</span>
+				<span class="s">"createdAt"</span><span class="o">:</span> <span class="s">""</span><span class="o">,</span>
+			<span class="o">},</span>
+			<span class="o">{</span>
+				<span class="s">"id"</span><span class="o">:</span> <span class="s">"-Mnwqorlxf-nwjrw2kt"</span><span class="o">,</span>
+				<span class="s">"chatRoomId"</span><span class="o">:</span> <span class="s">"-Mwroqjorq-ojwrowjqrq"</span><span class="o">,</span>
+				<span class="s">"senderNickName"</span><span class="o">:</span> <span class="s">"makkk"</span><span class="o">,</span>
+				<span class="s">"content"</span><span class="o">:</span> <span class="s">"네 하이요"</span><span class="o">,</span>
+				<span class="s">"createdAt"</span><span class="o">:</span> <span class="s">""</span><span class="o">,</span>
+			<span class="o">}</span>
+		<span class="o">]</span>
+	<span class="o">]</span>
+	<span class="s">"user:3:chatRoom:-Mwroqjorq-ojwrowjqrq"</span><span class="o">:</span> <span class="o">{</span>
+		<span class="o">[</span>
+			<span class="o">{</span>
+				<span class="s">"id"</span><span class="o">:</span> <span class="s">"-Mnwqorlxf-owjrw2kt"</span><span class="o">,</span>
+				<span class="s">"chatRoomId"</span><span class="o">:</span> <span class="s">"-Mwroqjorq-ojwrowjqrq"</span><span class="o">,</span>
+				<span class="s">"senderNickName"</span><span class="o">:</span> <span class="s">"도원결의"</span><span class="o">,</span>
+				<span class="s">"content"</span><span class="o">:</span> <span class="s">"안녕하세요"</span><span class="o">,</span>
+				<span class="s">"createdAt"</span><span class="o">:</span> <span class="s">""</span><span class="o">,</span>
+			<span class="o">},</span>
+			<span class="o">{</span>
+				<span class="s">"id"</span><span class="o">:</span> <span class="s">"-Mnwqorlxf-nwjrw2kt"</span><span class="o">,</span>
+				<span class="s">"chatRoomId"</span><span class="o">:</span> <span class="s">"-Mwroqjorq-ojwrowjqrq"</span><span class="o">,</span>
+				<span class="s">"senderNickName"</span><span class="o">:</span> <span class="s">"makkk"</span><span class="o">,</span>
+				<span class="s">"content"</span><span class="o">:</span> <span class="s">"네 하이요"</span><span class="o">,</span>
+				<span class="s">"createdAt"</span><span class="o">:</span> <span class="s">""</span><span class="o">,</span>
+			<span class="o">}</span>
+		<span class="o">]</span>
+	<span class="o">}</span>
+	
+	
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h3 id="참고-링크">참고 링크</h3>
+
+<ul>
+  <li><a href="https://tape22.tistory.com/25">https://tape22.tistory.com/25</a></li>
+  <li>Serializer 문제
+    <ul>
+      <li><a href="https://minholee93.tistory.com/entry/ERROR-DefaultSerializer-requires-a-Serializable-payload-but-received-an-object-of-type">https://minholee93.tistory.com/entry/ERROR-DefaultSerializer-requires-a-Serializable-payload-but-received-an-object-of-type</a></li>
+    </ul>
+  </li>
+  <li>Redis는 Quick List를 사용한다
+    <ul>
+      <li><a href="http://redisgate.kr/redis/configuration/internal_quicklist.php">http://redisgate.kr/redis/configuration/internal_quicklist.php</a></li>
+    </ul>
+  </li>
+  <li>Redis에서 keys가 아닌, Scan으로 key들을 조회하는 방법
+    <ul>
+      <li><a href="https://jaepils.github.io/redis/2018/11/20/redis-scan.html">https://jaepils.github.io/redis/2018/11/20/redis-scan.html</a></li>
+    </ul>
+  </li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">com.ducks.goodsduck.commons.service</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">com.ducks.goodsduck.commons.repository.SmsAuthenticationRepository</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.ducks.goodsduck.commons.util.AwsSecretsManagerUtil</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.ducks.goodsduck.commons.util.PropertyUtil</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">lombok.RequiredArgsConstructor</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">lombok.extern.slf4j.Slf4j</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">net.nurigo.java_sdk.api.Message</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">net.nurigo.java_sdk.exceptions.CoolsmsException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.json.JSONObject</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.stereotype.Service</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.util.HashMap</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Random</span><span class="o">;</span>
+
+<span class="nd">@Service</span>
+<span class="nd">@RequiredArgsConstructor</span>
+<span class="nd">@Slf4j</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SmsAuthenticationService</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="kd">final</span> <span class="nc">JSONObject</span> <span class="n">jsonOfAwsSecrets</span> <span class="o">=</span> <span class="nc">AwsSecretsManagerUtil</span><span class="o">.</span><span class="na">getSecret</span><span class="o">();</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">apiKey</span> <span class="o">=</span> <span class="n">jsonOfAwsSecrets</span><span class="o">.</span><span class="na">optString</span><span class="o">(</span><span class="s">"coolsms.apikey"</span><span class="o">,</span> <span class="s">""</span><span class="o">);</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">apiSecret</span> <span class="o">=</span> <span class="n">jsonOfAwsSecrets</span><span class="o">.</span><span class="na">optString</span><span class="o">(</span><span class="s">"coolsms.apisecret"</span><span class="o">,</span> <span class="s">""</span><span class="o">);</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">senderNumber</span> <span class="o">=</span> <span class="n">jsonOfAwsSecrets</span><span class="o">.</span><span class="na">optString</span><span class="o">(</span><span class="s">"coolsms.sendernumber"</span><span class="o">,</span> <span class="s">""</span><span class="o">);</span>
+
+    <span class="kd">private</span> <span class="kd">final</span> <span class="nc">SmsAuthenticationRepository</span> <span class="n">smsAuthenticationRepository</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="nc">Boolean</span> <span class="nf">sendSmsOfAuthentication</span><span class="o">(</span><span class="nc">String</span> <span class="n">phoneNumber</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">jsonOfAwsSecrets</span><span class="o">.</span><span class="na">isEmpty</span><span class="o">())</span> <span class="o">{</span>
+            <span class="n">apiKey</span> <span class="o">=</span> <span class="nc">PropertyUtil</span><span class="o">.</span><span class="na">getProperty</span><span class="o">(</span><span class="s">"coolsms.apikey"</span><span class="o">);</span>
+            <span class="n">apiSecret</span> <span class="o">=</span> <span class="nc">PropertyUtil</span><span class="o">.</span><span class="na">getProperty</span><span class="o">(</span><span class="s">"coolsms.apisecret"</span><span class="o">);</span>
+            <span class="n">senderNumber</span> <span class="o">=</span> <span class="nc">PropertyUtil</span><span class="o">.</span><span class="na">getProperty</span><span class="o">(</span><span class="s">"coolsms.sendernumber"</span><span class="o">);</span>
+        <span class="o">}</span>
+
+        <span class="nc">Message</span> <span class="n">coolsms</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Message</span><span class="o">(</span><span class="n">apiKey</span><span class="o">,</span> <span class="n">apiSecret</span><span class="o">);</span>
+        <span class="nc">String</span> <span class="n">authenticationNumber</span> <span class="o">=</span> <span class="n">generateAuthenticationNumber</span><span class="o">();</span>
+
+        <span class="c1">// 4 params(to, from, type, text) are mandatory. must be filled</span>
+        <span class="nc">HashMap</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">String</span><span class="o">&gt;</span> <span class="n">params</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">HashMap</span><span class="o">&lt;&gt;();</span>
+        <span class="n">params</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"to"</span><span class="o">,</span> <span class="n">phoneNumber</span><span class="o">);</span>    <span class="c1">// 수신전화번호</span>
+        <span class="n">params</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"from"</span><span class="o">,</span> <span class="n">senderNumber</span><span class="o">);</span>    <span class="c1">// 발신전화번호. 테스트시에는 발신,수신 둘다 본인 번호로 하면 됨</span>
+        <span class="n">params</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"type"</span><span class="o">,</span> <span class="s">"SMS"</span><span class="o">);</span>
+        <span class="n">params</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"text"</span><span class="o">,</span> <span class="s">"굿즈덕(GOODSDUCK) 인증번호는 \""</span> <span class="o">+</span> <span class="n">authenticationNumber</span> <span class="o">+</span> <span class="s">"\" 입니다."</span><span class="o">);</span>
+        <span class="n">params</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"app_version"</span><span class="o">,</span> <span class="s">"goodsduck app 1.0"</span><span class="o">);</span> <span class="c1">// application name and version</span>
+
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">org</span><span class="o">.</span><span class="na">json</span><span class="o">.</span><span class="na">simple</span><span class="o">.</span><span class="na">JSONObject</span> <span class="n">sendedMessage</span> <span class="o">=</span> <span class="n">coolsms</span><span class="o">.</span><span class="na">send</span><span class="o">(</span><span class="n">params</span><span class="o">);</span>
+            <span class="n">log</span><span class="o">.</span><span class="na">debug</span><span class="o">(</span><span class="s">"Send message from CoolSMS: {}"</span><span class="o">,</span> <span class="n">sendedMessage</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
+            <span class="k">if</span> <span class="o">(!</span><span class="n">sendedMessage</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">"error_count"</span><span class="o">).</span><span class="na">equals</span><span class="o">(</span><span class="mi">0L</span><span class="o">))</span> <span class="o">{</span>
+                <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+            <span class="o">}</span>
+            <span class="n">smsAuthenticationRepository</span><span class="o">.</span><span class="na">saveKeyAndValueOfSMS</span><span class="o">(</span><span class="n">phoneNumber</span><span class="o">,</span> <span class="n">authenticationNumber</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">CoolsmsException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="nf">CoolsmsException</span><span class="o">(</span><span class="s">"Exception of CoolSMS: "</span> <span class="o">+</span> <span class="n">e</span><span class="o">.</span><span class="na">getMessage</span><span class="o">(),</span> <span class="n">e</span><span class="o">.</span><span class="na">getCode</span><span class="o">());</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="nf">Exception</span><span class="o">(</span><span class="s">"Exception occurred in sending CoolSms: "</span> <span class="o">+</span> <span class="n">e</span><span class="o">.</span><span class="na">getMessage</span><span class="o">());</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">Boolean</span> <span class="nf">authenticate</span><span class="o">(</span><span class="nc">String</span> <span class="n">phoneNumber</span><span class="o">,</span> <span class="nc">String</span> <span class="n">authenticationNumber</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">smsAuthenticationRepository</span><span class="o">.</span><span class="na">hasKey</span><span class="o">(</span><span class="n">phoneNumber</span><span class="o">))</span> <span class="o">{</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">smsAuthenticationRepository</span><span class="o">.</span><span class="na">getValueByPhoneNumber</span><span class="o">(</span><span class="n">phoneNumber</span><span class="o">).</span><span class="na">equals</span><span class="o">(</span><span class="n">authenticationNumber</span><span class="o">))</span> <span class="o">{</span>
+                <span class="n">smsAuthenticationRepository</span><span class="o">.</span><span class="na">removeKeyAndValueOfSMS</span><span class="o">(</span><span class="n">phoneNumber</span><span class="o">);</span>
+                <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+
+        <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">generateAuthenticationNumber</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nc">Random</span> <span class="n">random</span>  <span class="o">=</span> <span class="k">new</span> <span class="nc">Random</span><span class="o">();</span>
+        <span class="nc">String</span> <span class="n">randomNumbers</span> <span class="o">=</span> <span class="s">""</span><span class="o">;</span>
+        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="mi">6</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+            <span class="nc">String</span> <span class="n">randomNumber</span> <span class="o">=</span> <span class="nc">Integer</span><span class="o">.</span><span class="na">toString</span><span class="o">(</span><span class="n">random</span><span class="o">.</span><span class="na">nextInt</span><span class="o">(</span><span class="mi">10</span><span class="o">));</span>
+            <span class="n">randomNumbers</span> <span class="o">=</span> <span class="n">randomNumbers</span><span class="o">.</span><span class="na">concat</span><span class="o">(</span><span class="n">randomNumber</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">randomNumbers</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">com.ducks.goodsduck.commons.repository</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.springframework.data.redis.core.StringRedisTemplate</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.stereotype.Repository</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.time.Duration</span><span class="o">;</span>
+
+<span class="nd">@Repository</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SmsAuthenticationRepository</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="kd">final</span> <span class="nc">StringRedisTemplate</span> <span class="n">stringRedisTemplate</span><span class="o">;</span>
+<span class="c1">//    ListOperations&lt;String, NotificationRedisDto&gt; stringNotificationRedisDtoListOperations;</span>
+
+    <span class="kd">private</span> <span class="kd">final</span> <span class="nc">String</span> <span class="no">PREFIX_OF_SMS</span> <span class="o">=</span> <span class="s">"sms:"</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kd">final</span> <span class="nc">Long</span> <span class="no">TTL_OF_SMS</span> <span class="o">=</span> <span class="mi">3</span> <span class="o">*</span> <span class="mi">60L</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="nf">SmsAuthenticationRepository</span><span class="o">(</span><span class="nc">StringRedisTemplate</span> <span class="n">stringRedisTemplate</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">stringRedisTemplate</span> <span class="o">=</span> <span class="n">stringRedisTemplate</span><span class="o">;</span>
+<span class="c1">//        stringNotificationRedisDtoListOperations = stringRedisTemplate.opsForList();</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">saveKeyAndValueOfSMS</span><span class="o">(</span><span class="nc">String</span> <span class="n">phoneNumber</span><span class="o">,</span> <span class="nc">String</span> <span class="n">authenticationNumber</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">stringRedisTemplate</span><span class="o">.</span><span class="na">opsForValue</span><span class="o">().</span><span class="na">set</span><span class="o">(</span><span class="no">PREFIX_OF_SMS</span> <span class="o">+</span> <span class="n">phoneNumber</span><span class="o">,</span> <span class="n">authenticationNumber</span><span class="o">,</span> <span class="nc">Duration</span><span class="o">.</span><span class="na">ofSeconds</span><span class="o">(</span><span class="no">TTL_OF_SMS</span><span class="o">));</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getValueByPhoneNumber</span><span class="o">(</span><span class="nc">String</span> <span class="n">phoneNumber</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">stringRedisTemplate</span><span class="o">.</span><span class="na">opsForValue</span><span class="o">().</span><span class="na">get</span><span class="o">(</span><span class="no">PREFIX_OF_SMS</span> <span class="o">+</span> <span class="n">phoneNumber</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">removeKeyAndValueOfSMS</span><span class="o">(</span><span class="nc">String</span> <span class="n">phoneNumber</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">stringRedisTemplate</span><span class="o">.</span><span class="na">delete</span><span class="o">(</span><span class="no">PREFIX_OF_SMS</span> <span class="o">+</span> <span class="n">phoneNumber</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">hasKey</span><span class="o">(</span><span class="nc">String</span> <span class="n">phoneNumber</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">stringRedisTemplate</span><span class="o">.</span><span class="na">hasKey</span><span class="o">(</span><span class="no">PREFIX_OF_SMS</span> <span class="o">+</span> <span class="n">phoneNumber</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">saveKeyAndSet</span><span class="o">(</span><span class="nc">String</span> <span class="n">key</span><span class="o">)</span> <span class="o">{</span>
+<span class="c1">//        stringRedisTemplate.opsForSet().</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+
+    </div>
+
+</article>
+<div class="post-nav">
+<a class="previous" href="/(sw%EB%A7%88%EC%97%90%EC%8A%A4%ED%8A%B8%EB%A1%9C)goodsduck/2021/09/07/redis-server-%EC%84%A4%EC%B9%98.html" title="Redis-Server 설치하기 (파일 형태)">Redis-Server 설치하기 (파일 형태)</a><a class="next" href="/(sw%EB%A7%88%EC%97%90%EC%8A%A4%ED%8A%B8%EB%A1%9C)goodsduck/2021/09/10/redis-+-flask-%EB%94%B0%EB%9D%BC%ED%95%B4%EB%B3%B4%EA%B8%B0.html" title="redis + flask 따라해보기">redis + flask 따라해보기</a>
+</div>
+<div class="post-related">
+      <div>Related Articles</div>
+      <ul>
+        <li><a class="post-link" href="/algorithm(problem-solving)/2022/01/10/PS-%EC%95%94%ED%98%B8-%EB%A7%8C%EB%93%A4%EA%B8%B0-(%EB%B0%B1%EC%A4%80-1759%EB%B2%88).html" title="redis + flask 따라해보기">[PS] 암호 만들기 (백준 1759번)</a></li>
+<li><a class="post-link" href="/algorithm(problem-solving)/2022/01/02/PS-%ED%8A%B8%EB%A6%AC%EC%9D%98-%EB%B6%80%EB%AA%A8-%EC%B0%BE%EA%B8%B0-(%EB%B0%B1%EC%A4%80-11725%EB%B2%88).html" title="redis + flask 따라해보기">[PS] 트리의 부모 찾기 (백준 11725번)</a></li>
+<li><a class="post-link" href="/django/2021/02/25/Django-Paginator-(django-core-paginator).html" title="redis + flask 따라해보기">[Django] Paginator (django.core.paginator)</a></li>
+<li><a class="post-link" href="/algorithm(problem-solving)/2022/01/09/PS-DFS%EC%99%80-BFS-(%EB%B0%B1%EC%A4%80-1260%EB%B2%88).html" title="redis + flask 따라해보기">[PS] DFS와 BFS (백준 1260번)</a></li>
+</ul>
+    </div>
+<div class="post-comments">
+      <hr>
+
+      <script src="https://utteranc.es/client.js" repo="ting-kim/ting-kim.github.io" issue-term="url" theme="github-dark" crossorigin="anonymous" async>
+      </script>
+</div></section>
+</div>
+
+
+  </section>
+  <section class="sidebar" style="margin-left: 15px;">
+    <!-- Get sidebar items --><style type="text/css" media="screen">
+.post-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+</style>
+
+<div class="post-menu">
+  <div class="post-menu-title">TOC</div>
+  <div class="post-menu-content"></div>
+</div>
+
+<script>
+  function generateContent() {
+    var menu = document.querySelector(".post-menu");
+    var menuContent =  menu.querySelector(".post-menu-content");
+    var headings = document.querySelector(".post-content").querySelectorAll("h2, h3, h4, h5, h6");
+
+    // Hide menu when no headings
+    if (headings.length === 0) {
+      return menu.style.display = "none";
+    }
+
+    // Generate post menu
+    var menuHTML = '';
+    for (var i = 0; i < headings.length; i++) {
+      var h = headings[i];
+      menuHTML += (
+        '<li class="h-' + h.tagName.toLowerCase() + '">'
+        + '<a href="#h-' + h.getAttribute('id') + '">' + h.textContent + '</a></li>');
+    }
+
+    menuContent.innerHTML = '<ul>' + menuHTML + '</ul>';
+
+    // The header element
+    var header = document.querySelector('header.site-header');
+
+    function doMenuCollapse(index, over_items) {
+      var items = menuContent.firstChild.children;
+
+      if (over_items == undefined) {
+        over_items = 20;
+      }
+
+      if (items.length < over_items) {
+        return;
+      }
+
+      var activeItem = items[index];
+      var beginItem = activeItem
+      var endItem = activeItem
+      var beginIndex = index;
+      var endIndex = index + 1;
+      while (beginIndex >= 0
+        && !items[beginIndex].classList.contains('h-h2')) {
+        beginIndex -= 1;
+      }
+      while (endIndex < items.length
+        && !items[endIndex].classList.contains('h-h2')) {
+        endIndex += 1;
+      }
+      for (var i = 0; i < beginIndex; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+      for (var i = beginIndex + 1; i < endIndex; i++) {
+        item = items[i]
+        // if (!item.classList.contains('h-h2')) {
+          item.style.display = '';
+        // }
+      }
+      for (var i = endIndex; i < items.length; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+    }
+
+    // Init menu collapsed
+    doMenuCollapse(-1);
+
+    // Active the menu item
+    window.addEventListener('scroll', function (event) {
+      var lastActive = menuContent.querySelector('.active');
+      var changed = true;
+      var activeIndex = -1;
+      for (var i = headings.length - 1; i >= 0; i--) {
+        var h = headings[i];
+        var headingRect = h.getBoundingClientRect();
+        var headerRect = header.getBoundingClientRect();
+        var headerTop = Math.floor(headerRect.top);
+        var headerHeight = Math.floor(headerRect.height);
+        var headerHeight = headerTop + headerHeight + 20;
+        if (headingRect.top <= headerHeight) {
+          var id = 'h-' + h.getAttribute('id');
+          var a = menuContent.querySelector('a[href="#' + id  + '"]');
+          var curActive = a.parentNode;
+          if (curActive) {
+            curActive.classList.add('active');
+            activeIndex = i;
+          }
+          if (lastActive == curActive) {
+            changed = false;
+          }
+          break;
+        }
+      }
+      if (changed) {
+        if (lastActive) {
+          lastActive.classList.remove('active');
+        }
+        doMenuCollapse(activeIndex);
+      }
+      event.preventDefault();
+    });
+  }
+  generateContent();
+</script>
+</section>
+</div>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+    <div class="site-footer-inner">
+<div>Unpublished Work <span class="copyleft">©</span> 2017-2023 Taeho Kim</div>
+      <div>Powered by <a title="Taeho Kim" href="https://ting-kim.github.io/about.html">Taeho Kim</a>
+</div>
+      <div class="footer-col rss-subscribe">Subscribe <a href="https://github.com/Ting-Kim">Github(Ting-Kim)</a>
+</div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

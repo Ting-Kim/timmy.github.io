@@ -1,0 +1,1462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="google-translate-customization" content="108d9124921d80c3-80e20d618ff053c8-g4f02ec6f3dba68b7-c">
+<!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>[3rd_week-day3]Python으로 데이터 다루기 Ⅱ - seaborn | Ting-Kim 블로그</title>
+<meta name="generator" content="Jekyll v4.3.2">
+<meta property="og:title" content="[3rd_week-day3]Python으로 데이터 다루기 Ⅱ - seaborn">
+<meta name="author" content="Taeho Kim">
+<meta property="og:locale" content="en_US">
+<meta name="description" content="Seaborn">
+<meta property="og:description" content="Seaborn">
+<link rel="canonical" href="https://ting-kim.github.io/(%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%A8%B8%EC%8A%A4)ai%EB%8D%B0%EB%B8%8C%EC%BD%94%EC%8A%A41%EA%B8%B0/2020/12/16/3rd_week-day3-seaborn_%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%8B%A4%EB%A3%A8%EA%B8%B0.html">
+<meta property="og:url" content="https://ting-kim.github.io/(%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%A8%B8%EC%8A%A4)ai%EB%8D%B0%EB%B8%8C%EC%BD%94%EC%8A%A41%EA%B8%B0/2020/12/16/3rd_week-day3-seaborn_%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%8B%A4%EB%A3%A8%EA%B8%B0.html">
+<meta property="og:site_name" content="Ting-Kim 블로그">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2020-12-16T00:00:00+00:00">
+<meta name="twitter:card" content="summary">
+<meta property="twitter:title" content="[3rd_week-day3]Python으로 데이터 다루기 Ⅱ - seaborn">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Taeho Kim"},"dateModified":"2020-12-16T00:00:00+00:00","datePublished":"2020-12-16T00:00:00+00:00","description":"Seaborn","headline":"[3rd_week-day3]Python으로 데이터 다루기 Ⅱ - seaborn","mainEntityOfPage":{"@type":"WebPage","@id":"https://ting-kim.github.io/(%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%A8%B8%EC%8A%A4)ai%EB%8D%B0%EB%B8%8C%EC%BD%94%EC%8A%A41%EA%B8%B0/2020/12/16/3rd_week-day3-seaborn_%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%8B%A4%EB%A3%A8%EA%B8%B0.html"},"url":"https://ting-kim.github.io/(%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%A8%B8%EC%8A%A4)ai%EB%8D%B0%EB%B8%8C%EC%BD%94%EC%8A%A41%EA%B8%B0/2020/12/16/3rd_week-day3-seaborn_%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%8B%A4%EB%A3%A8%EA%B8%B0.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="shortcut icon" href="https://github.com/Ting-Kim/ting-kim.github.io/blob/master/images/favicon.png?raw=true">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-noto-sans@0.0.72/index.min.css">
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <script src="/assets/js/main.js"></script><link type="application/atom+xml" rel="alternate" href="https://ting-kim.github.io/feed.xml" title="Ting-Kim 블로그">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+<!-- and it's easy to individually load additional languages -->
+<script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/languages/go.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+// Init highlight js
+document.addEventListener('DOMContentLoaded', function(event) {
+  var els = document.querySelectorAll('pre code')
+
+  function addLangData(block) {
+    var outer = block.parentElement.parentElement.parentElement;
+    var lang = block.getAttribute('data-lang');
+    for (var i = 0; i < outer.classList.length; i++) {
+      var cls = outer.classList[i];
+      if (cls.startsWith('language-')) {
+        lang = cls;
+        break;
+      }
+    }
+    if (!lang) {
+      cls = block.getAttribute('class');
+      lang = cls ? cls.replace('hljs ', '') : '';
+    }
+    if (lang.startsWith('language-')) {
+      lang = lang.substr(9);
+    }
+    block.setAttribute('class', 'hljs ' + lang);
+    block.parentNode.setAttribute('data-lang', lang);
+  }
+
+  function addBadge(block) {
+    var enabled = ('true' || 'true').toLowerCase();
+    if (enabled == 'true') {
+      var pre = block.parentElement;
+      pre.classList.add('badge');
+    }
+  }
+
+  function handle(block) {
+    addLangData(block);
+    addBadge(block)
+    hljs.highlightBlock(block);
+  }
+
+  for (var i = 0; i < els.length; i++) {
+    var el = els[i];
+    handle(el);
+  }
+});
+</script>
+
+<style>
+  /* code language badge */
+  pre.badge::before {
+    content: attr(data-lang);
+    color: #fff;
+    background-color: #ff4e00;
+    padding: 0 .5em;
+    border-radius: 0 2px;
+    text-transform: uppercase;
+    text-align: center;
+    min-width: 32px;
+    display: inline-block;
+    position: absolute;
+    right: 0;
+  }
+
+  /* fix wrong badge display for firefox browser */
+  code > table pre::before {
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<header class="site-header " role="banner">
+  <div class="wrapper">
+    <div class="site-header-inner">
+<span class="site-brand"><a class="site-brand-inner" rel="author" href="/">
+  <img class="site-favicon" title="Ting-Kim 블로그" src="https://github.com/Ting-Kim/ting-kim.github.io/blob/master/images/favicon.png?raw=true" onerror="this.style.display='none'">
+  Ting-Kim 블로그
+</a>
+</span><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger">
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewbox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"></path>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger">
+<a class="page-link" href="/about.html">ABOUT ME</a><a class="page-link" href="/archives.html">ARCHIVES</a><a class="page-link" href="/categories.html">CATEGORIES</a><a class="page-link" href="/tags.html">TAGS</a>
+</div>
+      </nav>
+</div>
+  </div>
+</header>
+
+<script>
+  function initHeader() {
+    var lastScrollY = getScrollPos().y;
+    var documentElement = document.documentElement;
+
+    function storeScrollData() {
+      var y = getScrollPos().y;var scrollStatus = "";
+
+      if (y <= 0) {
+        scrollStatus = "top";
+      } else if ((window.innerHeight + y) >= document.body.offsetHeight) {
+        scrollStatus = "bottom";
+      } else {
+        var isScrollDown = (y - lastScrollY > 0) ? true : false;
+        scrollStatus = isScrollDown ? "down" : "up";
+      }
+
+      lastScrollY = y;
+      documentElement.setAttribute("data-scroll-status", scrollStatus);
+    }
+
+    window.addEventListener('scroll', function(e) {
+      storeScrollData();
+    });
+
+    storeScrollData();
+  }
+  document.addEventListener('DOMContentLoaded', initHeader);
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+  function hashLocate(hashValue) {
+    hashValue = hashValue.replace(/^.*#h-/, '');
+    hashValue = decodeURIComponent(hashValue);
+    var element = document.getElementById(hashValue);
+
+    if (!element) {
+      return;
+    }
+
+    var header = document.querySelector('header.site-header');
+    var headerRect = header.getBoundingClientRect();
+    var headerTop = Math.floor(headerRect.top);
+    var headerHeight = Math.floor(headerRect.height);
+    var scrollPos = getScrollPos();
+    var offsetY = element.offsetTop - (headerTop + headerHeight + 20);
+
+    if (offsetY == scrollPos.y) {
+      return;
+    }
+
+    if (headerTop == 0  && offsetY > scrollPos.y) {
+      offsetY += headerHeight + 2;
+    } else if (headerTop < 0  && offsetY < scrollPos.y) {
+      offsetY -= headerHeight - 2;
+    }
+
+    smoothScrollTo(offsetY);
+  }
+
+  // The first event occurred
+  window.addEventListener('load', function(event) {
+    if (window.location.hash) {
+      hashLocate(window.location.hash);
+    }
+  });
+
+  // The first event occurred
+  window.addEventListener('click', function(event) {
+    if (event.target.tagName.toLowerCase() == 'a') {
+      hashLocate(event.target.getAttribute('href'));
+    }
+  });
+</script>
+<div class="theme-toggle">
+  <input type="checkbox" id="theme-switch">
+  <label for="theme-switch">
+    <div class="toggle"></div>
+    <div class="names">
+      <p class="light">Light</p>
+      <p class="dark">Dark</p>
+    </div>
+  </label>
+</div>
+
+
+
+
+<script>
+  (function() {
+    var sw = document.getElementById('theme-switch');
+    var html = document.getElementsByTagName('html')[0];
+    var nightModeOption = ('auto' || 'auto').toLowerCase();
+    var storage = nightModeOption === 'manual'
+        ? localStorage
+        : sessionStorage;
+    var themeData = loadThemeData();
+
+    function saveThemeData(data) {
+      storage.setItem('theme', JSON.stringify(data));
+    }
+
+    function loadThemeData() {
+      var data = storage.getItem('theme');
+      try {
+        data = JSON.parse(data ? data : '');
+      } catch(e) {
+        data = { nightShift: undefined, autoToggleAt: 0 };
+        saveThemeData(data);
+      }
+      return data;
+    }
+
+    function handleThemeToggle(nightShift) {
+      themeData.nightShift = nightShift;
+      saveThemeData(themeData);
+      html.dataset.theme = nightShift ? 'dark' : 'light';
+      setTimeout(function() {
+        sw.checked = nightShift ? true : false;
+      }, 50);
+    }
+
+    function autoThemeToggle() {
+      // Next time point of theme toggle
+      var now = new Date();
+      var toggleAt = new Date();
+      var hours = now.getHours();
+      var nightShift = hours >= 19 || hours <=7;
+
+      if (nightShift) {
+        if (hours > 7) {
+          toggleAt.setDate(toggleAt.getDate() + 1);
+        }
+        toggleAt.setHours(7);
+      } else {
+        toggleAt.setHours(19);
+      }
+
+      toggleAt.setMinutes(0);
+      toggleAt.setSeconds(0);
+      toggleAt.setMilliseconds(0)
+
+      var delay = toggleAt.getTime() - now.getTime();
+
+      // auto toggle theme mode
+      setTimeout(function() {
+        handleThemeToggle(!nightShift);
+      }, delay);
+
+      return {
+        nightShift: nightShift,
+        toggleAt: toggleAt.getTime()
+      };
+    }
+
+    // Listen the theme toggle event
+    sw.addEventListener('change', function(event) {
+      handleThemeToggle(event.target.checked);
+    });
+
+    if (nightModeOption == 'auto') {
+      var data = autoThemeToggle();
+
+      // Toggle theme by local setting
+      if (data.toggleAt > themeData.autoToggleAt) {
+        themeData.autoToggleAt = data.toggleAt;
+        handleThemeToggle(data.nightShift);
+      } else {
+        handleThemeToggle(themeData.nightShift);
+      }
+    } else if (nightModeOption == 'manual') {
+      handleThemeToggle(themeData.nightShift);
+    } else {
+      var nightShift = themeData.nightShift;
+      if (nightShift === undefined) {
+        nightShift = nightModeOption === 'on';
+      }
+      handleThemeToggle(nightShift);
+    }
+  })();
+</script>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <div class="framework">
+  <section class="main">
+
+     <div class="post">
+  <section>
+
+
+
+
+
+
+
+
+
+<header class="post-header">
+  <h1 class="post-title p-name" itemprop="name headline">[3rd_week-day3]Python으로 데이터 다루기 Ⅱ - seaborn</h1>
+  <h2 class="post-subtitle"></h2>
+
+  <p class="post-meta">
+    <time class="dt-published" datetime="2020-12-16T00:00:00+00:00" itemprop="datePublished"><i class="fa fa-calendar"></i> Dec 16, 2020
+    </time>
+
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 8 mins</span>
+  </p>
+<div class="post-tags">
+<a class="post-tag" href="/tags.html#ai">#ai</a><a class="post-tag" href="/tags.html#matplotlib">#matplotlib</a><a class="post-tag" href="/tags.html#seaborn">#seaborn</a>
+</div></header>
+<article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+    <div class="post-content e-content" itemprop="articleBody">
+
+      <h2 id="seaborn">Seaborn</h2>
+
+<h3 id="matplotlib를-기반으로-더-다양한-시각화-방법을-제공하는-라이브러리">Matplotlib를 기반으로 더 다양한 시각화 방법을 제공하는 라이브러리</h3>
+
+<ul>
+  <li>커널밀도그림</li>
+  <li>카운트그림</li>
+  <li>캣그림</li>
+  <li>스트립그림</li>
+  <li>히트맵</li>
+</ul>
+
+<h3 id="seaborn-import-하기">Seaborn Import 하기</h3>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="n">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="kn">import</span> <span class="n">matplotlib.pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">import</span> <span class="n">pandas</span> <span class="k">as</span> <span class="n">pd</span>
+<span class="kn">import</span> <span class="n">seaborn</span> <span class="k">as</span> <span class="n">sns</span>
+</code></pre></div></div>
+
+<h3 id="커널밀도그림-kernel-density-plot">커널밀도그림 (Kernel Density Plot)</h3>
+
+<ul>
+  <li>히스토그램과 같은 연속적인 분포를 곡선화해서 그린 그림</li>
+  <li><code class="language-plaintext highlighter-rouge">sns.kdeplot()</code></li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># in Histogram
+</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nf">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="nf">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="p">.</span><span class="nf">hist</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">x</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(array([1., 2., 5., 0., 2., 2., 3., 3., 1., 1.]),
+ array([ 0,  2,  4,  6,  8, 10, 12, 14, 16, 18, 20]),
+ &lt;BarContainer object of 10 artists&gt;)
+</code></pre></div></div>
+
+<p><img src="https://github.com/Ting-Kim/Ting-kim.github.io/blob/main/_posts/ai_dev_course/3rd_week/Seaborn/output_5_1.png?raw=true" alt="png"></p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># kdeplot
+</span>
+<span class="n">sns</span><span class="p">.</span><span class="nf">kdeplot</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">shade</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="p">.</span><span class="nf">show</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p><img src="https://github.com/Ting-Kim/Ting-kim.github.io/blob/main/_posts/ai_dev_course/3rd_week/Seaborn/output_6_0.png?raw=true" alt="png"></p>
+
+<h3 id="카운트그림-count-plot">카운트그림 (Count plot)</h3>
+
+<ul>
+  <li>범주형 column의 빈도수를 시각화 -&gt; Groupby 후의 도수를 하는 것과 동일한 효과</li>
+  <li>sns.countplot()</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">vote_df</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="nc">DataFrame</span><span class="p">({</span><span class="s">"name"</span><span class="p">:[</span><span class="s">'Andy'</span><span class="p">,</span> <span class="s">'Bob'</span><span class="p">,</span> <span class="s">'Cat'</span><span class="p">],</span> <span class="s">"vote"</span><span class="p">:[</span><span class="bp">True</span><span class="p">,</span> <span class="bp">True</span><span class="p">,</span> <span class="bp">False</span><span class="p">]})</span>
+<span class="n">vote_df</span>
+</code></pre></div></div>
+
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>
+</th>
+      <th>name</th>
+      <th>vote</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Andy</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Bob</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Cat</td>
+      <td>False</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># in matplotlib barplot
+</span>
+<span class="n">vote_count</span> <span class="o">=</span> <span class="n">vote_df</span><span class="p">.</span><span class="nf">groupby</span><span class="p">(</span><span class="s">'vote'</span><span class="p">).</span><span class="nf">count</span><span class="p">()</span>
+<span class="n">vote_count</span>
+</code></pre></div></div>
+
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>
+</th>
+      <th>name</th>
+    </tr>
+    <tr>
+      <th>vote</th>
+      <th>
+</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>False</th>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>True</th>
+      <td>2</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">plt</span><span class="p">.</span><span class="nf">bar</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="bp">False</span><span class="p">,</span> <span class="bp">True</span><span class="p">],</span> <span class="n">height</span><span class="o">=</span><span class="n">vote_count</span><span class="p">[</span><span class="s">'name'</span><span class="p">])</span>
+<span class="n">plt</span><span class="p">.</span><span class="nf">show</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p><img src="https://github.com/Ting-Kim/Ting-kim.github.io/blob/main/_posts/ai_dev_course/3rd_week/Seaborn/output_10_0.png?raw=true" alt="png"></p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># sns의 countplot
+</span>
+<span class="n">sns</span><span class="p">.</span><span class="nf">countplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">vote_df</span><span class="p">[</span><span class="s">'vote'</span><span class="p">])</span>
+
+<span class="n">plt</span><span class="p">.</span><span class="nf">show</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p><img src="https://github.com/Ting-Kim/Ting-kim.github.io/blob/main/_posts/ai_dev_course/3rd_week/Seaborn/output_11_0.png?raw=true" alt="png"></p>
+
+<h3 id="캣그림-cat-plot">캣그림 (Cat Plot)</h3>
+
+<ul>
+  <li>숫자형 변수와 하나 이상의 범주형 변수의 관계를 보여주는 함수</li>
+  <li><code class="language-plaintext highlighter-rouge">sns.catplot()</code></li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">covid</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="nf">read_csv</span><span class="p">(</span><span class="s">"./country_wise_latest.csv"</span><span class="p">)</span>
+
+<span class="n">covid</span><span class="p">.</span><span class="nf">head</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>
+</th>
+      <th>Country/Region</th>
+      <th>Confirmed</th>
+      <th>Deaths</th>
+      <th>Recovered</th>
+      <th>Active</th>
+      <th>New cases</th>
+      <th>New deaths</th>
+      <th>New recovered</th>
+      <th>Deaths / 100 Cases</th>
+      <th>Recovered / 100 Cases</th>
+      <th>Deaths / 100 Recovered</th>
+      <th>Confirmed last week</th>
+      <th>1 week change</th>
+      <th>1 week % increase</th>
+      <th>WHO Region</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Afghanistan</td>
+      <td>36263</td>
+      <td>1269</td>
+      <td>25198</td>
+      <td>9796</td>
+      <td>106</td>
+      <td>10</td>
+      <td>18</td>
+      <td>3.50</td>
+      <td>69.49</td>
+      <td>5.04</td>
+      <td>35526</td>
+      <td>737</td>
+      <td>2.07</td>
+      <td>Eastern Mediterranean</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Albania</td>
+      <td>4880</td>
+      <td>144</td>
+      <td>2745</td>
+      <td>1991</td>
+      <td>117</td>
+      <td>6</td>
+      <td>63</td>
+      <td>2.95</td>
+      <td>56.25</td>
+      <td>5.25</td>
+      <td>4171</td>
+      <td>709</td>
+      <td>17.00</td>
+      <td>Europe</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Algeria</td>
+      <td>27973</td>
+      <td>1163</td>
+      <td>18837</td>
+      <td>7973</td>
+      <td>616</td>
+      <td>8</td>
+      <td>749</td>
+      <td>4.16</td>
+      <td>67.34</td>
+      <td>6.17</td>
+      <td>23691</td>
+      <td>4282</td>
+      <td>18.07</td>
+      <td>Africa</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Andorra</td>
+      <td>907</td>
+      <td>52</td>
+      <td>803</td>
+      <td>52</td>
+      <td>10</td>
+      <td>0</td>
+      <td>0</td>
+      <td>5.73</td>
+      <td>88.53</td>
+      <td>6.48</td>
+      <td>884</td>
+      <td>23</td>
+      <td>2.60</td>
+      <td>Europe</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Angola</td>
+      <td>950</td>
+      <td>41</td>
+      <td>242</td>
+      <td>667</td>
+      <td>18</td>
+      <td>1</td>
+      <td>0</td>
+      <td>4.32</td>
+      <td>25.47</td>
+      <td>16.94</td>
+      <td>749</td>
+      <td>201</td>
+      <td>26.84</td>
+      <td>Africa</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">s</span> <span class="o">=</span> <span class="n">sns</span><span class="p">.</span><span class="nf">catplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s">'WHO Region'</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s">'Confirmed'</span> <span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">covid</span><span class="p">)</span> <span class="c1"># hue 속성은 점들 간의 분포를 나눠서 다룰 수 있다(?) - EDA에서 다뤄볼 것..
+</span><span class="n">s</span><span class="p">.</span><span class="n">fig</span><span class="p">.</span><span class="nf">set_size_inches</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="nf">show</span><span class="p">()</span> <span class="c1"># strip plot 형태.
+</span>
+<span class="n">s</span> <span class="o">=</span> <span class="n">sns</span><span class="p">.</span><span class="nf">catplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s">'WHO Region'</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s">'Confirmed'</span> <span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">covid</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s">"violin"</span><span class="p">)</span>
+<span class="n">s</span><span class="p">.</span><span class="n">fig</span><span class="p">.</span><span class="nf">set_size_inches</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="nf">show</span><span class="p">()</span> <span class="c1"># violin plot 형태.
+</span></code></pre></div></div>
+
+<p><img src="https://github.com/Ting-Kim/Ting-kim.github.io/blob/main/_posts/ai_dev_course/3rd_week/Seaborn/output_14_0.png?raw=true" alt="png"></p>
+
+<p><img src="https://github.com/Ting-Kim/Ting-kim.github.io/blob/main/_posts/ai_dev_course/3rd_week/Seaborn/output_14_1.png?raw=true" alt="png"></p>
+
+<h3 id="스트립그림-strip-plot">스트립그림 (Strip Plot)</h3>
+
+<ul>
+  <li>scatter plot과 유사하게 데이터의 수치를 표현하는 그래프</li>
+  <li><code class="language-plaintext highlighter-rouge">sns.stripplot()</code></li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">sns</span><span class="p">.</span><span class="nf">stripplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s">"WHO Region"</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s">"Recovered"</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">covid</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="p">.</span><span class="nf">show</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p><img src="https://github.com/Ting-Kim/Ting-kim.github.io/blob/main/_posts/ai_dev_course/3rd_week/Seaborn/output_16_0.png?raw=true" alt="png"></p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># cf) swarmplot
+# 값이 겹치면 양옆으로 분산 시켜준 형태
+</span>
+<span class="n">s</span> <span class="o">=</span> <span class="n">sns</span><span class="p">.</span><span class="nf">swarmplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s">"WHO Region"</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s">"Recovered"</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">covid</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="p">.</span><span class="nf">show</span><span class="p">()</span>
+
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>C:\Users\Taeho Kim\AppData\Local\Programs\Python\Python38\lib\site-packages\seaborn\categorical.py:1296: UserWarning: 22.7% of the points cannot be placed; you may want to decrease the size of the markers or use stripplot.
+  warnings.warn(msg, UserWarning)
+C:\Users\Taeho Kim\AppData\Local\Programs\Python\Python38\lib\site-packages\seaborn\categorical.py:1296: UserWarning: 69.6% of the points cannot be placed; you may want to decrease the size of the markers or use stripplot.
+  warnings.warn(msg, UserWarning)
+C:\Users\Taeho Kim\AppData\Local\Programs\Python\Python38\lib\site-packages\seaborn\categorical.py:1296: UserWarning: 79.2% of the points cannot be placed; you may want to decrease the size of the markers or use stripplot.
+  warnings.warn(msg, UserWarning)
+C:\Users\Taeho Kim\AppData\Local\Programs\Python\Python38\lib\site-packages\seaborn\categorical.py:1296: UserWarning: 54.3% of the points cannot be placed; you may want to decrease the size of the markers or use stripplot.
+  warnings.warn(msg, UserWarning)
+C:\Users\Taeho Kim\AppData\Local\Programs\Python\Python38\lib\site-packages\seaborn\categorical.py:1296: UserWarning: 31.2% of the points cannot be placed; you may want to decrease the size of the markers or use stripplot.
+  warnings.warn(msg, UserWarning)
+</code></pre></div></div>
+
+<p><img src="https://github.com/Ting-Kim/Ting-kim.github.io/blob/main/_posts/ai_dev_course/3rd_week/Seaborn/output_17_1.png?raw=true" alt="png"></p>
+
+<h3 id="히트맵-heatmap">히트맵 (Heatmap)</h3>
+
+<ul>
+  <li>데이터의 행렬을 색상으로 표현해주는 그래프</li>
+  <li><code class="language-plaintext highlighter-rouge">sns.heatmap()</code></li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># 히트맵 예제
+</span>
+<span class="n">covid</span><span class="p">.</span><span class="nf">corr</span><span class="p">()</span>
+
+</code></pre></div></div>
+
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>
+</th>
+      <th>Confirmed</th>
+      <th>Deaths</th>
+      <th>Recovered</th>
+      <th>Active</th>
+      <th>New cases</th>
+      <th>New deaths</th>
+      <th>New recovered</th>
+      <th>Deaths / 100 Cases</th>
+      <th>Recovered / 100 Cases</th>
+      <th>Deaths / 100 Recovered</th>
+      <th>Confirmed last week</th>
+      <th>1 week change</th>
+      <th>1 week % increase</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Confirmed</th>
+      <td>1.000000</td>
+      <td>0.934698</td>
+      <td>0.906377</td>
+      <td>0.927018</td>
+      <td>0.909720</td>
+      <td>0.871683</td>
+      <td>0.859252</td>
+      <td>0.063550</td>
+      <td>-0.064815</td>
+      <td>0.025175</td>
+      <td>0.999127</td>
+      <td>0.954710</td>
+      <td>-0.010161</td>
+    </tr>
+    <tr>
+      <th>Deaths</th>
+      <td>0.934698</td>
+      <td>1.000000</td>
+      <td>0.832098</td>
+      <td>0.871586</td>
+      <td>0.806975</td>
+      <td>0.814161</td>
+      <td>0.765114</td>
+      <td>0.251565</td>
+      <td>-0.114529</td>
+      <td>0.169006</td>
+      <td>0.939082</td>
+      <td>0.855330</td>
+      <td>-0.034708</td>
+    </tr>
+    <tr>
+      <th>Recovered</th>
+      <td>0.906377</td>
+      <td>0.832098</td>
+      <td>1.000000</td>
+      <td>0.682103</td>
+      <td>0.818942</td>
+      <td>0.820338</td>
+      <td>0.919203</td>
+      <td>0.048438</td>
+      <td>0.026610</td>
+      <td>-0.027277</td>
+      <td>0.899312</td>
+      <td>0.910013</td>
+      <td>-0.013697</td>
+    </tr>
+    <tr>
+      <th>Active</th>
+      <td>0.927018</td>
+      <td>0.871586</td>
+      <td>0.682103</td>
+      <td>1.000000</td>
+      <td>0.851190</td>
+      <td>0.781123</td>
+      <td>0.673887</td>
+      <td>0.054380</td>
+      <td>-0.132618</td>
+      <td>0.058386</td>
+      <td>0.931459</td>
+      <td>0.847642</td>
+      <td>-0.003752</td>
+    </tr>
+    <tr>
+      <th>New cases</th>
+      <td>0.909720</td>
+      <td>0.806975</td>
+      <td>0.818942</td>
+      <td>0.851190</td>
+      <td>1.000000</td>
+      <td>0.935947</td>
+      <td>0.914765</td>
+      <td>0.020104</td>
+      <td>-0.078666</td>
+      <td>-0.011637</td>
+      <td>0.896084</td>
+      <td>0.959993</td>
+      <td>0.030791</td>
+    </tr>
+    <tr>
+      <th>New deaths</th>
+      <td>0.871683</td>
+      <td>0.814161</td>
+      <td>0.820338</td>
+      <td>0.781123</td>
+      <td>0.935947</td>
+      <td>1.000000</td>
+      <td>0.889234</td>
+      <td>0.060399</td>
+      <td>-0.062792</td>
+      <td>-0.020750</td>
+      <td>0.862118</td>
+      <td>0.894915</td>
+      <td>0.025293</td>
+    </tr>
+    <tr>
+      <th>New recovered</th>
+      <td>0.859252</td>
+      <td>0.765114</td>
+      <td>0.919203</td>
+      <td>0.673887</td>
+      <td>0.914765</td>
+      <td>0.889234</td>
+      <td>1.000000</td>
+      <td>0.017090</td>
+      <td>-0.024293</td>
+      <td>-0.023340</td>
+      <td>0.839692</td>
+      <td>0.954321</td>
+      <td>0.032662</td>
+    </tr>
+    <tr>
+      <th>Deaths / 100 Cases</th>
+      <td>0.063550</td>
+      <td>0.251565</td>
+      <td>0.048438</td>
+      <td>0.054380</td>
+      <td>0.020104</td>
+      <td>0.060399</td>
+      <td>0.017090</td>
+      <td>1.000000</td>
+      <td>-0.168920</td>
+      <td>0.334594</td>
+      <td>0.069894</td>
+      <td>0.015095</td>
+      <td>-0.134534</td>
+    </tr>
+    <tr>
+      <th>Recovered / 100 Cases</th>
+      <td>-0.064815</td>
+      <td>-0.114529</td>
+      <td>0.026610</td>
+      <td>-0.132618</td>
+      <td>-0.078666</td>
+      <td>-0.062792</td>
+      <td>-0.024293</td>
+      <td>-0.168920</td>
+      <td>1.000000</td>
+      <td>-0.295381</td>
+      <td>-0.064600</td>
+      <td>-0.063013</td>
+      <td>-0.394254</td>
+    </tr>
+    <tr>
+      <th>Deaths / 100 Recovered</th>
+      <td>0.025175</td>
+      <td>0.169006</td>
+      <td>-0.027277</td>
+      <td>0.058386</td>
+      <td>-0.011637</td>
+      <td>-0.020750</td>
+      <td>-0.023340</td>
+      <td>0.334594</td>
+      <td>-0.295381</td>
+      <td>1.000000</td>
+      <td>0.030460</td>
+      <td>-0.013763</td>
+      <td>-0.049083</td>
+    </tr>
+    <tr>
+      <th>Confirmed last week</th>
+      <td>0.999127</td>
+      <td>0.939082</td>
+      <td>0.899312</td>
+      <td>0.931459</td>
+      <td>0.896084</td>
+      <td>0.862118</td>
+      <td>0.839692</td>
+      <td>0.069894</td>
+      <td>-0.064600</td>
+      <td>0.030460</td>
+      <td>1.000000</td>
+      <td>0.941448</td>
+      <td>-0.015247</td>
+    </tr>
+    <tr>
+      <th>1 week change</th>
+      <td>0.954710</td>
+      <td>0.855330</td>
+      <td>0.910013</td>
+      <td>0.847642</td>
+      <td>0.959993</td>
+      <td>0.894915</td>
+      <td>0.954321</td>
+      <td>0.015095</td>
+      <td>-0.063013</td>
+      <td>-0.013763</td>
+      <td>0.941448</td>
+      <td>1.000000</td>
+      <td>0.026594</td>
+    </tr>
+    <tr>
+      <th>1 week % increase</th>
+      <td>-0.010161</td>
+      <td>-0.034708</td>
+      <td>-0.013697</td>
+      <td>-0.003752</td>
+      <td>0.030791</td>
+      <td>0.025293</td>
+      <td>0.032662</td>
+      <td>-0.134534</td>
+      <td>-0.394254</td>
+      <td>-0.049083</td>
+      <td>-0.015247</td>
+      <td>0.026594</td>
+      <td>1.000000</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">sns</span><span class="p">.</span><span class="nf">heatmap</span><span class="p">(</span><span class="n">covid</span><span class="p">.</span><span class="nf">corr</span><span class="p">())</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;AxesSubplot:&gt;
+</code></pre></div></div>
+
+<p><img src="https://github.com/Ting-Kim/Ting-kim.github.io/blob/main/_posts/ai_dev_course/3rd_week/Seaborn/output_20_1.png?raw=true" alt="png"></p>
+
+
+    </div>
+
+</article>
+<div class="post-nav">
+<a class="previous" href="/(%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%A8%B8%EC%8A%A4)ai%EB%8D%B0%EB%B8%8C%EC%BD%94%EC%8A%A41%EA%B8%B0/2020/12/16/3rd_week-day3-matplotlib_%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%8B%A4%EB%A3%A8%EA%B8%B0.html" title="[3rd_week-day3]Python으로 데이터 다루기 Ⅱ - matplotlib">[3rd_week-day3]Python으로 데이터 다루기 Ⅱ - matplotlib...</a><a class="next" href="/(%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%A8%B8%EC%8A%A4)ai%EB%8D%B0%EB%B8%8C%EC%BD%94%EC%8A%A41%EA%B8%B0/2020/12/21/4th_week-day1-Web_with_Flask.html" title="[4th_week-day1]Web Application with Flask">[4th_week-day1]Web Application with Flask</a>
+</div>
+<div class="post-related">
+      <div>Related Articles</div>
+      <ul>
+        <li><a class="post-link" href="/(%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%A8%B8%EC%8A%A4)ai%EB%8D%B0%EB%B8%8C%EC%BD%94%EC%8A%A41%EA%B8%B0/2020/12/29/python_base64-base64-Module.html" title="[4th_week-day1]Web Application with Flask">[python_base64]How to use base64</a></li>
+<li><a class="post-link" href="/algorithm(problem-solving)/2022/03/14/PS-%ED%85%8C%ED%8A%B8%EB%A1%9C%EB%AF%B8%EB%85%B8-(%EB%B0%B1%EC%A4%80-14500%EB%B2%88).html" title="[4th_week-day1]Web Application with Flask">[PS] 테트로미노 (백준 14500번)</a></li>
+<li><a class="post-link" href="/jpa/2020/11/12/JPA-%EA%B3%A0%EA%B8%89%EB%A7%A4%ED%95%91.html" title="[4th_week-day1]Web Application with Flask">[JPA]고급매핑</a></li>
+<li><a class="post-link" href="/(sw%EB%A7%88%EC%97%90%EC%8A%A4%ED%8A%B8%EB%A1%9C)goodsduck/2021/07/30/%EC%95%84%EC%9D%B4%ED%85%9C-%EC%A0%84%EC%B2%B4-%EC%A1%B0%ED%9A%8C-API-%EC%A2%8B%EC%95%84%EC%9A%94-%ED%91%9C%EC%8B%9C-%EA%B4%80%EB%A0%A8-N+1.html" title="[4th_week-day1]Web Application with Flask">아이템 전체 조회 API - 좋아요 표시 관련 N+1</a></li>
+</ul>
+    </div>
+<div class="post-comments">
+      <hr>
+
+      <script src="https://utteranc.es/client.js" repo="ting-kim/ting-kim.github.io" issue-term="url" theme="github-dark" crossorigin="anonymous" async>
+      </script>
+</div></section>
+</div>
+
+
+  </section>
+  <section class="sidebar" style="margin-left: 15px;">
+    <!-- Get sidebar items --><style type="text/css" media="screen">
+.post-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+</style>
+
+<div class="post-menu">
+  <div class="post-menu-title">TOC</div>
+  <div class="post-menu-content"></div>
+</div>
+
+<script>
+  function generateContent() {
+    var menu = document.querySelector(".post-menu");
+    var menuContent =  menu.querySelector(".post-menu-content");
+    var headings = document.querySelector(".post-content").querySelectorAll("h2, h3, h4, h5, h6");
+
+    // Hide menu when no headings
+    if (headings.length === 0) {
+      return menu.style.display = "none";
+    }
+
+    // Generate post menu
+    var menuHTML = '';
+    for (var i = 0; i < headings.length; i++) {
+      var h = headings[i];
+      menuHTML += (
+        '<li class="h-' + h.tagName.toLowerCase() + '">'
+        + '<a href="#h-' + h.getAttribute('id') + '">' + h.textContent + '</a></li>');
+    }
+
+    menuContent.innerHTML = '<ul>' + menuHTML + '</ul>';
+
+    // The header element
+    var header = document.querySelector('header.site-header');
+
+    function doMenuCollapse(index, over_items) {
+      var items = menuContent.firstChild.children;
+
+      if (over_items == undefined) {
+        over_items = 20;
+      }
+
+      if (items.length < over_items) {
+        return;
+      }
+
+      var activeItem = items[index];
+      var beginItem = activeItem
+      var endItem = activeItem
+      var beginIndex = index;
+      var endIndex = index + 1;
+      while (beginIndex >= 0
+        && !items[beginIndex].classList.contains('h-h2')) {
+        beginIndex -= 1;
+      }
+      while (endIndex < items.length
+        && !items[endIndex].classList.contains('h-h2')) {
+        endIndex += 1;
+      }
+      for (var i = 0; i < beginIndex; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+      for (var i = beginIndex + 1; i < endIndex; i++) {
+        item = items[i]
+        // if (!item.classList.contains('h-h2')) {
+          item.style.display = '';
+        // }
+      }
+      for (var i = endIndex; i < items.length; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+    }
+
+    // Init menu collapsed
+    doMenuCollapse(-1);
+
+    // Active the menu item
+    window.addEventListener('scroll', function (event) {
+      var lastActive = menuContent.querySelector('.active');
+      var changed = true;
+      var activeIndex = -1;
+      for (var i = headings.length - 1; i >= 0; i--) {
+        var h = headings[i];
+        var headingRect = h.getBoundingClientRect();
+        var headerRect = header.getBoundingClientRect();
+        var headerTop = Math.floor(headerRect.top);
+        var headerHeight = Math.floor(headerRect.height);
+        var headerHeight = headerTop + headerHeight + 20;
+        if (headingRect.top <= headerHeight) {
+          var id = 'h-' + h.getAttribute('id');
+          var a = menuContent.querySelector('a[href="#' + id  + '"]');
+          var curActive = a.parentNode;
+          if (curActive) {
+            curActive.classList.add('active');
+            activeIndex = i;
+          }
+          if (lastActive == curActive) {
+            changed = false;
+          }
+          break;
+        }
+      }
+      if (changed) {
+        if (lastActive) {
+          lastActive.classList.remove('active');
+        }
+        doMenuCollapse(activeIndex);
+      }
+      event.preventDefault();
+    });
+  }
+  generateContent();
+</script>
+</section>
+</div>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+    <div class="site-footer-inner">
+<div>Unpublished Work <span class="copyleft">©</span> 2017-2023 Taeho Kim</div>
+      <div>Powered by <a title="Taeho Kim" href="https://ting-kim.github.io/about.html">Taeho Kim</a>
+</div>
+      <div class="footer-col rss-subscribe">Subscribe <a href="https://github.com/Ting-Kim">Github(Ting-Kim)</a>
+</div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

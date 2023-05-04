@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="google-translate-customization" content="108d9124921d80c3-80e20d618ff053c8-g4f02ec6f3dba68b7-c">
+<!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>[JPA]객체지향_쿼리_언어1 - 기본 문법 | Ting-Kim 블로그</title>
+<meta name="generator" content="Jekyll v4.3.2">
+<meta property="og:title" content="[JPA]객체지향_쿼리_언어1 - 기본 문법">
+<meta name="author" content="Taeho Kim">
+<meta property="og:locale" content="en_US">
+<meta name="description" content="*본 포스트는 김영한님의 “자바 ORM 표준 JPA 프로그래밍 - 기본편” 을 수강하며 학습을 기록하는 내용입니다.">
+<meta property="og:description" content="*본 포스트는 김영한님의 “자바 ORM 표준 JPA 프로그래밍 - 기본편” 을 수강하며 학습을 기록하는 내용입니다.">
+<link rel="canonical" href="https://ting-kim.github.io/jpa/2020/11/14/JPA-%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5_%EC%BF%BC%EB%A6%AC_%EC%96%B8%EC%96%B41-%EA%B8%B0%EB%B3%B8%EB%AC%B8%EB%B2%95.html">
+<meta property="og:url" content="https://ting-kim.github.io/jpa/2020/11/14/JPA-%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5_%EC%BF%BC%EB%A6%AC_%EC%96%B8%EC%96%B41-%EA%B8%B0%EB%B3%B8%EB%AC%B8%EB%B2%95.html">
+<meta property="og:site_name" content="Ting-Kim 블로그">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2020-11-14T00:00:00+00:00">
+<meta name="twitter:card" content="summary">
+<meta property="twitter:title" content="[JPA]객체지향_쿼리_언어1 - 기본 문법">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Taeho Kim"},"dateModified":"2020-11-14T00:00:00+00:00","datePublished":"2020-11-14T00:00:00+00:00","description":"*본 포스트는 김영한님의 “자바 ORM 표준 JPA 프로그래밍 - 기본편” 을 수강하며 학습을 기록하는 내용입니다.","headline":"[JPA]객체지향_쿼리_언어1 - 기본 문법","mainEntityOfPage":{"@type":"WebPage","@id":"https://ting-kim.github.io/jpa/2020/11/14/JPA-%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5_%EC%BF%BC%EB%A6%AC_%EC%96%B8%EC%96%B41-%EA%B8%B0%EB%B3%B8%EB%AC%B8%EB%B2%95.html"},"url":"https://ting-kim.github.io/jpa/2020/11/14/JPA-%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5_%EC%BF%BC%EB%A6%AC_%EC%96%B8%EC%96%B41-%EA%B8%B0%EB%B3%B8%EB%AC%B8%EB%B2%95.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="shortcut icon" href="https://github.com/Ting-Kim/ting-kim.github.io/blob/master/images/favicon.png?raw=true">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-noto-sans@0.0.72/index.min.css">
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <script src="/assets/js/main.js"></script><link type="application/atom+xml" rel="alternate" href="https://ting-kim.github.io/feed.xml" title="Ting-Kim 블로그">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+<!-- and it's easy to individually load additional languages -->
+<script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/languages/go.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+// Init highlight js
+document.addEventListener('DOMContentLoaded', function(event) {
+  var els = document.querySelectorAll('pre code')
+
+  function addLangData(block) {
+    var outer = block.parentElement.parentElement.parentElement;
+    var lang = block.getAttribute('data-lang');
+    for (var i = 0; i < outer.classList.length; i++) {
+      var cls = outer.classList[i];
+      if (cls.startsWith('language-')) {
+        lang = cls;
+        break;
+      }
+    }
+    if (!lang) {
+      cls = block.getAttribute('class');
+      lang = cls ? cls.replace('hljs ', '') : '';
+    }
+    if (lang.startsWith('language-')) {
+      lang = lang.substr(9);
+    }
+    block.setAttribute('class', 'hljs ' + lang);
+    block.parentNode.setAttribute('data-lang', lang);
+  }
+
+  function addBadge(block) {
+    var enabled = ('true' || 'true').toLowerCase();
+    if (enabled == 'true') {
+      var pre = block.parentElement;
+      pre.classList.add('badge');
+    }
+  }
+
+  function handle(block) {
+    addLangData(block);
+    addBadge(block)
+    hljs.highlightBlock(block);
+  }
+
+  for (var i = 0; i < els.length; i++) {
+    var el = els[i];
+    handle(el);
+  }
+});
+</script>
+
+<style>
+  /* code language badge */
+  pre.badge::before {
+    content: attr(data-lang);
+    color: #fff;
+    background-color: #ff4e00;
+    padding: 0 .5em;
+    border-radius: 0 2px;
+    text-transform: uppercase;
+    text-align: center;
+    min-width: 32px;
+    display: inline-block;
+    position: absolute;
+    right: 0;
+  }
+
+  /* fix wrong badge display for firefox browser */
+  code > table pre::before {
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<header class="site-header " role="banner">
+  <div class="wrapper">
+    <div class="site-header-inner">
+<span class="site-brand"><a class="site-brand-inner" rel="author" href="/">
+  <img class="site-favicon" title="Ting-Kim 블로그" src="https://github.com/Ting-Kim/ting-kim.github.io/blob/master/images/favicon.png?raw=true" onerror="this.style.display='none'">
+  Ting-Kim 블로그
+</a>
+</span><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger">
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewbox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"></path>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger">
+<a class="page-link" href="/about.html">ABOUT ME</a><a class="page-link" href="/archives.html">ARCHIVES</a><a class="page-link" href="/categories.html">CATEGORIES</a><a class="page-link" href="/tags.html">TAGS</a>
+</div>
+      </nav>
+</div>
+  </div>
+</header>
+
+<script>
+  function initHeader() {
+    var lastScrollY = getScrollPos().y;
+    var documentElement = document.documentElement;
+
+    function storeScrollData() {
+      var y = getScrollPos().y;var scrollStatus = "";
+
+      if (y <= 0) {
+        scrollStatus = "top";
+      } else if ((window.innerHeight + y) >= document.body.offsetHeight) {
+        scrollStatus = "bottom";
+      } else {
+        var isScrollDown = (y - lastScrollY > 0) ? true : false;
+        scrollStatus = isScrollDown ? "down" : "up";
+      }
+
+      lastScrollY = y;
+      documentElement.setAttribute("data-scroll-status", scrollStatus);
+    }
+
+    window.addEventListener('scroll', function(e) {
+      storeScrollData();
+    });
+
+    storeScrollData();
+  }
+  document.addEventListener('DOMContentLoaded', initHeader);
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+  function hashLocate(hashValue) {
+    hashValue = hashValue.replace(/^.*#h-/, '');
+    hashValue = decodeURIComponent(hashValue);
+    var element = document.getElementById(hashValue);
+
+    if (!element) {
+      return;
+    }
+
+    var header = document.querySelector('header.site-header');
+    var headerRect = header.getBoundingClientRect();
+    var headerTop = Math.floor(headerRect.top);
+    var headerHeight = Math.floor(headerRect.height);
+    var scrollPos = getScrollPos();
+    var offsetY = element.offsetTop - (headerTop + headerHeight + 20);
+
+    if (offsetY == scrollPos.y) {
+      return;
+    }
+
+    if (headerTop == 0  && offsetY > scrollPos.y) {
+      offsetY += headerHeight + 2;
+    } else if (headerTop < 0  && offsetY < scrollPos.y) {
+      offsetY -= headerHeight - 2;
+    }
+
+    smoothScrollTo(offsetY);
+  }
+
+  // The first event occurred
+  window.addEventListener('load', function(event) {
+    if (window.location.hash) {
+      hashLocate(window.location.hash);
+    }
+  });
+
+  // The first event occurred
+  window.addEventListener('click', function(event) {
+    if (event.target.tagName.toLowerCase() == 'a') {
+      hashLocate(event.target.getAttribute('href'));
+    }
+  });
+</script>
+<div class="theme-toggle">
+  <input type="checkbox" id="theme-switch">
+  <label for="theme-switch">
+    <div class="toggle"></div>
+    <div class="names">
+      <p class="light">Light</p>
+      <p class="dark">Dark</p>
+    </div>
+  </label>
+</div>
+
+
+
+
+<script>
+  (function() {
+    var sw = document.getElementById('theme-switch');
+    var html = document.getElementsByTagName('html')[0];
+    var nightModeOption = ('auto' || 'auto').toLowerCase();
+    var storage = nightModeOption === 'manual'
+        ? localStorage
+        : sessionStorage;
+    var themeData = loadThemeData();
+
+    function saveThemeData(data) {
+      storage.setItem('theme', JSON.stringify(data));
+    }
+
+    function loadThemeData() {
+      var data = storage.getItem('theme');
+      try {
+        data = JSON.parse(data ? data : '');
+      } catch(e) {
+        data = { nightShift: undefined, autoToggleAt: 0 };
+        saveThemeData(data);
+      }
+      return data;
+    }
+
+    function handleThemeToggle(nightShift) {
+      themeData.nightShift = nightShift;
+      saveThemeData(themeData);
+      html.dataset.theme = nightShift ? 'dark' : 'light';
+      setTimeout(function() {
+        sw.checked = nightShift ? true : false;
+      }, 50);
+    }
+
+    function autoThemeToggle() {
+      // Next time point of theme toggle
+      var now = new Date();
+      var toggleAt = new Date();
+      var hours = now.getHours();
+      var nightShift = hours >= 19 || hours <=7;
+
+      if (nightShift) {
+        if (hours > 7) {
+          toggleAt.setDate(toggleAt.getDate() + 1);
+        }
+        toggleAt.setHours(7);
+      } else {
+        toggleAt.setHours(19);
+      }
+
+      toggleAt.setMinutes(0);
+      toggleAt.setSeconds(0);
+      toggleAt.setMilliseconds(0)
+
+      var delay = toggleAt.getTime() - now.getTime();
+
+      // auto toggle theme mode
+      setTimeout(function() {
+        handleThemeToggle(!nightShift);
+      }, delay);
+
+      return {
+        nightShift: nightShift,
+        toggleAt: toggleAt.getTime()
+      };
+    }
+
+    // Listen the theme toggle event
+    sw.addEventListener('change', function(event) {
+      handleThemeToggle(event.target.checked);
+    });
+
+    if (nightModeOption == 'auto') {
+      var data = autoThemeToggle();
+
+      // Toggle theme by local setting
+      if (data.toggleAt > themeData.autoToggleAt) {
+        themeData.autoToggleAt = data.toggleAt;
+        handleThemeToggle(data.nightShift);
+      } else {
+        handleThemeToggle(themeData.nightShift);
+      }
+    } else if (nightModeOption == 'manual') {
+      handleThemeToggle(themeData.nightShift);
+    } else {
+      var nightShift = themeData.nightShift;
+      if (nightShift === undefined) {
+        nightShift = nightModeOption === 'on';
+      }
+      handleThemeToggle(nightShift);
+    }
+  })();
+</script>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <div class="framework">
+  <section class="main">
+
+     <div class="post">
+  <section>
+
+
+
+
+
+
+
+
+
+<header class="post-header">
+  <h1 class="post-title p-name" itemprop="name headline">[JPA]객체지향_쿼리_언어1 - 기본 문법</h1>
+  <h2 class="post-subtitle"></h2>
+
+  <p class="post-meta">
+    <time class="dt-published" datetime="2020-11-14T00:00:00+00:00" itemprop="datePublished"><i class="fa fa-calendar"></i> Nov 14, 2020
+    </time>
+
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 3 mins</span>
+  </p>
+<div class="post-tags">
+<a class="post-tag" href="/tags.html#web">#web</a><a class="post-tag" href="/tags.html#Spring%20boot">#Spring boot</a><a class="post-tag" href="/tags.html#JPA">#JPA</a>
+</div></header>
+<article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+    <div class="post-content e-content" itemprop="articleBody">
+
+      <p>*본 포스트는 김영한님의 “자바 ORM 표준 JPA 프로그래밍 - 기본편” 을 수강하며 학습을 기록하는 내용입니다.</p>
+
+<h3 id="소개">소개</h3>
+
+<p>다양한 쿼리 방법 지원</p>
+
+<p><br></p>
+
+<h3 id="jpa-criteria">JPA Criteria</h3>
+
+<ul>
+  <li>QueryDSL</li>
+  <li>네이티브 SQL</li>
+  <li>JDBC API 직접 사용, MyBatis, SpringJdbcTemplate 함께 사용</li>
+</ul>
+
+<p><br></p>
+
+<h3 id="jpql">JPQL</h3>
+
+<p>대부분의 경우 JPQL로 해결됨</p>
+
+<p><br></p>
+
+<p><strong>EntityManager.find()</strong></p>
+
+<p>객체 그래프 탐색</p>
+
+<ul>
+  <li>나이가 18살 이상인 회원을 모두 조회하고 싶다면?</li>
+  <li>JPA는 엔티티 객체를 중심으로 개발해야 함.</li>
+  <li>검색 시에도 테이블이 아닌 객체로 변환해서 검색하는 것은 불가능하다.</li>
+  <li>데이터에서 어플리케이션에 올릴 데이터를 가져올 때는 성능을 위해 검색 조건이 포함된 SQL이 필요하다.</li>
+</ul>
+
+<p><br></p>
+
+<p>JPA는 SQL을 추상화한 JPQL이라는 객체 지향 쿼리 언어를 제공하고.. JQPL은 엔티티 객체를 대상으로 쿼리를 날린다는 점이 SQL은 데이터베이스 테이블을 대상으로 쿼리를 날린다는 점과 다르다.</p>
+
+<p><br></p>
+
+<p>Criteria 사용하면 컴파일 시 오류를 띄워주는 부분과 동적 쿼리 사용 시에 장점이 있다.</p>
+
+<ul>
+  <li>그런데 유지보수 측면에서 안좋아서 실무에서 사용을 잘 안한다.(코드를 알아보기가 쉽지 않기 때문)</li>
+</ul>
+
+<p><br></p>
+
+<p>Criteria 대신에 QueryDSL(오픈소스 라이브러리) 사용</p>
+
+<ul>
+  <li>QueryDSL은 자바 코드로 JPQL 작성할 수 있다는 점, JPQL 빌더 역할, 동적쿼리 작성 편리, 단순하고 쉬운 점 때문에 실무에 사용을 권장한다.</li>
+</ul>
+
+<p>(QueryDSL은 JPA 문법 강의에서는 다루지 않음 - 다른 강의를 이후 수강하거나 공식 사이트의 reference 참조)</p>
+
+<p><br></p>
+
+<p>네이티브 SQL - JPA가 제공하는 SQL을 직접 사용하는 기능, JPQL로 해결할 수 없는 특정 DB에 의존적인 기능 (ex, 오라클의 connect by 등..)</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// java</span>
+<span class="c1">// 네이티브 SQL 사용법</span>
+<span class="n">em</span><span class="o">.</span><span class="na">createNativeQuery</span><span class="o">(</span><span class="n">sqlString</span><span class="o">).</span><span class="na">getResultList</span><span class="o">();</span>
+</code></pre></div></div>
+
+<ul>
+  <li>보통 근데 실무에서는 JDBC 직접 사용하거나 SpringJdbcTemplate, myBatis 등을 사용함</li>
+  <li>단, 영속성 컨텍스트를 적절한 시점에 강제로 플러시 필요하다.</li>
+</ul>
+
+<p>(ex. JPA를 이용해서 쿼리를 날리는 경우면 자동으로 flush 되서 상관없지만, dbconn 같은 경우는 안되므로 강제 flush가 필요하다)</p>
+
+<p><br></p>
+
+<h3 id="프로젝션">프로젝션</h3>
+
+<p>⇒ SELECT 절에 조회할 대상을 지정하는 것이다.</p>
+
+<ul>
+  <li>엔티티 프로젝션</li>
+  <li>임베디드 타입 프로젝션</li>
+  <li>스칼라 타입 프로젝션</li>
+  <li>엔티티 프로젝션은 영속성 컨텍스트에서 관리가 된다.</li>
+</ul>
+
+<p><br></p>
+
+<p>“select <a href="http://m.team">m.team</a> from Member m” 이라는 JPQL을 날리면 날아가는 실제 쿼리는 JOIN 문이 날아간다.(SQL에서는 Member로 연관지어서 TEAM 테이블에서 데이터를 가져오므로)</p>
+
+<p>⇒ “select t from Member m join <a href="http://m.team">m.team</a> t” 이렇게 써야 한다. 명시적으로 작성해서 SQL을 예측할 수 있어야 함.</p>
+
+<p><strong>여러 값 조회</strong></p>
+
+<p>“SELECT m.username, m.age FROM Member m”</p>
+
+<ol>
+  <li>Query(타입이 명확할 땐 TypeQuery) 타입으로 조회</li>
+  <li>Object[] 타입으로 조회</li>
+  <li>new 명령어로 조회
+    <ul>
+      <li>단순 값을 DTO로 바로 조회
+SELECT new jpabook.jpql.UserDTO(m.username, m.age) FROM Member m</li>
+      <li>패키지 명을 포함한 전체 클래스 명 입력해야 함</li>
+      <li>순서와 타입이 일치하는 생성자가 필요함</li>
+    </ul>
+  </li>
+</ol>
+
+<p><strong>페이징 API</strong></p>
+
+<ul>
+  <li>setFirstResult(int startPosition) : 조회 시작 위치(0부터 시작)</li>
+  <li>setMaxResult(int endPosition)</li>
+</ul>
+
+<p>각 DBMS 마다 복잡한 방언을 이 두가지만 설정하면 해결해준다.</p>
+
+<p><strong>서브쿼리</strong></p>
+
+<ul>
+  <li>JPA 표준에서는 where, Having 절에서만 서브쿼리가 사용가능하다.</li>
+  <li>최신 하이버네이트에서는 Select 절에서도 사용 가능하다.</li>
+  <li>
+<strong>FROM 절에서는 서브쿼리를 지원하지 않는다.</strong>
+    <ul>
+      <li>최대한 <strong>조인</strong>으로 이를 해결하자.</li>
+    </ul>
+  </li>
+</ul>
+
+<p><strong>조건문</strong></p>
+
+<ul>
+  <li>SELECT coalesce(m.username, “이름 없는 회원”) : m.username이 없으면 “이름 없는 회원”으로 반환</li>
+  <li>SELECT NULLIF(m.username, “관리자”) : 회원이름이 ‘관리자’ 면 null을 반환, 나머지는 username 반환</li>
+</ul>
+
+<p><strong>JPQL 기본 함수</strong></p>
+
+<ul>
+  <li>CONCAT - 문자열을 더함(+)</li>
+  <li>SUBSTRING - 문자열 잘라내기 (ex. “SELECT substring(m.username, 2, 3)”)</li>
+  <li>TRIM</li>
+  <li>LOWER, UPPER</li>
+  <li>LENGTH</li>
+  <li>LOCATE - 찾으려는 문자의 인덱스를 찾아서 반환해줌</li>
+  <li>ABS, SQRT, MOD</li>
+  <li>SIZE, INDEX (JPA 용도) : size()는 컬렉션의 크기를 돌려줌. index()는 @OrderColumn 사용할 때 값타입 컬렉션에서 사용할 수 있는건데, 컬렉션의 위치값을 구할 때 쓸 수 있음(웬만하면 안쓰는게 좋다. 추천하지 않음)</li>
+</ul>
+
+<p><strong>사용자 정의 함수 호출</strong></p>
+
+<ul>
+  <li>사용하는 DB 방언을 상속 받고, 사용자 정의 함수를 정의해야 함</li>
+  <li>정의한 후, 의존성을 상속해서 정의한 클래스로 바꿔준다.</li>
+</ul>
+
+
+    </div>
+
+</article>
+<div class="post-nav">
+<a class="previous" href="/jpa/2020/11/13/JPA-%EA%B0%92_%ED%83%80%EC%9E%85.html" title="[JPA]값 타입">[JPA]값 타입</a><a class="next" href="/computer_science/2020/11/21/CS-Stack_VS_Heap.html" title="[CS]Stack_VS_Heap">[CS]Stack_VS_Heap</a>
+</div>
+<div class="post-related">
+      <div>Related Articles</div>
+      <ul>
+        <li><a class="post-link" href="/spring-boot/2022/06/23/RequestDto%EB%8A%94_%EC%99%9C_%EA%B8%B0%EB%B3%B8%EC%83%9D%EC%84%B1%EC%9E%90%EA%B0%80_%EC%97%86%EC%9D%84_%EB%95%8C_%EC%97%90%EB%9F%AC%EB%A5%BC_%EB%B0%98%ED%99%98%ED%95%A0%EA%B9%8C.html" title="[CS]Stack_VS_Heap">RequestDto는 왜 기본생성자가 없을 때 에러를 반환할까?</a></li>
+<li><a class="post-link" href="/computer_science/2022/01/26/Network-%EB%B8%8C%EB%9D%BC%EC%9A%B0%EC%A0%80%EA%B0%80-%EC%84%9C%EB%B2%84%EC%99%80-%ED%86%B5%EC%8B%A0%ED%95%98%EB%8A%94-%EC%9B%90%EB%A6%AC.html" title="[CS]Stack_VS_Heap">[Network] 브라우저가 서버와 통신하는 원리</a></li>
+<li><a class="post-link" href="/(sw%EB%A7%88%EC%97%90%EC%8A%A4%ED%8A%B8%EB%A1%9C)goodsduck/2021/09/09/%EC%95%8C%EB%A6%BC-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%80%EC%9E%A5%EC%86%8C-%EB%B3%80%EA%B2%BD(RDBMS-NoSQL).html" title="[CS]Stack_VS_Heap">알림 데이터 저장소 변경 시 데이터 구조 등 (RDBMS → NoSQL)</a></li>
+<li><a class="post-link" href="/(%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%A8%B8%EC%8A%A4)ai%EB%8D%B0%EB%B8%8C%EC%BD%94%EC%8A%A41%EA%B8%B0/2020/12/16/3rd_week-day3-seaborn_%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%8B%A4%EB%A3%A8%EA%B8%B0.html" title="[CS]Stack_VS_Heap">[3rd_week-day3]Python으로 데이터 다루기 Ⅱ - seaborn</a></li>
+</ul>
+    </div>
+<div class="post-comments">
+      <hr>
+
+      <script src="https://utteranc.es/client.js" repo="ting-kim/ting-kim.github.io" issue-term="url" theme="github-dark" crossorigin="anonymous" async>
+      </script>
+</div></section>
+</div>
+
+
+  </section>
+  <section class="sidebar" style="margin-left: 15px;">
+    <!-- Get sidebar items --><style type="text/css" media="screen">
+.post-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+</style>
+
+<div class="post-menu">
+  <div class="post-menu-title">TOC</div>
+  <div class="post-menu-content"></div>
+</div>
+
+<script>
+  function generateContent() {
+    var menu = document.querySelector(".post-menu");
+    var menuContent =  menu.querySelector(".post-menu-content");
+    var headings = document.querySelector(".post-content").querySelectorAll("h2, h3, h4, h5, h6");
+
+    // Hide menu when no headings
+    if (headings.length === 0) {
+      return menu.style.display = "none";
+    }
+
+    // Generate post menu
+    var menuHTML = '';
+    for (var i = 0; i < headings.length; i++) {
+      var h = headings[i];
+      menuHTML += (
+        '<li class="h-' + h.tagName.toLowerCase() + '">'
+        + '<a href="#h-' + h.getAttribute('id') + '">' + h.textContent + '</a></li>');
+    }
+
+    menuContent.innerHTML = '<ul>' + menuHTML + '</ul>';
+
+    // The header element
+    var header = document.querySelector('header.site-header');
+
+    function doMenuCollapse(index, over_items) {
+      var items = menuContent.firstChild.children;
+
+      if (over_items == undefined) {
+        over_items = 20;
+      }
+
+      if (items.length < over_items) {
+        return;
+      }
+
+      var activeItem = items[index];
+      var beginItem = activeItem
+      var endItem = activeItem
+      var beginIndex = index;
+      var endIndex = index + 1;
+      while (beginIndex >= 0
+        && !items[beginIndex].classList.contains('h-h2')) {
+        beginIndex -= 1;
+      }
+      while (endIndex < items.length
+        && !items[endIndex].classList.contains('h-h2')) {
+        endIndex += 1;
+      }
+      for (var i = 0; i < beginIndex; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+      for (var i = beginIndex + 1; i < endIndex; i++) {
+        item = items[i]
+        // if (!item.classList.contains('h-h2')) {
+          item.style.display = '';
+        // }
+      }
+      for (var i = endIndex; i < items.length; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+    }
+
+    // Init menu collapsed
+    doMenuCollapse(-1);
+
+    // Active the menu item
+    window.addEventListener('scroll', function (event) {
+      var lastActive = menuContent.querySelector('.active');
+      var changed = true;
+      var activeIndex = -1;
+      for (var i = headings.length - 1; i >= 0; i--) {
+        var h = headings[i];
+        var headingRect = h.getBoundingClientRect();
+        var headerRect = header.getBoundingClientRect();
+        var headerTop = Math.floor(headerRect.top);
+        var headerHeight = Math.floor(headerRect.height);
+        var headerHeight = headerTop + headerHeight + 20;
+        if (headingRect.top <= headerHeight) {
+          var id = 'h-' + h.getAttribute('id');
+          var a = menuContent.querySelector('a[href="#' + id  + '"]');
+          var curActive = a.parentNode;
+          if (curActive) {
+            curActive.classList.add('active');
+            activeIndex = i;
+          }
+          if (lastActive == curActive) {
+            changed = false;
+          }
+          break;
+        }
+      }
+      if (changed) {
+        if (lastActive) {
+          lastActive.classList.remove('active');
+        }
+        doMenuCollapse(activeIndex);
+      }
+      event.preventDefault();
+    });
+  }
+  generateContent();
+</script>
+</section>
+</div>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+    <div class="site-footer-inner">
+<div>Unpublished Work <span class="copyleft">©</span> 2017-2023 Taeho Kim</div>
+      <div>Powered by <a title="Taeho Kim" href="https://ting-kim.github.io/about.html">Taeho Kim</a>
+</div>
+      <div class="footer-col rss-subscribe">Subscribe <a href="https://github.com/Ting-Kim">Github(Ting-Kim)</a>
+</div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

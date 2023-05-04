@@ -1,0 +1,1183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="google-translate-customization" content="108d9124921d80c3-80e20d618ff053c8-g4f02ec6f3dba68b7-c">
+<!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>[2nd_week-day5]추정,검정,엔트로피 | Ting-Kim 블로그</title>
+<meta name="generator" content="Jekyll v4.3.2">
+<meta property="og:title" content="[2nd_week-day5]추정,검정,엔트로피">
+<meta name="author" content="Taeho Kim">
+<meta property="og:locale" content="en_US">
+<meta name="description" content="표본 분포">
+<meta property="og:description" content="표본 분포">
+<link rel="canonical" href="https://ting-kim.github.io/(%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%A8%B8%EC%8A%A4)ai%EB%8D%B0%EB%B8%8C%EC%BD%94%EC%8A%A41%EA%B8%B0/2020/12/12/2nd_week-day5-%EC%B6%94%EC%A0%95_%EA%B2%80%EC%A0%95_%EC%97%94%ED%8A%B8%EB%A1%9C%ED%94%BC.html">
+<meta property="og:url" content="https://ting-kim.github.io/(%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%A8%B8%EC%8A%A4)ai%EB%8D%B0%EB%B8%8C%EC%BD%94%EC%8A%A41%EA%B8%B0/2020/12/12/2nd_week-day5-%EC%B6%94%EC%A0%95_%EA%B2%80%EC%A0%95_%EC%97%94%ED%8A%B8%EB%A1%9C%ED%94%BC.html">
+<meta property="og:site_name" content="Ting-Kim 블로그">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2020-12-12T00:00:00+00:00">
+<meta name="twitter:card" content="summary">
+<meta property="twitter:title" content="[2nd_week-day5]추정,검정,엔트로피">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Taeho Kim"},"dateModified":"2020-12-12T00:00:00+00:00","datePublished":"2020-12-12T00:00:00+00:00","description":"표본 분포","headline":"[2nd_week-day5]추정,검정,엔트로피","mainEntityOfPage":{"@type":"WebPage","@id":"https://ting-kim.github.io/(%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%A8%B8%EC%8A%A4)ai%EB%8D%B0%EB%B8%8C%EC%BD%94%EC%8A%A41%EA%B8%B0/2020/12/12/2nd_week-day5-%EC%B6%94%EC%A0%95_%EA%B2%80%EC%A0%95_%EC%97%94%ED%8A%B8%EB%A1%9C%ED%94%BC.html"},"url":"https://ting-kim.github.io/(%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%A8%B8%EC%8A%A4)ai%EB%8D%B0%EB%B8%8C%EC%BD%94%EC%8A%A41%EA%B8%B0/2020/12/12/2nd_week-day5-%EC%B6%94%EC%A0%95_%EA%B2%80%EC%A0%95_%EC%97%94%ED%8A%B8%EB%A1%9C%ED%94%BC.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="shortcut icon" href="https://github.com/Ting-Kim/ting-kim.github.io/blob/master/images/favicon.png?raw=true">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-noto-sans@0.0.72/index.min.css">
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <script src="/assets/js/main.js"></script><link type="application/atom+xml" rel="alternate" href="https://ting-kim.github.io/feed.xml" title="Ting-Kim 블로그">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+<!-- and it's easy to individually load additional languages -->
+<script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/languages/go.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+// Init highlight js
+document.addEventListener('DOMContentLoaded', function(event) {
+  var els = document.querySelectorAll('pre code')
+
+  function addLangData(block) {
+    var outer = block.parentElement.parentElement.parentElement;
+    var lang = block.getAttribute('data-lang');
+    for (var i = 0; i < outer.classList.length; i++) {
+      var cls = outer.classList[i];
+      if (cls.startsWith('language-')) {
+        lang = cls;
+        break;
+      }
+    }
+    if (!lang) {
+      cls = block.getAttribute('class');
+      lang = cls ? cls.replace('hljs ', '') : '';
+    }
+    if (lang.startsWith('language-')) {
+      lang = lang.substr(9);
+    }
+    block.setAttribute('class', 'hljs ' + lang);
+    block.parentNode.setAttribute('data-lang', lang);
+  }
+
+  function addBadge(block) {
+    var enabled = ('true' || 'true').toLowerCase();
+    if (enabled == 'true') {
+      var pre = block.parentElement;
+      pre.classList.add('badge');
+    }
+  }
+
+  function handle(block) {
+    addLangData(block);
+    addBadge(block)
+    hljs.highlightBlock(block);
+  }
+
+  for (var i = 0; i < els.length; i++) {
+    var el = els[i];
+    handle(el);
+  }
+});
+</script>
+
+<style>
+  /* code language badge */
+  pre.badge::before {
+    content: attr(data-lang);
+    color: #fff;
+    background-color: #ff4e00;
+    padding: 0 .5em;
+    border-radius: 0 2px;
+    text-transform: uppercase;
+    text-align: center;
+    min-width: 32px;
+    display: inline-block;
+    position: absolute;
+    right: 0;
+  }
+
+  /* fix wrong badge display for firefox browser */
+  code > table pre::before {
+    display: none;
+  }
+</style>
+<script>MathJax={"tex":{"inlineMath":[["$","$"],["\\(","\\)"]],"displayMath":[["$$","$$"],["\\[","\\]"]]},"svg":{"fontCache":"global"}}</script><script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<header class="site-header " role="banner">
+  <div class="wrapper">
+    <div class="site-header-inner">
+<span class="site-brand"><a class="site-brand-inner" rel="author" href="/">
+  <img class="site-favicon" title="Ting-Kim 블로그" src="https://github.com/Ting-Kim/ting-kim.github.io/blob/master/images/favicon.png?raw=true" onerror="this.style.display='none'">
+  Ting-Kim 블로그
+</a>
+</span><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger">
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewbox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"></path>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger">
+<a class="page-link" href="/about.html">ABOUT ME</a><a class="page-link" href="/archives.html">ARCHIVES</a><a class="page-link" href="/categories.html">CATEGORIES</a><a class="page-link" href="/tags.html">TAGS</a>
+</div>
+      </nav>
+</div>
+  </div>
+</header>
+
+<script>
+  function initHeader() {
+    var lastScrollY = getScrollPos().y;
+    var documentElement = document.documentElement;
+
+    function storeScrollData() {
+      var y = getScrollPos().y;var scrollStatus = "";
+
+      if (y <= 0) {
+        scrollStatus = "top";
+      } else if ((window.innerHeight + y) >= document.body.offsetHeight) {
+        scrollStatus = "bottom";
+      } else {
+        var isScrollDown = (y - lastScrollY > 0) ? true : false;
+        scrollStatus = isScrollDown ? "down" : "up";
+      }
+
+      lastScrollY = y;
+      documentElement.setAttribute("data-scroll-status", scrollStatus);
+    }
+
+    window.addEventListener('scroll', function(e) {
+      storeScrollData();
+    });
+
+    storeScrollData();
+  }
+  document.addEventListener('DOMContentLoaded', initHeader);
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+  function hashLocate(hashValue) {
+    hashValue = hashValue.replace(/^.*#h-/, '');
+    hashValue = decodeURIComponent(hashValue);
+    var element = document.getElementById(hashValue);
+
+    if (!element) {
+      return;
+    }
+
+    var header = document.querySelector('header.site-header');
+    var headerRect = header.getBoundingClientRect();
+    var headerTop = Math.floor(headerRect.top);
+    var headerHeight = Math.floor(headerRect.height);
+    var scrollPos = getScrollPos();
+    var offsetY = element.offsetTop - (headerTop + headerHeight + 20);
+
+    if (offsetY == scrollPos.y) {
+      return;
+    }
+
+    if (headerTop == 0  && offsetY > scrollPos.y) {
+      offsetY += headerHeight + 2;
+    } else if (headerTop < 0  && offsetY < scrollPos.y) {
+      offsetY -= headerHeight - 2;
+    }
+
+    smoothScrollTo(offsetY);
+  }
+
+  // The first event occurred
+  window.addEventListener('load', function(event) {
+    if (window.location.hash) {
+      hashLocate(window.location.hash);
+    }
+  });
+
+  // The first event occurred
+  window.addEventListener('click', function(event) {
+    if (event.target.tagName.toLowerCase() == 'a') {
+      hashLocate(event.target.getAttribute('href'));
+    }
+  });
+</script>
+<div class="theme-toggle">
+  <input type="checkbox" id="theme-switch">
+  <label for="theme-switch">
+    <div class="toggle"></div>
+    <div class="names">
+      <p class="light">Light</p>
+      <p class="dark">Dark</p>
+    </div>
+  </label>
+</div>
+
+
+
+
+<script>
+  (function() {
+    var sw = document.getElementById('theme-switch');
+    var html = document.getElementsByTagName('html')[0];
+    var nightModeOption = ('auto' || 'auto').toLowerCase();
+    var storage = nightModeOption === 'manual'
+        ? localStorage
+        : sessionStorage;
+    var themeData = loadThemeData();
+
+    function saveThemeData(data) {
+      storage.setItem('theme', JSON.stringify(data));
+    }
+
+    function loadThemeData() {
+      var data = storage.getItem('theme');
+      try {
+        data = JSON.parse(data ? data : '');
+      } catch(e) {
+        data = { nightShift: undefined, autoToggleAt: 0 };
+        saveThemeData(data);
+      }
+      return data;
+    }
+
+    function handleThemeToggle(nightShift) {
+      themeData.nightShift = nightShift;
+      saveThemeData(themeData);
+      html.dataset.theme = nightShift ? 'dark' : 'light';
+      setTimeout(function() {
+        sw.checked = nightShift ? true : false;
+      }, 50);
+    }
+
+    function autoThemeToggle() {
+      // Next time point of theme toggle
+      var now = new Date();
+      var toggleAt = new Date();
+      var hours = now.getHours();
+      var nightShift = hours >= 19 || hours <=7;
+
+      if (nightShift) {
+        if (hours > 7) {
+          toggleAt.setDate(toggleAt.getDate() + 1);
+        }
+        toggleAt.setHours(7);
+      } else {
+        toggleAt.setHours(19);
+      }
+
+      toggleAt.setMinutes(0);
+      toggleAt.setSeconds(0);
+      toggleAt.setMilliseconds(0)
+
+      var delay = toggleAt.getTime() - now.getTime();
+
+      // auto toggle theme mode
+      setTimeout(function() {
+        handleThemeToggle(!nightShift);
+      }, delay);
+
+      return {
+        nightShift: nightShift,
+        toggleAt: toggleAt.getTime()
+      };
+    }
+
+    // Listen the theme toggle event
+    sw.addEventListener('change', function(event) {
+      handleThemeToggle(event.target.checked);
+    });
+
+    if (nightModeOption == 'auto') {
+      var data = autoThemeToggle();
+
+      // Toggle theme by local setting
+      if (data.toggleAt > themeData.autoToggleAt) {
+        themeData.autoToggleAt = data.toggleAt;
+        handleThemeToggle(data.nightShift);
+      } else {
+        handleThemeToggle(themeData.nightShift);
+      }
+    } else if (nightModeOption == 'manual') {
+      handleThemeToggle(themeData.nightShift);
+    } else {
+      var nightShift = themeData.nightShift;
+      if (nightShift === undefined) {
+        nightShift = nightModeOption === 'on';
+      }
+      handleThemeToggle(nightShift);
+    }
+  })();
+</script>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <div class="framework">
+  <section class="main">
+
+     <div class="post">
+  <section>
+
+
+
+
+
+
+
+
+
+<header class="post-header">
+  <h1 class="post-title p-name" itemprop="name headline">[2nd_week-day5]추정,검정,엔트로피</h1>
+  <h2 class="post-subtitle"></h2>
+
+  <p class="post-meta">
+    <time class="dt-published" datetime="2020-12-12T00:00:00+00:00" itemprop="datePublished"><i class="fa fa-calendar"></i> Dec 12, 2020
+    </time>
+
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 10 mins</span>
+  </p>
+<div class="post-tags">
+<a class="post-tag" href="/tags.html#ai">#ai</a><a class="post-tag" href="/tags.html#probability">#probability</a><a class="post-tag" href="/tags.html#distribution">#distribution</a>
+</div></header>
+<article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+    <div class="post-content e-content" itemprop="articleBody">
+
+      <h2 id="표본-분포">표본 분포</h2>
+
+<p>전수조사는 실질적으로 불가능한 경우가 많으므로 <strong>표본 조사를 통해 모집단에 대한 해석을 진행하는 통계적 추론</strong>을 이용한다.</p>
+
+<p>표본 조사는 반드시 초차가 발생하기 때문에 <strong>적절한 표본 추출 방법</strong>이 필요하다.</p>
+
+<p>(<strong>표본과 모집단과의 관계 이해</strong>가 기반이 되어야 함)</p>
+
+<p>랜덤넘버 생성기 (python)</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="n">random</span>
+<span class="p">[</span><span class="n">random</span><span class="p">.</span><span class="nf">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nf">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)]</span>
+</code></pre></div></div>
+
+<p><br></p>
+
+<h2 id="표본-평균의-분포">표본 평균의 분포</h2>
+
+<p>표본조사를 통해서 파악하고자 하는 정보는 <strong>모수(parameter)</strong>이다.</p>
+
+<p>모수 - 모평균, 모분산, 모비율 등..</p>
+
+<p><strong>통계량(statistic)</strong> : 표본의 특성값(표본 평균, 표본 분산 등..)</p>
+
+<p>표본의 평균은 표본의 선택에 따라 달라지고, 그렇기 때문에 <strong>표본평균도 하나의 확률변수</strong>이다.</p>
+
+<p>통계량의 확률분포를 표본분포 (sampling distribution) 라고 한다.</p>
+
+<p>평균이 $\mu$ 이고, 분산이 $\sigma^2$ 인 <strong>정규모집단에서</strong> 표본 n개를 추출하게 되면 그때 발생하는 표본평균의 확률변수 $\bar{X}$는 정규분포를 따른다.</p>
+
+<ul>
+  <li>표본평균 $\bar{x}={1\over n}\sum_{i=1}^nx_i$</li>
+  <li>$\bar{X} \sim N(\mu,{\sigma^2\over n})$</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="n">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="n">xbars</span><span class="o">=</span><span class="p">[</span><span class="n">np</span><span class="p">.</span><span class="nf">mean</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="nf">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">10</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nf">range</span><span class="p">(</span><span class="mi">10000</span><span class="p">)]</span>
+<span class="nf">print</span><span class="p">(</span><span class="s">"mean %f, var %f"</span> <span class="o">%</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="nf">mean</span><span class="p">(</span><span class="n">xbars</span><span class="p">),</span> <span class="n">np</span><span class="p">.</span><span class="nf">var</span><span class="p">(</span><span class="n">xbars</span><span class="p">)))</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="n">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="n">xbars</span><span class="o">=</span><span class="p">[</span><span class="n">np</span><span class="p">.</span><span class="nf">mean</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="nf">normal</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">10</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nf">range</span><span class="p">(</span><span class="mi">10000</span><span class="p">)]</span>
+<span class="nf">print</span><span class="p">(</span><span class="s">"mean %f, var %f"</span> <span class="o">%</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="nf">mean</span><span class="p">(</span><span class="n">xbars</span><span class="p">),</span> <span class="n">np</span><span class="p">.</span><span class="nf">var</span><span class="p">(</span><span class="n">xbars</span><span class="p">)))</span>
+<span class="kn">import</span> <span class="n">matplotlib</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="n">h</span><span class="o">=</span><span class="n">plt</span><span class="p">.</span><span class="n">pyplot</span><span class="p">.</span><span class="nf">hist</span><span class="p">(</span><span class="n">xbars</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">15</span><span class="p">),</span> <span class="n">bins</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p><br></p>
+
+<h3 id="중심극한정리central-limit-theorem">중심극한정리(central limit theorem)</h3>
+
+<p>정규모집단이 아닌 일반 모집단에서 추출된 표본의 측정값으로 부터 추출한 표본평균의 확률변수는 $n \geqq 30$ 일 때 근사적으로 $\bar{X} \sim N(\mu,{\sigma^2\over n})$ 를 만족한다.</p>
+
+<p><br></p>
+
+<h2 id="모평균의-추정">모평균의 추정</h2>
+
+<h3 id="점추정">점추정</h3>
+
+<p>표본평균이 점 추정값(추정량)이 된다.</p>
+
+<p><br></p>
+
+<h3 id="구간추정">구간추정</h3>
+
+<p>모평균 $\mu$의 $100(1-\alpha)%$% 신뢰구간 (confidence interval)</p>
+
+<p>* 신뢰구간 : 100번 중에 x번은 추출한 표본들의 모평균 $\mu$가 포함될 것이라고 보장하는 구간</p>
+
+<p><br></p>
+
+<ul>
+  <li>정규분포에서 $\sigma$ 를 알 떄,</li>
+</ul>
+
+<center>$(\bar x -z_{\alpha/2}{\sigma \over \sqrt{n}},\;\;\;\;\;\; \bar x +z_{\alpha/2}{\sigma \over \sqrt{n}})$</center>
+
+<p>* ($\mu$의 추정량) $\pm z_{\alpha/2}\times$(추정량의 표준편차)</p>
+
+<ul>
+  <li>
+<strong>정규분포가 아니거나 표준편차를 모를 때</strong>는 실용적이지 못하다.</li>
+  <li>표본의 크기가 클 때 중심극한 정리를 사용할 수 있다.</li>
+</ul>
+
+<center>$(\bar x -z_{\alpha/2}{s \over \sqrt{n}},\;\;\;\;\;\; \bar x +z_{\alpha/2}{s \over \sqrt{n}})$</center>
+
+<p>(* $s$=표본표준편차)</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="n">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="n">w</span> <span class="o">=</span> <span class="p">[</span><span class="mf">10.7</span><span class="p">,</span> <span class="mf">11.7</span><span class="p">,</span> <span class="mf">9.8</span><span class="p">,</span> <span class="mf">11.4</span><span class="p">,</span> <span class="mf">10.8</span><span class="p">,</span> <span class="mf">9.9</span><span class="p">,</span> <span class="mf">10.1</span><span class="p">,</span> <span class="mf">8.8</span><span class="p">,</span> <span class="mf">12.2</span><span class="p">,</span> <span class="mf">11.0</span><span class="p">,</span> <span class="mf">11.3</span><span class="p">,</span> <span class="mf">11.1</span><span class="p">,</span> <span class="mf">10.3</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">,</span> <span class="mf">9.9</span><span class="p">,</span> <span class="mf">11.1</span><span class="p">,</span> <span class="mf">11.7</span><span class="p">,</span> <span class="mf">11.5</span><span class="p">,</span> <span class="mf">9.1</span><span class="p">,</span> <span class="mf">10.3</span><span class="p">,</span> <span class="mf">8.6</span><span class="p">,</span> <span class="mf">12.1</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">,</span> <span class="mf">13.0</span><span class="p">,</span> <span class="mf">9.2</span><span class="p">,</span> <span class="mf">9.8</span><span class="p">,</span> <span class="mf">9.3</span><span class="p">,</span> <span class="mf">9.4</span><span class="p">,</span> <span class="mf">9.6</span><span class="p">,</span> <span class="mf">9.2</span><span class="p">]</span>
+<span class="n">xbar</span><span class="o">=</span><span class="n">np</span><span class="p">.</span><span class="nf">mean</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+<span class="n">sd</span><span class="o">=</span><span class="n">np</span><span class="p">.</span><span class="nf">std</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">ddof</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># 표준편차를 구하는 메서드
+</span>											<span class="c1"># ddof = 자유도 (delta degree of freedom) : 표본표준편차이기 때문에 전체 자유도에서 1만큼 차이난다.
+</span><span class="nf">print</span><span class="p">(</span><span class="s">"평균 %.2f, 표준편차: %.2f"</span> <span class="o">%</span><span class="p">(</span><span class="n">xbar</span><span class="p">,</span> <span class="n">sd</span><span class="p">))</span>
+<span class="kn">import</span> <span class="n">scipy.stats</span>
+<span class="n">alpha</span><span class="o">=</span><span class="mf">0.05</span>
+<span class="n">zalpha</span> <span class="o">=</span> <span class="n">scipy</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">norm</span><span class="p">.</span><span class="nf">ppf</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">alpha</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span> <span class="c1"># 1-alpha/2 만큼에 해당하는 고지값을 구해주는 메서드
+</span><span class="nf">print</span><span class="p">(</span><span class="s">"zalpha: "</span><span class="p">,</span> <span class="n">zalpha</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h3 id="모비율의-추정">모비율의 추정</h3>
+
+<ul>
+  <li>n이 충분히 클때 $(n\hat p &gt;5,\;n(1-\hat p) &gt; 5$ 일 때$)$</li>
+  <li>$X\sim N(np, np(1-p))$</li>
+</ul>
+
+<p><strong>확률변수 $X$의 표준화</strong></p>
+
+<ul>
+  <li>$Z={x-np \over \sqrt{n\hat{p}(1-\hat{p})}}={\hat{p}-p\over \sqrt{\hat{p}(1-\hat{p})\over n}}$</li>
+  <li>근사적으로 표준정규분포 $N(0,1)$을 따른다.</li>
+</ul>
+
+<p><strong>구간추정</strong></p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>$z_\alpha$ 의 정의 ⇒ $P(</td>
+      <td>Z</td>
+      <td>\leq z_{\alpha/2})=1-\alpha$</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><br></p>
+
+<p>모비율 $p$의 $100(1-\alpha)$% 신뢰구간 (comfidence interval)<br></p>
+
+<p>⇒$(\hat p-z_{\alpha \over 2}\sqrt{\hat{p}(1-\hat{p})\over n}, \; \hat p+z_{\alpha \over 2}\sqrt{\hat{p}(1-\hat{p})\over n})$</p>
+
+<p><br></p>
+
+<h2 id="검정">검정</h2>
+
+<h3 id="통계적가설검정">통계적가설검정</h3>
+
+<p>귀무가설 $H0:\mu -\mu_0$ (귀무가설을 일단 참이라 가정)</p>
+
+<p>대립가설 $H1: \mu &gt; \mu_0$ (새로운 주장)</p>
+
+<ul>
+  <li>랜덤하게 선택한 표본에서 지금의 $\bar{X}$가 나올 확률을 계산하고, 이 확률이 낮다면 귀무가설이 참이 아니라고 판단한다.</li>
+  <li>낮다는 기준점인 <strong>유의수준 $\alpha$</strong> 도입</li>
+  <li>$P(\bar{X} \geq k) \leq \alpha$ 가 되는 $k$를 찾자.
+    <ul>
+      <li>$Z={\bar{X}-\mu \over {S/\sqrt n}}\sim N(0,1)$</li>
+      <li>$P(Z \geq z_\alpha) =\alpha$</li>
+    </ul>
+  </li>
+</ul>
+
+<p><br></p>
+
+<p><strong>검정단계</strong></p>
+
+<ol>
+  <li>$H_0,\;H_1$ 설정</li>
+  <li>유의수준 $\alpha$ 설정</li>
+  <li>검정통계량 계산</li>
+  <li>기각역 또는 임계값 계산</li>
+  <li>주어진 데이터로부터 유의성 판정</li>
+</ol>
+
+<p><strong>기각역</strong></p>
+
+<p>⇒ 대립가설이 무엇인가에 따라서 범위가 달라진다.</p>
+
+<p>귀무가설이 $H_0:\mu=10.5$ 일때,</p>
+
+<ul>
+  <li>유의수준: $\mu$</li>
+  <li>대립가설에 따라서 귀무가설을 기각할 수 있는 범위
+    <ul>
+      <li>$H_1:\mu&gt;10.5$ ⇒ $Z&gt;z_\alpha$</li>
+      <li>$H_1:\mu&lt;10.5$ ⇒ $Z&lt;-z_\alpha$</li>
+      <li>$H_1:\mu \neq 10.5$ ⇒ $\vert Z \vert &gt; z_{\alpha \over 2}$</li>
+    </ul>
+  </li>
+</ul>
+
+<p><br></p>
+
+<p><strong>예시)</strong></p>
+
+<ul>
+  <li>어떤 농장에서 자신들이 생각하는 계란의 평균 무게가 10.5 g 이라고 홍보하고 있다. 이에 생산된 계란 30개의 표본을 뽑았더니 그 무게가 아래와 같다.</li>
+  <li>w=[10.7, 11.7, 9.8, 11.4, 10.8, 9.9, 10.1, 8.8, 12.2, 11.0, 11.3, 11.1, 10.3, 10.0, 9.9, 11.1, 11.7, 11.5, 9.1, 10.3, 8.6, 12.1, 10.0, 13.0, 9.2, 9.8, 9.3, 9.4, 9.6, 9.2]</li>
+  <li>이 농장의 홍보가 맞는지 유의수준 5 % 로 검정하시오.</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="n">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="n">w</span><span class="o">=</span><span class="p">[</span><span class="mf">10.7</span><span class="p">,</span> <span class="mf">11.7</span><span class="p">,</span> <span class="mf">9.8</span><span class="p">,</span> <span class="mf">11.4</span><span class="p">,</span> <span class="mf">10.8</span><span class="p">,</span> <span class="mf">9.9</span><span class="p">,</span> <span class="mf">10.1</span><span class="p">,</span> <span class="mf">8.8</span><span class="p">,</span> <span class="mf">12.2</span><span class="p">,</span> <span class="mf">11.0</span><span class="p">,</span> <span class="mf">11.3</span><span class="p">,</span> <span class="mf">11.1</span>
+	<span class="p">,</span> <span class="mf">10.3</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">,</span> <span class="mf">9.9</span><span class="p">,</span> <span class="mf">11.1</span><span class="p">,</span> <span class="mf">11.7</span><span class="p">,</span> <span class="mf">11.5</span><span class="p">,</span> <span class="mf">9.1</span><span class="p">,</span> <span class="mf">10.3</span><span class="p">,</span> <span class="mf">8.6</span><span class="p">,</span> <span class="mf">12.1</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">,</span> <span class="mf">13.0</span>
+	<span class="p">,</span> <span class="mf">9.2</span><span class="p">,</span> <span class="mf">9.8</span><span class="p">,</span> <span class="mf">9.3</span><span class="p">,</span> <span class="mf">9.4</span><span class="p">,</span> <span class="mf">9.6</span><span class="p">,</span> <span class="mf">9.2</span><span class="p">]</span>
+<span class="n">mu</span> <span class="o">=</span> <span class="mf">10.5</span>
+<span class="n">xbar</span><span class="o">=</span><span class="n">np</span><span class="p">.</span><span class="nf">mean</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+<span class="n">sd</span><span class="o">=</span><span class="n">np</span><span class="p">.</span><span class="nf">std</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">ddof</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="s">"평균 %.2f, 표준편차: %.2f"</span> <span class="o">%</span> <span class="p">(</span><span class="n">xbar</span><span class="p">,</span> <span class="n">sd</span><span class="p">))</span>
+<span class="n">z</span><span class="o">=</span><span class="p">(</span><span class="n">xbar</span><span class="o">-</span><span class="n">mu</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">sd</span><span class="o">/</span><span class="n">np</span><span class="p">.</span><span class="nf">sqrt</span><span class="p">(</span><span class="nf">len</span><span class="p">(</span><span class="n">w</span><span class="p">)))</span>
+<span class="nf">print</span><span class="p">(</span><span class="s">"검정통계량: "</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
+<span class="n">alpha</span><span class="o">=</span><span class="mf">0.05</span>
+<span class="kn">import</span> <span class="n">scipy.stats</span>
+<span class="n">cri</span> <span class="o">=</span> <span class="n">scipy</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">norm</span><span class="p">.</span><span class="nf">ppf</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">alpha</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="s">"임계값: "</span><span class="p">,</span> <span class="n">cri</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p><br></p>
+
+<h2 id="교차엔트로피">교차엔트로피</h2>
+
+<h3 id="엔트로피">엔트로피</h3>
+
+<p><strong>자기정보(self-information)</strong> : $i(A)$</p>
+
+<ul>
+  <li>$i(A)=log_b({1 \over P(A)})=-log_bP(A)$
+    <ul>
+      <li>자기 정보는 $A_j$를 표현하는 비트수</li>
+    </ul>
+  </li>
+  <li>확률이 높은 사건은 정보가 많지 않음.
+    <ul>
+      <li>예) 도들이 들었을 때 개가 짖는 경우보다, 도둑이 들었는데도 개가 안 짖는 경우가 더 많은 정보를 포함하고 있다.</li>
+    </ul>
+  </li>
+  <li>b는 정보의 단위로 <strong>2(bits)</strong>, e(nats), 10(hartleys) 를 사용함.</li>
+</ul>
+
+<p><br></p>
+
+<p><strong>엔트로피(entropy) 정의 : 자기정보의 평균</strong></p>
+
+<center>$H(X)=\sum_jP(A_j)i(A_j)=-\sum_jP(A_j)log_2P(A_j)$</center>
+
+<center>$(0 \leq H(X) \leq log_2K)$ </center>
+
+<ul>
+  <li>$K$는 사건의 수인데, 각 사건의 확률이 동일해서 $P(A_j)={1\over K}$ 일 때 $H(X)$가 최댓값을 가진다</li>
+</ul>
+
+<p>엔트로피는 ‘데이터를 표현할 때 필요한 평균비트수’ 이다.</p>
+
+<h3 id="교차엔트로피-1">교차엔트로피</h3>
+
+<p><strong>교차엔트로피 정의</strong></p>
+
+<p>⇒두가지 확률분포 상에서 정확한 확률분포에 대해 다른 확률분포가 얼마나 차이나는지..</p>
+
+<p>$H(P,Q)$ : 집합 S상에서 확률분포 P에 대한 확률분포 Q의 교차 엔트로피</p>
+
+<ul>
+  <li>정확한 확률분포 P를 사용했을 때의 비트수보다 항상 크다.
+    <ul>
+      <li>$H(P,Q)=-\sum_{x\in X}P(x)log_2Q(X) \geq -\sum_{x\in X}P(x)log_2P(x)=H(P)$</li>
+    </ul>
+  </li>
+  <li>교차엔트로피는 결국 $P$와 $Q$가 얼마나 비슷한지를 나타낸다.
+    <ul>
+      <li>같을 때 ⇒ $H(P,Q)=H(P)$</li>
+      <li>다를 때 ⇒ $H(P,Q)&gt;H(P)$</li>
+    </ul>
+  </li>
+</ul>
+
+<p><strong>(?) $H(P,Q) &lt;H(P)$ 일 때는?</strong></p>
+
+<p><br></p>
+
+<p><strong>손실함수 : 학습의 방향을 알려주는 정보를 제공한다.</strong></p>
+
+<p><strong>분류 문제에서의 손실함수</strong></p>
+
+<ul>
+  <li>기계학습에서는 주어진 대상이 각 그룹에 속할 확률을 제공하는데(예-[0.8, 0.2]), 이 값이 정답인 [1.0, 0.0] 과 얼마나 다른지 측정이 필요하다.</li>
+  <li>원하는 답 $P=[p_1,p_2,\cdot\cdot\cdot,p_n],\; p_1+p_2+\cdot\cdot\cdot+p_n=1$</li>
+  <li>제시된 답 $Q=[q_1,q_2,\cdot\cdot\cdot,q_n],\; q_1+q_2+\cdot\cdot\cdot+q_n=1$ 사이에 얼마나 다른지 척도가 필요하다.
+    <ul>
+      <li>제곱합
+        <ul>
+          <li>$\sum(p_i-q_i)^2$</li>
+          <li>확률이 다를수록 큰 값을 가진다.</li>
+          <li>하지만 <strong>학습 속도가 느리다.</strong>
+</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<p><br></p>
+
+<ul>
+  <li>교차 엔트로피 $H(P,Q)$
+    <ul>
+      <li>확률이 다를수록 큰 값을 가진다.</li>
+      <li><strong>학습 속도가 빠르다.</strong></li>
+      <li>분류 문제에서 주로 이를 사용한다.</li>
+    </ul>
+  </li>
+</ul>
+
+<p><br></p>
+
+<p>기계학습의 분류 문제에서 원하는 답은 $P=[p_1,p_2,\cdot\cdot\cdot,p_n]$ 에서 하나만 1이고, 나머지는 0인 경우이다.</p>
+
+<ul>
+  <li>이 때, 엔트로피 $H(P)=0$ 이다.</li>
+  <li>$P$ 중 하나인 $p_k=1.0$ 이라고 하면, $**q_k$의 값이 최대한 커지는 방향으로** 학습을 진행해야 한다.</li>
+</ul>
+
+<p><br></p>
+
+<p>교차엔트로피 구하기 실습</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="n">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="k">def</span> <span class="nf">crossentropy</span><span class="p">(</span><span class="n">P</span><span class="p">,</span><span class="n">Q</span><span class="p">):</span>
+	<span class="k">return</span> <span class="nf">sum</span><span class="p">([</span><span class="o">-</span><span class="n">P</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="n">np</span><span class="p">.</span><span class="nf">log2</span><span class="p">(</span><span class="n">Q</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nf">range</span><span class="p">(</span><span class="nf">len</span><span class="p">(</span><span class="n">P</span><span class="p">))])</span>
+
+<span class="n">P</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">Q</span><span class="o">=</span><span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">]</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">crossentropy</span><span class="p">(</span><span class="n">P</span><span class="p">,</span><span class="n">Q</span><span class="p">))</span>
+<span class="c1"># 결과 : 0.3219280948873623
+</span><span class="n">Q</span><span class="o">=</span><span class="p">[</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">0.5</span><span class="p">]</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">crossentropy</span><span class="p">(</span><span class="n">P</span><span class="p">,</span><span class="n">Q</span><span class="p">))</span>
+<span class="c1"># 결과 : 1.0
+</span><span class="n">Q</span><span class="o">=</span><span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">]</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">crossentropy</span><span class="p">(</span><span class="n">P</span><span class="p">,</span><span class="n">Q</span><span class="p">))</span>
+<span class="c1"># 결과 : 2.321928094887362\
+</span></code></pre></div></div>
+
+<p><br></p>
+
+<p>참고 ) 다음주 알차게 보내는 법 소개 (from 이호준 멘토님)</p>
+
+<ul>
+  <li>numpy → 수학적인 내용들 복습 / 구현</li>
+  <li>pandas → DataFrame 다루는 방법 → COVID-19 데이터 / 아보카도 데이터 분석 실습할 것</li>
+  <li>matplotlib → 시각화 툴(Case Study) + seaborn → 직접 실습</li>
+</ul>
+
+<hr>
+
+<ul>
+  <li>EDA (E) : 탐색적 데이터 분석 → 어떤 데이터를 바탕으로 시각화와 인사이트 뽑아낼 수 있는 것이 목표</li>
+</ul>
+
+<p><strong>많은 노력이 필요할 것이라는데 무섭구만 🥶. . . .</strong></p>
+
+
+    </div>
+
+</article>
+<div class="post-nav">
+<a class="previous" href="/(%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%A8%B8%EC%8A%A4)ai%EB%8D%B0%EB%B8%8C%EC%BD%94%EC%8A%A41%EA%B8%B0/2020/12/10/2nd_week-day4-%ED%99%95%EB%A5%A0%EA%B3%BC_%ED%99%95%EB%A5%A0%EB%B6%84%ED%8F%AC.html" title="[2nd_week-day4]확률과 확률분포">[2nd_week-day4]확률과 확률분포</a><a class="next" href="/(%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%A8%B8%EC%8A%A4)ai%EB%8D%B0%EB%B8%8C%EC%BD%94%EC%8A%A41%EA%B8%B0/2020/12/14/3rd_week-day1-numpy_%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%8B%A4%EB%A3%A8%EA%B8%B0.html" title="[3rd_week-day1]Python으로 데이터 다루기 I - numpy">[3rd_week-day1]Python으로 데이터 다루기 I - numpy...</a>
+</div>
+<div class="post-related">
+      <div>Related Articles</div>
+      <ul>
+        <li><a class="post-link" href="/algorithm(problem-solving)/2022/01/02/PS-%ED%8A%B8%EB%A6%AC-(%EB%B0%B1%EC%A4%80-1068%EB%B2%88).html" title="[3rd_week-day1]Python으로 데이터 다루기 I - numpy">[PS] 트리 (백준 1068번)</a></li>
+<li><a class="post-link" href="/(%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%A8%B8%EC%8A%A4)ai%EB%8D%B0%EB%B8%8C%EC%BD%94%EC%8A%A41%EA%B8%B0/2020/12/24/4th_week-day4-Django%EC%9C%BC%EB%A1%9C_%EB%8F%99%EC%A0%81_%EC%9B%B9_%ED%8E%98%EC%9D%B4%EC%A7%80_%EB%A7%8C%EB%93%A4%EA%B8%B0.html" title="[3rd_week-day1]Python으로 데이터 다루기 I - numpy">[4th_week-day4]Django으로_동적_웹_페이지_만들기</a></li>
+<li><a class="post-link" href="/(%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%A8%B8%EC%8A%A4)ai%EB%8D%B0%EB%B8%8C%EC%BD%94%EC%8A%A41%EA%B8%B0/2021/01/13/6th_week-day3-Linear_Classification.html" title="[3rd_week-day1]Python으로 데이터 다루기 I - numpy">[ML_basics]Linear models for classification</a></li>
+<li><a class="post-link" href="/java/2021/02/24/Java%EC%9D%98-%EC%A0%95%EC%84%9D1-%EB%B0%B0%EC%97%B4,-%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D-I.html" title="[3rd_week-day1]Python으로 데이터 다루기 I - numpy">[Java의 정석 I] 배열, 객체지향 프로그래밍 I</a></li>
+</ul>
+    </div>
+<div class="post-comments">
+      <hr>
+
+      <script src="https://utteranc.es/client.js" repo="ting-kim/ting-kim.github.io" issue-term="url" theme="github-dark" crossorigin="anonymous" async>
+      </script>
+</div></section>
+</div>
+
+
+  </section>
+  <section class="sidebar" style="margin-left: 15px;">
+    <!-- Get sidebar items --><style type="text/css" media="screen">
+.post-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+</style>
+
+<div class="post-menu">
+  <div class="post-menu-title">TOC</div>
+  <div class="post-menu-content"></div>
+</div>
+
+<script>
+  function generateContent() {
+    var menu = document.querySelector(".post-menu");
+    var menuContent =  menu.querySelector(".post-menu-content");
+    var headings = document.querySelector(".post-content").querySelectorAll("h2, h3, h4, h5, h6");
+
+    // Hide menu when no headings
+    if (headings.length === 0) {
+      return menu.style.display = "none";
+    }
+
+    // Generate post menu
+    var menuHTML = '';
+    for (var i = 0; i < headings.length; i++) {
+      var h = headings[i];
+      menuHTML += (
+        '<li class="h-' + h.tagName.toLowerCase() + '">'
+        + '<a href="#h-' + h.getAttribute('id') + '">' + h.textContent + '</a></li>');
+    }
+
+    menuContent.innerHTML = '<ul>' + menuHTML + '</ul>';
+
+    // The header element
+    var header = document.querySelector('header.site-header');
+
+    function doMenuCollapse(index, over_items) {
+      var items = menuContent.firstChild.children;
+
+      if (over_items == undefined) {
+        over_items = 20;
+      }
+
+      if (items.length < over_items) {
+        return;
+      }
+
+      var activeItem = items[index];
+      var beginItem = activeItem
+      var endItem = activeItem
+      var beginIndex = index;
+      var endIndex = index + 1;
+      while (beginIndex >= 0
+        && !items[beginIndex].classList.contains('h-h2')) {
+        beginIndex -= 1;
+      }
+      while (endIndex < items.length
+        && !items[endIndex].classList.contains('h-h2')) {
+        endIndex += 1;
+      }
+      for (var i = 0; i < beginIndex; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+      for (var i = beginIndex + 1; i < endIndex; i++) {
+        item = items[i]
+        // if (!item.classList.contains('h-h2')) {
+          item.style.display = '';
+        // }
+      }
+      for (var i = endIndex; i < items.length; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+    }
+
+    // Init menu collapsed
+    doMenuCollapse(-1);
+
+    // Active the menu item
+    window.addEventListener('scroll', function (event) {
+      var lastActive = menuContent.querySelector('.active');
+      var changed = true;
+      var activeIndex = -1;
+      for (var i = headings.length - 1; i >= 0; i--) {
+        var h = headings[i];
+        var headingRect = h.getBoundingClientRect();
+        var headerRect = header.getBoundingClientRect();
+        var headerTop = Math.floor(headerRect.top);
+        var headerHeight = Math.floor(headerRect.height);
+        var headerHeight = headerTop + headerHeight + 20;
+        if (headingRect.top <= headerHeight) {
+          var id = 'h-' + h.getAttribute('id');
+          var a = menuContent.querySelector('a[href="#' + id  + '"]');
+          var curActive = a.parentNode;
+          if (curActive) {
+            curActive.classList.add('active');
+            activeIndex = i;
+          }
+          if (lastActive == curActive) {
+            changed = false;
+          }
+          break;
+        }
+      }
+      if (changed) {
+        if (lastActive) {
+          lastActive.classList.remove('active');
+        }
+        doMenuCollapse(activeIndex);
+      }
+      event.preventDefault();
+    });
+  }
+  generateContent();
+</script>
+</section>
+</div>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+    <div class="site-footer-inner">
+<div>Unpublished Work <span class="copyleft">©</span> 2017-2023 Taeho Kim</div>
+      <div>Powered by <a title="Taeho Kim" href="https://ting-kim.github.io/about.html">Taeho Kim</a>
+</div>
+      <div class="footer-col rss-subscribe">Subscribe <a href="https://github.com/Ting-Kim">Github(Ting-Kim)</a>
+</div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
